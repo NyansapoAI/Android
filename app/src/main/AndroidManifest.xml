@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.edward.nyansapo">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/small_logo"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/small_logo"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".QuestionStory"></activity>
+        <activity android:name=".student_assessments" />
+        <activity android:name=".assessment_detail" />
+        <activity android:name=".SelectAssessment" />
+        <activity android:name=".settings" />
+        <activity android:name=".cumulativeProgress" />
+        <activity android:name=".studentDetails" />
+        <activity android:name=".home" />
+        <activity android:name=".viewAssessment" />
+        <activity android:name=".registerSchool" />
+        <activity android:name=".RegisterTeacher" />
+        <activity android:name=".selectAssesment" />
+        <activity android:name=".student" />
+        <activity android:name=".selectSchool" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".TeacherLogin" />
+        <activity android:name=".Interface_selecter" />
+        <activity android:name=".Begin_Assessment" />
+        <activity android:name=".PreAssessment" />
+        <activity android:name=".paragraph" />
+        <activity android:name=".paragraph_assessment" />
+        <activity android:name=".story_assessment" />
+        <activity android:name=".storyQuestions" />
+        <activity android:name=".word_assessment" />
+        <activity android:name=".letter_assessment" />
+        <activity android:name=".thankYou" />
+        <activity android:name=".registerStudent" />
+
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/slide_out_right" />
+    </application>
+
+</manifest>

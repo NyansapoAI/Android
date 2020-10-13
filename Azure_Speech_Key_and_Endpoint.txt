@@ -1,0 +1,3 @@
+Key1 : 1c58abdab5d74d5fa41ec8b0b4a62367
+
+Endpoint: https://eastus.api.cognitive.microsoft.com/sts/v1.0/issuetoken

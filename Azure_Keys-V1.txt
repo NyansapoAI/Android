@@ -1,0 +1,5 @@
+Endpoint: https://westus.api.cognitive.microsoft.com/sts/v1.0
+
+Key 1: 6c52211bd5f547fb8b3fe8f9f5716f5d
+
+Key 2: 0e3cd32d7a324bca909c502c66e3b9a3
