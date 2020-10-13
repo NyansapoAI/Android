@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".cumulativeProgress">
+
+    <TableLayout
+        android:id="@+id/table"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/bg_round"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow>
+
+            <TextView
+                android:layout_margin="5dp"
+                android:text="Letters"
+                android:textColor="@color/black"
+
+                />
+
+            <TextView
+                android:layout_margin="5dp"
+                android:text="Words"
+                android:textColor="@color/black"
+
+                />
+
+            <TextView
+                android:layout_margin="5dp"
+                android:text="Paragraph"
+                android:textColor="@color/black"
+
+                />
+
+            <TextView
+                android:layout_margin="5dp"
+                android:text="Story"
+                android:textColor="@color/black"
+
+                />
+
+            <TextView
+                android:layout_margin="5dp"
+                android:text="Total"
+                android:textColor="@color/black"
+
+                />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/letters"
+                android:layout_margin="5dp"
+                android:text="12"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/words"
+                android:layout_margin="5dp"
+                android:text="13"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/paragraph"
+                android:layout_margin="5dp"
+                android:text="21"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/story"
+                android:layout_margin="5dp"
+                android:text="10"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/total"
+                android:layout_margin="5dp"
+                android:text="56"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+        </TableRow>
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="Commonly Missed Words:"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/table" />
+
+    <TextView
+        android:id="@+id/missed_words"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:text="bath, table, everyday, aloud, crying, friend, (under development)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label" />
+
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/cumulative_graph"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/missed_words" />
+
+    <Button
+        android:id="@+id/home_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:onClick="gohome"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
