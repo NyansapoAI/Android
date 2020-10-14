@@ -26,6 +26,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.edward.nyansapo.SpeechRecognition;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -164,7 +168,22 @@ public class MainActivity extends AppCompatActivity  {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Incorrect email or password\n" , Toast.LENGTH_LONG).show();
+
+                String responseBody = null;
+                try {
+                    responseBody = new String(error.networkResponse.data, "utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                JSONObject data = null;
+                try {
+                    data = new JSONObject(responseBody);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String message = data.optString("message");
+
+                Toast.makeText(MainActivity.this, message , Toast.LENGTH_LONG).show();
                 //databasehelper.addStudent(student);
                 signin.setEnabled(true);
                 signup.setEnabled(true);

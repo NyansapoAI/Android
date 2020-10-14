@@ -99,6 +99,19 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
                 sync(instructor_id);
             }
         });
+
+        account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(home.this, "Under Development", Toast.LENGTH_SHORT).show();
+                /*
+                Intent myIntent = new Intent(getBaseContext(), settings.class);
+                myIntent.putExtra("instructor_id", instructor_id);
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(home.this).toBundle());
+
+                 */
+            }
+        });
         students = new ArrayList<Student>();
         getStudents(); // populate students ArrayList
 
@@ -216,8 +229,94 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
 
         String url = "https://nyansapoai-api.azurewebsites.net/student/ofInstructor";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        //String url = "https://localhost:3000/student/register";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
+
+        //Toast.makeText(home.this, instructor_id, Toast.LENGTH_SHORT).show();
+
+        // set parameters
+        Map<String, String> params = new HashMap();
+        params.put("instructor_id", instructor_id);
+
+        JSONObject parameters = new JSONObject(params);
+
+        JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                String names;
+                try {
+                    JSONArray jsonArray = response.getJSONArray("data");
+                    //Toast.makeText(home.this,jsonArray.toString(),Toast.LENGTH_SHORT).show();
+                    for(int i = 0; i < jsonArray.length(); i++){
+                        JSONObject student = jsonArray.getJSONObject(i);
+                        String cloud_id = student.getString("_id");
+
+                        //Toast.makeText(home.this,  cloud_id +"  "+ student.toString(), Toast.LENGTH_SHORT).show();
+
+                        if(databasehelper.FindStudent(cloud_id) == 0){ // Not in local database
+                            // assign values
+                            String firstname = student.getString("firstname");
+                            String lastname = student.getString("lastname");
+                            String age = student.getString("age");
+                            String notes = student.getString("notes");
+                            String learning_level = student.getString("learning_level");
+                            String std_class = student.getString("std_class");
+                            String timestamp = student.getString("timestamp");
+
+                            //Toast.makeText(home.this, firstname +" "+ lastname+" "+ age+" "+ notes+" "+learning_level+" "+std_class+" "+timestamp, Toast.LENGTH_SHORT).show();
+                            // create student instance
+                            Student std = new Student();
+                            std.setInstructor_id(instructor_id);
+                            std.setCloud_id(cloud_id);
+                            std.setFirstname(firstname);
+                            std.setLastname(lastname);
+                            std.setAge(age);
+                            std.setNotes(notes);
+                            std.setLearning_level(learning_level);
+                            std.setStd_class(std_class);
+                            std.setTimestamp(timestamp);
+                            //Toast.makeText(home.this, std.firstname + " "+std.getLastname() + " "+ std.getCloud_id()+" "+ std.getAge(), Toast.LENGTH_SHORT).show();
+                            databasehelper.addStudent(std); // add student to local database
+                            //Toast.makeText(home.this, "student saved", Toast.LENGTH_SHORT).show();
+                        }
+
+
+                    }
+                    finish();
+                    startActivity(getIntent());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        /*
+
+        {
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("instructor_id", instructor_id);
+                Toast.makeText(home.this, instructor_id, Toast.LENGTH_SHORT).show();
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+
+        }
+         */
+
+        /* stringRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     Toast.makeText(home.this, response, Toast.LENGTH_LONG).show();
@@ -245,14 +344,14 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 return params;
             }
-        };
+        };*/
 
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+        jsonObject.setRetryPolicy(new DefaultRetryPolicy(
                 10000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-        requestQueue.add(stringRequest);
+        requestQueue.add(jsonObject);
 
     }
 

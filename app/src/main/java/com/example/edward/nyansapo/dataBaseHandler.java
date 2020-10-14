@@ -296,7 +296,9 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         return arrayList;
     }
 
-    public ArrayList FindStudent(String cloud_id){
+    public int FindStudent(String cloud_id){
+
+        int len = 0;
 
         // Get Readable Database
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
@@ -319,7 +321,8 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             arrayList.add(student);
             cursor.moveToNext();
         }
-        return arrayList;
+        len = arrayList.size();
+        return len;
 
     }
 
