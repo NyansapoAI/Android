@@ -71,10 +71,47 @@ public class thankYou extends AppCompatActivity {
     public void storeAssessment(){
         //dataBaseHandler.addAssessment(assessment);
         assessment.setTIMESTAMP(new Date(System.currentTimeMillis()).toString());
-        postAssessment(assessment);
-        dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
 
-        //Toast.makeText(this,uuid, Toast.LENGTH_SHORT).show();
+        // first update in cloud and if successful update locally
+        postAssessment(assessment);
+        updateLearning_level(assessment);
+        //dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
+
+    }
+
+    public void updateLearning_level(Assessment assessment){
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String url = "https://nyansapoai-api.azurewebsites.net/student/learning_level";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("student_id", assessment.getSTUDENT_ID());
+                params.put("learning_level", assessment.getLEARNING_LEVEL());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+
     }
 
 
@@ -87,6 +124,7 @@ public class thankYou extends AppCompatActivity {
                 //Toast.makeText(thankYou.this, getId(response), Toast.LENGTH_LONG).show();
                 assessment.setCLOUD_ID(getId(response));
                 dataBaseHandler.addAssessment(assessment);
+
                 /*
                 Toast.makeText(thankYou.this,assessment.getLETTERS_WRONG(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(thankYou.this,assessment.getLETTERS_CORRECT(), Toast.LENGTH_SHORT).show();
@@ -108,8 +146,8 @@ public class thankYou extends AppCompatActivity {
             protected Map<String, String> getParams(){
                 Map<String, String> params = new HashMap<String, String>();
                 //params.put("firstname", instructor.getFirstname());
-                //params.put("student_id", assessment.getSTUDENT_ID());
-                params.put("student_id", "5f0fcc391bf5061ed35f7562");
+                params.put("student_id", assessment.getSTUDENT_ID());
+                //params.put("student_id", "5f0fcc391bf5061ed35f7562");
                 params.put("timestamp", assessment.getTIMESTAMP());
                 params.put("learning_level", assessment.getLEARNING_LEVEL());
                 params.put("assessment_key", assessment.getASSESSMENT_KEY());
