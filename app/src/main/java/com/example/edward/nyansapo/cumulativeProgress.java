@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -16,6 +17,10 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class cumulativeProgress extends AppCompatActivity {
 
@@ -27,6 +32,8 @@ public class cumulativeProgress extends AppCompatActivity {
     TextView story;
     TextView total;
 
+    TextView missed_words;
+
     int num_letters;
     int num_words;
     int num_paragraph;
@@ -37,6 +44,8 @@ public class cumulativeProgress extends AppCompatActivity {
     ArrayList<Student> list_words;
     ArrayList<Student> list_paragraph;
     ArrayList<Student> list_story;
+
+    ArrayList<Assessment> assessments;
 
     dataBaseHandler dataBaseHandler;
     @Override
@@ -52,6 +61,7 @@ public class cumulativeProgress extends AppCompatActivity {
         paragraph = findViewById(R.id.paragraph);
         story = findViewById(R.id.story);
         total  = findViewById(R.id.total);
+        missed_words = findViewById(R.id.missed_words);
 
         dataBaseHandler = new dataBaseHandler(this);
         students = new ArrayList<Student>();
@@ -59,6 +69,8 @@ public class cumulativeProgress extends AppCompatActivity {
         list_words = new ArrayList<Student>();
         list_paragraph = new ArrayList<Student>();
         list_story = new ArrayList<Student>();
+
+        assessments = new ArrayList<Assessment>();
 
         students = dataBaseHandler.getAllStudentOfInstructor(instructor_id);
 
@@ -114,6 +126,73 @@ public class cumulativeProgress extends AppCompatActivity {
 
             }
         });
+
+        setMissedWords();
+
+    }
+
+    public void setMissedWords(){
+        Hashtable<String, Integer> my_dict = new Hashtable<String, Integer>();
+        assessments = dataBaseHandler.getAllAssessment();
+
+        String words_wrong ="";
+
+        for (Assessment assessment : assessments){
+             words_wrong = words_wrong + assessment.getWORDS_WRONG() + assessment.getPARAGRAPH_WORDS_WRONG();
+        }
+
+        //Toast.makeText(this, words_wrong, Toast.LENGTH_LONG).show();
+
+        String[] words_list = {""};
+        words_list = words_wrong.split("[,]");
+
+        //Toast.makeText(this, words_list.toString(), Toast.LENGTH_LONG).show();
+
+        for (String word: words_list){
+            word = word.toLowerCase();
+            int count = my_dict.containsKey(word) ? my_dict.get(word) : 0;
+            my_dict.put(word, count +1);
+        }
+
+        //Toast.makeText(this, my_dict.toString(), Toast.LENGTH_LONG).show();
+
+        //my_dict.
+
+
+
+        class ValueComparator implements Comparator<String> {
+            Map<String, Integer> base;
+
+            public ValueComparator(Map<String, Integer> base) {
+                this.base = base;
+            }
+
+            // Note: this comparator imposes orderings that are inconsistent with
+            // equals.
+            public int compare(String a, String b) {
+                if (base.get(a) >= base.get(b)) {
+                    return -1;
+                } else {
+                    return 1;
+                } // returning 0 would merge keys
+            }
+        }
+
+
+        ValueComparator bvc = new ValueComparator(my_dict);
+        TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(bvc);
+        sorted_map.putAll(my_dict);
+        //Toast.makeText(this, sorted_map.toString(), Toast.LENGTH_LONG).show();
+
+        String sorted_words = "";
+
+        int i=0;
+        for (String word: sorted_map.keySet()){
+            if(i < 20) sorted_words = sorted_words + word + ", ";
+            i++;
+        }
+
+        missed_words.setText(sorted_words);
 
     }
 

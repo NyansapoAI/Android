@@ -2,12 +2,19 @@ package com.example.edward.nyansapo;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,8 +23,11 @@ import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class story_assessment extends AppCompatActivity {
     MediaPlayer mediaPlayer;
@@ -40,6 +50,27 @@ public class story_assessment extends AppCompatActivity {
     String story_words_wrong = "";
     int error_count;
     int tries;
+
+
+
+    // media
+    MediaRecorder mediaRecorder;
+    String filename = "/dev/null";
+
+    //audio stuff
+
+    private static double mEMA = 0.0;
+    static final private double EMA_FILTER = 0.6;
+
+    // progress bar
+
+    ProgressBar progressBar;
+
+    /// Control variables or code locks
+    boolean mediaStarted = false;
+    boolean transcriptStarted = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +95,10 @@ public class story_assessment extends AppCompatActivity {
         next_button = findViewById(R.id.next_button);
         story_view = findViewById(R.id.story_view);
 
-
+        // progressbar
+        progressBar = findViewById(R.id.progressBar2);
+        progressBar.setMax(15000);
+        progressBar.setProgress(0);
 
 
         //story = "One day the wind chased the sun away. It told the sun to go to another sky. The sun did not go. The next morning, the wind ran after the sun. The sun fell down and started crying. That is how it began to rain. We clapped for Juma.\\n\\n One day the wind chased the sun away. It told the sun to go to another sky. The sun did not go. The next morning, the wind ran after the sun. The sun fell down and started crying. That is how it began to rain. We clapped for Juma.";
@@ -78,8 +112,8 @@ public class story_assessment extends AppCompatActivity {
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //nextParagraph(v);
-                Toast.makeText(story_assessment.this, "Click on the text to read", Toast.LENGTH_LONG).show();
+                nextParagraph(v);
+                //Toast.makeText(story_assessment.this, "Click on the text to read", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -90,22 +124,55 @@ public class story_assessment extends AppCompatActivity {
             }
         });
 
+
         story_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SpeechAsync speechAsync = new SpeechAsync();
-                speechAsync.execute(v);
-                /*
-                Intent myIntent = new Intent(getBaseContext(), storyQuestions.class);
-                myIntent.putExtra("Assessment", assessment);
-                myIntent.putExtra("instructor_id", instructor_id);
-                myIntent.putExtra("question", "0");
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(story_assessment.this).toBundle());*/
+                recordStudent(v);
             }
         });
 
         // story reading evaluation code
         error_count = 0;
+
+    }
+
+    Drawable drawable;
+
+    public void recordStudent(View v){
+
+        if(!transcriptStarted){
+            drawable = story_view.getBackground();
+            Drawable newDrawable = drawable.getConstantState().newDrawable().mutate();
+            //read_button.setBackgroundColor(Color.BLUE);
+            int lightblue = Color.parseColor("#82b6ff"); //light blue
+            //int lightblue = Color.parseColor("#8B4513");
+
+            int lightbrown = Color.parseColor("#eecab1"); // light brown
+            //int lightbrown = Color.parseColor("#7ab121"); // Green
+            //int lightbrown = Color.parseColor("#FFFF00"); // bright yellow
+
+
+            newDrawable.setColorFilter(new PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY));
+            story_view.setBackground(newDrawable);
+            story_view.setTextColor(lightbrown);
+
+            SpeechAsync speechAsync = new SpeechAsync();
+            speechAsync.execute(v);
+            transcriptStarted = true;
+        }
+
+
+
+        startRecording();
+        ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+        exec.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+                // code to execute repeatedly
+                double num = getAmplitudeEMA();
+                progressBar.setProgress((int) num);
+            }
+        }, 0, 100, TimeUnit.MILLISECONDS);
 
     }
 
@@ -122,6 +189,7 @@ public class story_assessment extends AppCompatActivity {
 
     public void nextParagraph(View v){
         tries = 0;
+        progressBar.setProgress(0);
         if(sentence_count < sentences.length -1){
             //back_button.setEnabled(true);
             sentence_count +=1; // increment sentence count
@@ -134,6 +202,50 @@ public class story_assessment extends AppCompatActivity {
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
     }
+
+
+
+    public void startRecording() {
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        //this.mediaRecorder.setOutputFile(this.file.getAbsolutePath());
+        mediaRecorder.setOutputFile(filename);
+
+        try {
+            mediaRecorder.prepare();
+        } catch (IOException e) {
+            Log.e("Prepare", "prepare() failed");
+        }
+
+        try{
+            mediaRecorder.start();
+            mediaStarted = true;
+        } catch (Exception ex) {
+            //Toast.makeText(PreAssessment.this, "No feedback", Toast.LENGTH_LONG).show();
+            mediaStarted = false;
+        }
+
+        //Toast.makeText(PreAssessment.this, "Started Recording", Toast.LENGTH_SHORT).show();
+    }
+
+    public double soundDb(double ampl){
+        return  20 * Math.log10(getAmplitudeEMA() / ampl);
+    }
+    public double getAmplitude() {
+        if (mediaRecorder != null)
+            return  (mediaRecorder.getMaxAmplitude());
+        else
+            return 0;
+
+    }
+    public double getAmplitudeEMA() {
+        double amp =  getAmplitude();
+        mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
+        return mEMA;
+    }
+
 
 
 
@@ -162,7 +274,7 @@ public class story_assessment extends AppCompatActivity {
             config.setEndpointId(endpoint);
             story_view = findViewById(R.id.story_view);
             expected_txt = story_view.getText().toString();
-            story_view.setEnabled(false);
+            //story_view.setEnabled(false);
         }
 
         @Override
@@ -212,7 +324,19 @@ public class story_assessment extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            story_view.setEnabled(true);
+
+            story_view.setBackground(drawable);
+            story_view.setTextColor(Color.BLACK);
+
+            //story_view.setEnabled(true);
+            if(mediaStarted){
+                mediaRecorder.stop();
+                mediaRecorder.release();
+                progressBar.setProgress(0);
+                mediaStarted = false;
+            }
+            transcriptStarted = false;
+
             if (s.equalsIgnoreCase("canceled")) {
                 Toast.makeText(story_assessment.this, "Internet Connection Failed", Toast.LENGTH_LONG).show();
             } else if (s.equalsIgnoreCase("no match")) {

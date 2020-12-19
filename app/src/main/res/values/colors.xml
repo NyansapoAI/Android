@@ -9,4 +9,8 @@
     <color name="gray">#808080</color>
     <color name="darkgray">#A9A9A9</color>
     <color name="silver">#C0C0C0</color>
+    <color name="lightgreen">#84ff9f</color>
+    <color name="lightblue">#82b6ff</color>
+    <color name="lightyellow">	#edff8f</color>
+    <color name="ligtorange">#ff5994</color>
 </resources>

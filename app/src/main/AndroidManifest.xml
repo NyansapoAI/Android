@@ -14,7 +14,9 @@
         android:roundIcon="@drawable/small_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".QuestionStory"></activity>
+        <activity android:name=".studentSettings"></activity>
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".QuestionStory" />
         <activity android:name=".student_assessments" />
         <activity android:name=".assessment_detail" />
         <activity android:name=".SelectAssessment" />
@@ -28,7 +30,7 @@
         <activity android:name=".selectAssesment" />
         <activity android:name=".student" />
         <activity android:name=".selectSchool" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".index">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

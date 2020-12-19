@@ -73,6 +73,7 @@ public class thankYou extends AppCompatActivity {
         assessment.setTIMESTAMP(new Date(System.currentTimeMillis()).toString());
 
         // first update in cloud and if successful update locally
+        //dataBaseHandler.addAssessment(assessment);
         postAssessment(assessment);
         updateLearning_level(assessment);
         //dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
@@ -83,7 +84,7 @@ public class thankYou extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = "https://nyansapoai-api.azurewebsites.net/student/learning_level";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.PATCH, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
@@ -125,8 +126,8 @@ public class thankYou extends AppCompatActivity {
                 assessment.setCLOUD_ID(getId(response));
                 dataBaseHandler.addAssessment(assessment);
 
-                /*
-                Toast.makeText(thankYou.this,assessment.getLETTERS_WRONG(), Toast.LENGTH_SHORT).show();
+
+                /*Toast.makeText(thankYou.this,assessment.getLETTERS_WRONG(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(thankYou.this,assessment.getLETTERS_CORRECT(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(thankYou.this,assessment.getWORDS_WRONG(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(thankYou.this,assessment.getWORDS_CORRECT(), Toast.LENGTH_SHORT).show();

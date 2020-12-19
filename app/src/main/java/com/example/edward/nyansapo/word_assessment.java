@@ -2,12 +2,19 @@ package com.example.edward.nyansapo;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +28,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class word_assessment extends AppCompatActivity {
     MediaPlayer mediaPlayer;
@@ -46,6 +55,26 @@ public class word_assessment extends AppCompatActivity {
 
 
     String instructor_id;
+
+
+
+    // media
+    MediaRecorder mediaRecorder;
+    String filename = "/dev/null";
+
+    //audio stuff
+
+    private static double mEMA = 0.0;
+    static final private double EMA_FILTER = 0.6;
+
+    // progress bar
+
+    ProgressBar progressBar;
+
+
+    /// Control variables or code locks
+    boolean mediaStarted = false;
+    boolean transcriptStarted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +102,11 @@ public class word_assessment extends AppCompatActivity {
         change_button = findViewById(R.id.change_button);
         assessment_card = findViewById(R.id.assessment_card);
 
+        // progressbar
+        progressBar = findViewById(R.id.progressBar2);
+        progressBar.setMax(15000);
+        progressBar.setProgress(0);
+
         // intialize
         error_count = 0;
         word_count = 0;
@@ -91,7 +125,7 @@ public class word_assessment extends AppCompatActivity {
         change_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeWord1();
+                //changeWord1();
                 //Toast.makeText(word_assessment.this, "Read ")
             }
         });
@@ -104,12 +138,89 @@ public class word_assessment extends AppCompatActivity {
 
     }
 
+    Drawable drawable;
+
     public void recordStudent(View v){
-        SpeechAsync speechAsync = new SpeechAsync();
-        speechAsync.execute(v);
+
+        if(!transcriptStarted){
+            drawable = assessment_card.getBackground();
+            Drawable newDrawable = drawable.getConstantState().newDrawable().mutate();
+            //read_button.setBackgroundColor(Color.BLUE);
+            int lightblue = Color.parseColor("#82b6ff"); //light blue
+            //int lightblue = Color.parseColor("#8B4513");
+
+            int lightbrown = Color.parseColor("#eecab1"); // light brown
+            //int lightbrown = Color.parseColor("#7ab121"); // Green
+            //int lightbrown = Color.parseColor("#FFFF00"); // bright yellow
+
+
+            newDrawable.setColorFilter(new PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY));
+            assessment_card.setBackground(newDrawable);
+            assessment_card.setTextColor(lightbrown);
+
+            SpeechAsync speechAsync = new SpeechAsync();
+            speechAsync.execute(v);
+            transcriptStarted = true;
+        }
+
+
+
+        startRecording();
+        ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+        exec.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+                // code to execute repeatedly
+                double num = getAmplitudeEMA();
+                progressBar.setProgress((int) num);
+            }
+        }, 0, 100, TimeUnit.MILLISECONDS);
     }
 
+
+
+    public void startRecording() {
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        //this.mediaRecorder.setOutputFile(this.file.getAbsolutePath());
+        mediaRecorder.setOutputFile(filename);
+
+        try {
+            mediaRecorder.prepare();
+        } catch (IOException e) {
+            Log.e("Prepare", "prepare() failed");
+        }
+
+        try{
+            mediaRecorder.start();
+            mediaStarted = true;
+        } catch (Exception ex) {
+            //Toast.makeText(PreAssessment.this, "No feedback", Toast.LENGTH_LONG).show();
+            mediaStarted = false;
+        }
+        //Toast.makeText(PreAssessment.this, "Started Recording", Toast.LENGTH_SHORT).show();
+    }
+
+    public double soundDb(double ampl){
+        return  20 * Math.log10(getAmplitudeEMA() / ampl);
+    }
+    public double getAmplitude() {
+        if (mediaRecorder != null)
+            return  (mediaRecorder.getMaxAmplitude());
+        else
+            return 0;
+
+    }
+    public double getAmplitudeEMA() {
+        double amp =  getAmplitude();
+        mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
+        return mEMA;
+    }
+
+
     public void changeWord(){
+        progressBar.setProgress(0);
         if(words_tried > 4){ // if 6 has been tried
             if(error_count < 3){
                 goToThankYou();
@@ -170,8 +281,8 @@ public class word_assessment extends AppCompatActivity {
             config.setEndpointId(endpoint);
             assessment_card = findViewById(R.id.assessment_card);
             expected_txt = assessment_card.getText().toString();
-            assessment_card.setEnabled(false);
-            record_button.setEnabled(false);
+            //assessment_card.setEnabled(false);
+            //record_button.setEnabled(false);
         }
 
         @Override
@@ -221,8 +332,18 @@ public class word_assessment extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            assessment_card.setEnabled(true);
-            record_button.setEnabled(true);
+
+            assessment_card.setBackground(drawable);
+            assessment_card.setTextColor(Color.BLACK);
+
+            if(mediaStarted){
+                mediaRecorder.stop();
+                mediaRecorder.release();
+                progressBar.setProgress(0);
+                mediaStarted = false;
+            }
+            transcriptStarted = false;
+
             if(s.equalsIgnoreCase("canceled")){
                 Toast.makeText(word_assessment.this,"Internet Connection Failed", Toast.LENGTH_LONG).show();
             }else if (s.equalsIgnoreCase("no match")){

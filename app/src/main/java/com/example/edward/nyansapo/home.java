@@ -2,6 +2,7 @@ package com.example.edward.nyansapo;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.icu.text.UnicodeSetSpanner;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -103,13 +104,13 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(home.this, "Under Development", Toast.LENGTH_SHORT).show();
-                /*
+                //Toast.makeText(home.this, "Under Development", Toast.LENGTH_SHORT).show();
+
                 Intent myIntent = new Intent(getBaseContext(), settings.class);
                 myIntent.putExtra("instructor_id", instructor_id);
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(home.this).toBundle());
 
-                 */
+
             }
         });
         students = new ArrayList<Student>();
@@ -154,7 +155,8 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         Intent intent = new Intent(home.this, student_assessments.class);
         intent.putExtra("instructor_id", instructor_id);
         intent.putExtra("student", students.get(position));
-        startActivity(intent);
+        //startActivity(intent);
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
 
@@ -227,6 +229,11 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
 
     public void sync(String instructor_id){
 
+        for (Student student: students) {
+            databasehelper.deleteStudent(student.getCloud_id());
+        }
+
+
         String url = "https://nyansapoai-api.azurewebsites.net/student/ofInstructor";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
@@ -257,11 +264,13 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
                             String lastname = student.getString("lastname");
                             String age = student.getString("age");
                             String notes = student.getString("notes");
+                            String gender = student.getString("gender");
                             String learning_level = student.getString("learning_level");
                             String std_class = student.getString("std_class");
                             String timestamp = student.getString("timestamp");
 
                             //Toast.makeText(home.this, firstname +" "+ lastname+" "+ age+" "+ notes+" "+learning_level+" "+std_class+" "+timestamp, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(home.this, learning_level, Toast.LENGTH_SHORT).show();
                             // create student instance
                             Student std = new Student();
                             std.setInstructor_id(instructor_id);
@@ -270,6 +279,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
                             std.setLastname(lastname);
                             std.setAge(age);
                             std.setNotes(notes);
+                            std.setGender(gender);
                             std.setLearning_level(learning_level);
                             std.setStd_class(std_class);
                             std.setTimestamp(timestamp);

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -14,13 +15,18 @@ public class settings extends AppCompatActivity {
 
     String instructor_id;
 
-    Button home_button, update_button, download_data;
+    Button home_button, update_button, download_data, logout_button;
     TextView firstname, lastname, email,password;
+
+    dataBaseHandler databasehelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        // database
+        databasehelper = new dataBaseHandler(settings.this);
 
 
         // get intent values
@@ -31,6 +37,7 @@ public class settings extends AppCompatActivity {
         home_button = findViewById(R.id.home_button);
         update_button = findViewById(R.id.update_button);
         download_data = findViewById(R.id.download_button);
+        logout_button = findViewById(R.id.logout_button);
 
         firstname = findViewById(R.id.firstname);
         lastname = findViewById(R.id.lastname);
@@ -47,9 +54,47 @@ public class settings extends AppCompatActivity {
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateInfo();
+                //updateInfo();
+                Toast.makeText(settings.this, "Under Development", Toast.LENGTH_LONG).show();
             }
         });
+
+        logout_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databasehelper.deleteInstructor(instructor_id);
+                Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(settings.this).toBundle());
+
+            }
+        });
+
+        download_data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(settings.this, "Under Development", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        setInstructorInfo();
+
+    }
+
+    public void setInstructorInfo(){
+
+        //Get instructor
+        Instructor instructor;
+        instructor =  databasehelper.getInstructorByID(instructor_id);
+        //Instructor ins = databasehelper.getInstructorByEmail("edward@kijenzi.com");
+
+        //Toast.makeText(this, instructor.getCloud_id(), Toast.LENGTH_LONG).show();
+
+        //Toast.makeText(this, ins.getLocal_id(), Toast.LENGTH_LONG).show();
+
+        // set Text to screen
+        email.setText(instructor.getEmail());
+        firstname.setText(instructor.getFirstname());
+        lastname.setText(instructor.getLastname());
 
     }
 

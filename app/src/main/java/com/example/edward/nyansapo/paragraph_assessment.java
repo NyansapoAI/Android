@@ -2,16 +2,24 @@ package com.example.edward.nyansapo;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.microsoft.cognitiveservices.speech.PropertyCollection;
+import com.microsoft.cognitiveservices.speech.PropertyId;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
@@ -24,6 +32,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class paragraph_assessment extends AppCompatActivity {
     MediaPlayer mediaPlayer;
@@ -45,6 +55,25 @@ public class paragraph_assessment extends AppCompatActivity {
 
     // instructor
     String instructor_id;
+
+    // media
+    MediaRecorder mediaRecorder;
+    String filename = "/dev/null";
+
+    //audio stuff
+
+    private static double mEMA = 0.0;
+    static final private double EMA_FILTER = 0.6;
+
+    // progress bar
+
+    ProgressBar progressBar;
+
+
+
+    /// Control variables or code locks
+    boolean mediaStarted = false;
+    boolean transcriptStarted = false;
 
 
     @Override
@@ -81,6 +110,11 @@ public class paragraph_assessment extends AppCompatActivity {
 
         //changeButton.setEnabled(false);
 
+        // progressbar
+        progressBar = findViewById(R.id.progressBar2);
+        progressBar.setMax(15000);
+        progressBar.setProgress(0);
+
         error_count = 0;
         sentence_count = 0;
         tries = 0;
@@ -103,15 +137,50 @@ public class paragraph_assessment extends AppCompatActivity {
             }
         });
     }
+    Drawable drawable;
 
     public void recordStudent(View v){
         //mediaPlayer.release();
-        SpeechAsync speechAsync = new SpeechAsync();
-        speechAsync.execute(v);
+
+
+        if(!transcriptStarted){
+            drawable = paragraphButton.getBackground();
+            Drawable newDrawable = drawable.getConstantState().newDrawable().mutate();
+            //read_button.setBackgroundColor(Color.BLUE);
+            //int lightblue = Color.parseColor("#82b6ff"); light blue
+            int lightblue = Color.parseColor("#8B4513");
+
+            //int lightbrown = Color.parseColor("#eecab1"); // light brown
+            //int lightbrown = Color.parseColor("#7ab121"); // Green
+            int lightbrown = Color.parseColor("#FFFF00"); // bright yellow
+
+
+            newDrawable.setColorFilter(new PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY));
+            paragraphButton.setBackground(newDrawable);
+            paragraphButton.setTextColor(lightbrown);
+
+
+            SpeechAsync speechAsync = new SpeechAsync();
+            speechAsync.execute(v);
+            transcriptStarted = true;
+        }
+
+
+        startRecording();
+        ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+        exec.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+                // code to execute repeatedly
+                double num = getAmplitudeEMA();
+                progressBar.setProgress((int) num);
+
+            }
+        }, 0, 100, TimeUnit.MILLISECONDS);
 
     }
 
     public void changeSentence(){
+        progressBar.setProgress(0);
         //Toast.makeText(this, Integer.toString(error_count) , Toast.LENGTH_LONG).show();
         tries= 0; // everytime a sentence is changed tries go to one
         if(sentence_count < sentences.length -1){
@@ -124,6 +193,47 @@ public class paragraph_assessment extends AppCompatActivity {
                 goToStory();
             }
         }
+    }
+
+
+    public void startRecording() {
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        //this.mediaRecorder.setOutputFile(this.file.getAbsolutePath());
+        mediaRecorder.setOutputFile(filename);
+
+        try {
+            mediaRecorder.prepare();
+        } catch (IOException e) {
+            Log.e("Prepare", "prepare() failed");
+        }
+
+        try{
+            mediaRecorder.start();
+            mediaStarted = true;
+        } catch (Exception ex) {
+            //Toast.makeText(PreAssessment.this, "No feedback", Toast.LENGTH_LONG).show();
+            mediaStarted = false;
+        }
+        //Toast.makeText(PreAssessment.this, "Started Recording", Toast.LENGTH_SHORT).show();
+    }
+
+    public double soundDb(double ampl){
+        return  20 * Math.log10(getAmplitudeEMA() / ampl);
+    }
+    public double getAmplitude() {
+        if (mediaRecorder != null)
+            return  (mediaRecorder.getMaxAmplitude());
+        else
+            return 0;
+
+    }
+    public double getAmplitudeEMA() {
+        double amp =  getAmplitude();
+        mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
+        return mEMA;
     }
 
 
@@ -154,14 +264,15 @@ public class paragraph_assessment extends AppCompatActivity {
             config.setEndpointId(endpoint);
             paragraphButton = findViewById(R.id.paragraph1);
             expected_txt = paragraphButton.getText().toString();
-            paragraphButton.setEnabled(false);
-            record_button.setEnabled(false);
+            //paragraphButton.setEnabled(false);
+            //record_button.setEnabled(false);
         }
 
         @Override
         protected String doInBackground(View... views) {
             try{
                 view = views[0];
+
 
                 reco = new SpeechRecognizer(config);
 
@@ -183,6 +294,12 @@ public class paragraph_assessment extends AppCompatActivity {
                 assert(result != null);
 
                 if(result.getReason() == ResultReason.RecognizedSpeech){
+
+                    PropertyCollection properties = result.getProperties();
+                    String property = properties.getProperty(PropertyId.SpeechServiceResponse_JsonResult);
+                    
+                    //Toast.makeText(paragraph_assessment.this, property, Toast.LENGTH_LONG).show();
+
                     return result.getText();
                 }else if(result.getReason() == ResultReason.NoMatch){
                     return "no match";
@@ -204,11 +321,19 @@ public class paragraph_assessment extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-
             super.onPostExecute(s);
-            //Toast.makeText(view.getContext(), Integer.toString(s.split(" ").length) , Toast.LENGTH_LONG).show();
-            paragraphButton.setEnabled(true);
-            record_button.setEnabled(true);
+
+            paragraphButton.setBackground(drawable);
+            paragraphButton.setTextColor(Color.BLACK);
+
+            if(mediaStarted){
+                mediaRecorder.stop();
+                mediaRecorder.release();
+                progressBar.setProgress(0);
+                mediaStarted = false;
+            }
+            transcriptStarted = false;
+
             if (s.equalsIgnoreCase("canceled")) {
                 Toast.makeText(paragraph_assessment.this, "Internet Connection Failed", Toast.LENGTH_LONG).show();
             } else if (s.equalsIgnoreCase("no match")) {
@@ -217,10 +342,10 @@ public class paragraph_assessment extends AppCompatActivity {
                 //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
                 //s = SpeechRecognition.removeDuplicates(s);
                 String error_txt = SpeechRecognition.compareTranscript(expected_txt, s);
-                if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
+                /*if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
                     //words_correct += ","+expected_txt.trim();
                     paragraph_words_wrong +=  error_txt.trim()+",";
-                }
+                }*/
 
                 //error_count += SpeechRecognition.countError(error_txt);
                 //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
@@ -237,9 +362,13 @@ public class paragraph_assessment extends AppCompatActivity {
                         Toast.makeText(view.getContext(), "Try Again!" , Toast.LENGTH_LONG).show();
                     }else{
                         error_count += SpeechRecognition.countError(error_txt);
-                        /*
-                        Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
-                        Toast.makeText(view.getContext(), SpeechRecognition.removeDuplicates(s), Toast.LENGTH_LONG).show();
+                        if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
+                            //words_correct += ","+expected_txt.trim();
+                            paragraph_words_wrong +=  error_txt.trim()+",";
+                        }
+
+                        //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
+                        /*Toast.makeText(view.getContext(), SpeechRecognition.removeDuplicates(s), Toast.LENGTH_LONG).show();
                         Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
                         Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
                         Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();*/
@@ -248,9 +377,13 @@ public class paragraph_assessment extends AppCompatActivity {
 
                 }else{
                     error_count += SpeechRecognition.countError(error_txt);
-                    /*
-                    Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
-                    Toast.makeText(view.getContext(), SpeechRecognition.removeDuplicates(s), Toast.LENGTH_LONG).show();
+                    if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
+                        //words_correct += ","+expected_txt.trim();
+                        paragraph_words_wrong +=  error_txt.trim()+",";
+                    }
+
+                    //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
+                    /*Toast.makeText(view.getContext(), SpeechRecognition.removeDuplicates(s), Toast.LENGTH_LONG).show();
                     Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
                     Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
                     Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();*/

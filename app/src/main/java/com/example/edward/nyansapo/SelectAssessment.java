@@ -44,8 +44,8 @@ public class SelectAssessment extends AppCompatActivity  implements View.OnClick
         button9.setOnClickListener(this);
         button10.setOnClickListener(this);
 
-        //button6.setEnabled(false);
-        //button7.setEnabled(false);
+        button6.setEnabled(false);
+        button7.setEnabled(false);
         button8.setEnabled(false);
         button9.setEnabled(false);
         button10.setEnabled(false);
@@ -57,7 +57,7 @@ public class SelectAssessment extends AppCompatActivity  implements View.OnClick
             case R.id.assessment3_button:{
                 Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
                 myIntent.putExtra("ASSESSMENT_KEY","3");
-                myIntent.putExtra("student_id",student.getLocal_id());
+                myIntent.putExtra("student_id",student.getCloud_id());
                 myIntent.putExtra("instructor_id", instructor_id);
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 break;
@@ -65,7 +65,7 @@ public class SelectAssessment extends AppCompatActivity  implements View.OnClick
             case R.id.assessment4_button:{
                 Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
                 myIntent.putExtra("ASSESSMENT_KEY","4");
-                myIntent.putExtra("student_id",student.getLocal_id());
+                myIntent.putExtra("student_id",student.getCloud_id());
                 myIntent.putExtra("instructor_id", instructor_id);
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 break;
@@ -73,7 +73,7 @@ public class SelectAssessment extends AppCompatActivity  implements View.OnClick
             case R.id.assessment5_button:{
                 Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
                 myIntent.putExtra("ASSESSMENT_KEY","5");
-                myIntent.putExtra("student_id",student.getLocal_id());
+                myIntent.putExtra("student_id",student.getCloud_id());
                 myIntent.putExtra("instructor_id", instructor_id);
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 break;
@@ -81,7 +81,7 @@ public class SelectAssessment extends AppCompatActivity  implements View.OnClick
             case R.id.assessment6_button:{
                 Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
                 myIntent.putExtra("ASSESSMENT_KEY","6");
-                myIntent.putExtra("student_id",student.getLocal_id());
+                myIntent.putExtra("student_id",student.getCloud_id());
                 myIntent.putExtra("instructor_id", instructor_id);
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 break;
@@ -89,7 +89,7 @@ public class SelectAssessment extends AppCompatActivity  implements View.OnClick
             case R.id.assessment7_button:{
                 Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
                 myIntent.putExtra("ASSESSMENT_KEY","7");
-                myIntent.putExtra("student_id",student.getLocal_id());
+                myIntent.putExtra("student_id",student.getCloud_id());
                 myIntent.putExtra("instructor_id", instructor_id);
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 break;
@@ -97,21 +97,21 @@ public class SelectAssessment extends AppCompatActivity  implements View.OnClick
             case R.id.assessment8_button:{
                 Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
                 myIntent.putExtra("ASSESSMENT_KEY","8");
-                myIntent.putExtra("student_id",student.getLocal_id());
+                myIntent.putExtra("student_id",student.getCloud_id());
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 break;
             }
             case R.id.assessment9_button:{
                 Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
                 myIntent.putExtra("ASSESSMENT_KEY","9");
-                myIntent.putExtra("student_id",student.getLocal_id());
+                myIntent.putExtra("student_id",student.getCloud_id());
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 break;
             }
             case R.id.assessment10_button:{
                 Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
                 myIntent.putExtra("ASSESSMENT_KEY","10");
-                myIntent.putExtra("student_id",student.getLocal_id());
+                myIntent.putExtra("student_id",student.getCloud_id());
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 break;
             }

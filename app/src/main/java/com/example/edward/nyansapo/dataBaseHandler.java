@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.lang.annotation.Target;
 import java.text.ParseException;
@@ -68,6 +69,13 @@ public class dataBaseHandler extends SQLiteOpenHelper {
     public static final String GROUP_TABLE = "student_group";
     public static final String NAME = "name";
     public static final String STUDENTS_ID = "students_id";
+
+    // cache user name and password
+    public static final String USER_TABLE = "user_table";
+    public static final String USEREMAIL = "useremail";
+    public static final String USER_CLOUD_ID = "user_cloud_id";
+    public static final String USERTOKEN = "usertoken";
+    public static final String USERACTIVE = "useractive";
 
     public dataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -138,6 +146,14 @@ public class dataBaseHandler extends SQLiteOpenHelper {
                 STUDENTS_ID + "TEXT)";
 
 
+        // create user table
+        String userTable = "create table " + USER_TABLE + " ("+
+                USEREMAIL + " TEXT," +
+                USER_CLOUD_ID + " TEXT," +
+                USERTOKEN + " TEXT,"+
+                USERACTIVE + " TEXT)";
+
+
 
          sqLiteDatabase.execSQL(createTable);
          sqLiteDatabase.execSQL(instructorTable);
@@ -145,6 +161,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
          sqLiteDatabase.execSQL(assessmentTable);
          sqLiteDatabase.execSQL(attendanceTable);
          sqLiteDatabase.execSQL(groupTable);
+         sqLiteDatabase.execSQL(userTable);
 
     }
 
@@ -162,6 +179,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ ASSESSMENT_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ ATTENDANCE_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ GROUP_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ USER_TABLE);
         onCreate(sqLiteDatabase);
     }
 
@@ -190,6 +208,98 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         return arrayList;
 
     }
+
+    public String addUser(String email, String user_cloud_id, String token, String active){
+        //get WriteAble Database
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        // create contentValues
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(USEREMAIL,email);
+        contentValues.put(USERTOKEN,token);
+        //contentValues.put(USER_CLOUD_ID,user_cloud_id);
+        contentValues.put(USERACTIVE,active);
+
+        //Add Values into Database
+        sqLiteDatabase.insert(USER_TABLE, null,contentValues);
+
+        try{
+            long r = sqLiteDatabase.insert(USER_TABLE, null,contentValues);
+            return Long.toString(r);
+            //return true;
+        }catch (Error error){
+        }
+
+        return null;
+    }
+
+
+    public boolean deleteUser(){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String ass_id = "1";
+        sqLiteDatabase.execSQL("DELETE FROM "+USER_TABLE +" WHERE "+ USERACTIVE + " = '"+ ass_id+ "'");
+        return true;
+    }
+
+    public boolean updateUserToken( String new_token){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String active = "1";
+        // create contentValues
+        //ContentValues contentValues = new ContentValues();
+        //contentValues.put(LEARNING_LEVEL, new_level);
+        //sqLiteDatabase.update(STUDENT_TABLE, contentValues, STUDENT_ID + " ? ", new String[]{ std_id });
+        sqLiteDatabase.execSQL("UPDATE "+USER_TABLE+" SET "+ USERTOKEN +" = '"+ new_token + "' WHERE "+ USERACTIVE + " = '"+ active+ "'");
+        //db.execSQL("UPDATE DB_TABLE SET YOUR_COLUMN='newValue' WHERE id=6 ");
+        return true;
+
+    }
+
+    public String getUserToken() {
+        String toString = "1";
+
+        // Get Readable Database
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        try  {
+            /* retrieve the data */
+            cursor = sqLiteDatabase.rawQuery("select * from "+ USER_TABLE +" where "+ USERACTIVE + "='" + toString +"'", null); // get instructor by email
+        } catch (SQLException e) {
+            /* handle the exception properly */
+            Log.i("MyActivity",e.toString());
+        }
+        //cursor = sqLiteDatabase.rawQuery("select * from "+ INSTRUCTOR_TABLE +" where "+ EMAIL + "='" + toString +"'", null); // get instructor by email
+        if(cursor == null  || cursor.getCount() == 0){
+            return null;
+        }
+        cursor.moveToFirst();
+        return cursor.getString(cursor.getColumnIndex(USERTOKEN));
+
+    }
+
+    public String getUserID() {
+        String toString = "1";
+        String email = "edward@kijenzi.com";
+
+        // Get Readable Database
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        try  {
+            /* retrieve the data */
+            //cursor = sqLiteDatabase.rawQuery("select * from "+ USER_TABLE +" where "+ USEREMAIL + "='" + email +"'", null); // get instructor by email
+            cursor =  sqLiteDatabase.rawQuery("select * from "+ USER_TABLE , null);
+        } catch (SQLException e) {
+            /* handle the exception properly */
+            Log.i("MyActivity",e.toString());
+        }
+        if(cursor == null || cursor.getCount() == 0){
+            return null;
+        }
+        cursor.moveToFirst();
+        return cursor.getString(cursor.getColumnIndex(USER_CLOUD_ID));
+
+    }
+
 
     public String addStudent(Student student){
         //get WriteAble Database
@@ -220,7 +330,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
 
     public boolean deleteStudent(String std_id){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        sqLiteDatabase.execSQL("DELETE FROM "+STUDENT_TABLE +" WHERE "+ LOCAL_ID + " = '"+ std_id+ "'");
+        sqLiteDatabase.execSQL("DELETE FROM "+STUDENT_TABLE +" WHERE "+ CLOUD_ID + " = '"+ std_id+ "'");
         return true;
     }
 
@@ -236,7 +346,24 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         //ContentValues contentValues = new ContentValues();
         //contentValues.put(LEARNING_LEVEL, new_level);
         //sqLiteDatabase.update(STUDENT_TABLE, contentValues, STUDENT_ID + " ? ", new String[]{ std_id });
-        sqLiteDatabase.execSQL("UPDATE "+STUDENT_TABLE+" SET "+ LEARNING_LEVEL +" = '"+ new_level + "' WHERE "+ LOCAL_ID + " = '"+ std_id+ "'");
+        sqLiteDatabase.execSQL("UPDATE "+STUDENT_TABLE+" SET "+ LEARNING_LEVEL +" = '"+ new_level + "' WHERE "+ CLOUD_ID + " = '"+ std_id+ "'");
+        //db.execSQL("UPDATE DB_TABLE SET YOUR_COLUMN='newValue' WHERE id=6 ");
+        return true;
+
+    }
+
+    public boolean updateStudent(String std_id, String firstname, String lastname, String age, String gender, String notes, String std_class){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        // create contentValues
+        //ContentValues contentValues = new ContentValues();
+        //contentValues.put(LEARNING_LEVEL, new_level);
+        //sqLiteDatabase.update(STUDENT_TABLE, contentValues, STUDENT_ID + " ? ", new String[]{ std_id });
+        sqLiteDatabase.execSQL("UPDATE "+STUDENT_TABLE+" SET "+ FIRSTNAME +" = '"+ firstname + "' WHERE "+ CLOUD_ID + " = '"+ std_id+ "'");
+        sqLiteDatabase.execSQL("UPDATE "+STUDENT_TABLE+" SET "+ LASTNAME +" = '"+ lastname + "' WHERE "+ CLOUD_ID + " = '"+ std_id+ "'");
+        sqLiteDatabase.execSQL("UPDATE "+STUDENT_TABLE+" SET "+ AGE +" = '"+ age + "' WHERE "+ CLOUD_ID + " = '"+ std_id+ "'");
+        sqLiteDatabase.execSQL("UPDATE "+STUDENT_TABLE+" SET "+ GENDER +" = '"+ gender + "' WHERE "+ CLOUD_ID + " = '"+ std_id+ "'");
+        sqLiteDatabase.execSQL("UPDATE "+STUDENT_TABLE+" SET "+ NOTES +" = '"+ notes + "' WHERE "+ CLOUD_ID + " = '"+ std_id+ "'");
+        sqLiteDatabase.execSQL("UPDATE "+STUDENT_TABLE+" SET "+ STD_CLASS +" = '"+ std_class + "' WHERE "+ CLOUD_ID + " = '"+ std_id+ "'");
         //db.execSQL("UPDATE DB_TABLE SET YOUR_COLUMN='newValue' WHERE id=6 ");
         return true;
 
@@ -326,6 +453,36 @@ public class dataBaseHandler extends SQLiteOpenHelper {
 
     }
 
+    public Student getStudent(String cloud_id){
+
+        int len = 0;
+        Student student = null;
+
+        // Get Readable Database
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        ArrayList<Student> arrayList = new ArrayList<Student>();
+        //Create Cursor to select All values
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from "+ STUDENT_TABLE +" WHERE " + CLOUD_ID + " = '"+cloud_id+"'"+ " ORDER BY "+ TIMESTAMP + " DESC ", null);
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            // create student object from entry
+            student = new Student();
+            student.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME)));
+            student.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME)));
+            student.setLearning_level(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
+            student.setGender(cursor.getString(cursor.getColumnIndex(GENDER)));
+            student.setNotes(cursor.getString(cursor.getColumnIndex(NOTES)));
+            student.setAge(cursor.getString(cursor.getColumnIndex(AGE)));
+            student.setTimestamp(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
+            student.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
+            student.setStd_class(cursor.getString(cursor.getColumnIndex(STD_CLASS)));
+            arrayList.add(student);
+            cursor.moveToNext();
+        }
+        len = arrayList.size();
+        return student;
+
+    }
     public ArrayList getAllStudentOfInstructor(String instructor_id){
         // Get Readable Database
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
@@ -345,6 +502,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             student.setTimestamp(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
             student.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
             student.setStd_class(cursor.getString(cursor.getColumnIndex(STD_CLASS)));
+            student.setCloud_id(cursor.getString(cursor.getColumnIndex(CLOUD_ID)));
             arrayList.add(student);
             cursor.moveToNext();
         }
@@ -371,6 +529,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             assessment.setSTORY_ANS_Q1(cursor.getString(cursor.getColumnIndex(STORY_ANS_Q1)));
             assessment.setSTORY_ANS_Q2(cursor.getString(cursor.getColumnIndex(STORY_ANS_Q2)));
             assessment.setLEARNING_LEVEL(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
+            assessment.setPARAGRAPH_WORDS_WRONG(cursor.getString(cursor.getColumnIndex(PARAGRAPH_WORDS_WRONG)));
             assessment.setTIMESTAMP(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
             arrayList.add(assessment);
             cursor.moveToNext();
@@ -422,6 +581,70 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         //Add Values into Database
         sqLiteDatabase.insert(INSTRUCTOR_TABLE, null,contentValues);
         return true;
+    }
+
+    public Instructor getInstructor(){
+
+        Instructor instructor = new Instructor();
+
+        // Get Readable Database
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from "+ INSTRUCTOR_TABLE , null); // get instructor by id
+
+        if(cursor.getCount() == 0){
+            return null;
+        }
+        cursor.moveToFirst();
+        instructor.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME))); // doesn't need
+        //instructor.setLastname(Integer.toString(cursor.getCount()));
+        instructor.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME))); // doesn't need
+        instructor.setPassword(cursor.getString(cursor.getColumnIndex(PASSWORD)));
+        instructor.setCloud_id(cursor.getString(cursor.getColumnIndex(CLOUD_ID)));
+        instructor.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
+        instructor.setEmail(cursor.getString(cursor.getColumnIndex(EMAIL)));
+
+        //Toast.makeText(this, cursor.getString(cursor.getColumnIndex(LASTNAME)), Toast.LENGTH_LONG).show();
+
+
+        return instructor;
+
+    }
+
+    public boolean deleteInstructor(String instructor_id){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.execSQL("DELETE FROM "+INSTRUCTOR_TABLE +" WHERE "+ CLOUD_ID + " = '"+ instructor_id+ "'");
+        return true;
+    }
+    public Instructor getInstructorByID(String instructor_id){
+
+        Instructor instructor = new Instructor();
+
+        // Get Readable Database
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        try  {
+            /* retrieve the data */
+            cursor = sqLiteDatabase.rawQuery("select * from "+ INSTRUCTOR_TABLE +" where "+ CLOUD_ID + "='" + instructor_id +"'", null); // get instructor by id
+        } catch (SQLException e) {
+            /* handle the exception properly */
+            Log.i("MyActivity",e.toString());
+        }
+        //cursor = sqLiteDatabase.rawQuery("select * from "+ INSTRUCTOR_TABLE +" where "+ EMAIL + "='" + toString +"'", null); // get instructor by email
+        if(cursor.getCount() == 0){
+            return null;
+        }
+        cursor.moveToFirst();
+        instructor.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME))); // doesn't need
+        //instructor.setFirstname(Integer.toString(cursor.getCount()));
+        instructor.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME))); // doesn't need
+        instructor.setPassword(cursor.getString(cursor.getColumnIndex(PASSWORD)));
+        instructor.setCloud_id(cursor.getString(cursor.getColumnIndex(CLOUD_ID)));
+        instructor.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
+        instructor.setEmail(cursor.getString(cursor.getColumnIndex(EMAIL)));
+
+        return instructor;
+
     }
 
     public Instructor getInstructorByEmail(String toString) {

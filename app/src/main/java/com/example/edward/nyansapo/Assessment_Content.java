@@ -2,8 +2,8 @@ package com.example.edward.nyansapo;
 
 public class Assessment_Content {
   // Assessment 3
-  public static String[] l3  =  {"h", "u", "t", "x", "o", "m", "j", "b", "s", "l"};
-  public static String[] w3 = {"day", "hand", "sun", "chair", "foot", "year", "coat", "tea", "rat", "ball"};
+  public static String[] l3  =  {"i", "j", "k", "m", "x", "r", "b", "c", "d", "x"};
+  public static String[] w3 = {"book", "coat", "sun", "desk", "fish", "ball", "coat", "tea", "rat", "house"};
   public static String[] p3 = {"Nakuru is a big town. It has a busy market. There are many shops. Many people live there.", "Our home is near a forest. The forest has many trees. Some trees are tall. They give us shade."};
   public static String s3 = "Janet had a birthday party. The party was at her home. I went there with my brother. There were other boys and girls. Janet came out to meet us. Her mother was happy with us. She told all of us to sit down. Some girls in red hats gave us food. There was rice beans meat and bananas. They also gave us sweets and juice. The birthday cake was white and pink. It was very sweet to eat. We sang and danced for two hours. We enjoyed the party very much.";
   public static String[] q3 = {"Whose birthday party was it?", "How can we tell that the people were happy?"};
@@ -11,15 +11,15 @@ public class Assessment_Content {
 
 
   // Assessment 4
-  public static String[] l4  = {"g", "z", "t", "a", "u", "d", "r", "h", "w", "y"};
-  public static String[] w4 = {"map", "head", "bird", "pet", "wall", "jug", "finger", "seed", "soap", "eye"};
+  public static String[] l4  = {"d", "x", "w", "r", "i", "j", "m", "n", "w", "r"};
+  public static String[] w4 = {"soap", "mango", "star", "face", "body", "puppy", "finger", "seed", "soap", "eye"};
   public static String[] p4 = {"We live in a hut. It is very big. It has four windows. Our mother built it last year.", "This is my elder sister. She is a nurse. She works in the big hospital. She treats sick people."};
   public static String s4 = "Our school opened on fifth May. Many children came to school early. They were all happy to be back. Peter and Jim were also there. The two boys are my good friends. Peter told us he visited his aunt. She bought him a black pair of shoes. Jim wanted to wear the new shoes.  Peter told him that his feet were dirty. Jim got angry and shouted at Peter.  Some children came to look at them. They made a lot of noise. The teacher came from the office. She told Peter and Jim not to fight.";
   public static String[] q4 = {"When did our school open?", "What did the teacher do when she came from the office?"};
 
 
-    public static String[] l5  = {"a", "y", "k", "m", "t", "g", "q", "l", "b", "u"};
-    public static String[] w5 = {"tree", "hand", "cat", "dog", "room", "desk", "pot", "hen", "fish", "mango"};
+    public static String[] l5  = {"r", "b", "c", "j", "m", "i", "k", "j", "x", "u"};
+    public static String[] w5 = {"bag", "mango", "dad", "crops", "bush", "room", "pot", "hen", "fish", "hand"};
     public static String[] p5 = {"Our flag has four colours. We learn about them in school. They tell us about our country. We love our flag very much", "Kibet lives in Molo. He is a farmer. He grows maize and beans. He also has many cows"};
     public static String s5 = "A long time ago there was a cow. She lived in a big forest. The forest had many wild animals. Some animals used to kill and eat others. One day the cow gave birth to a calf. She loved it very much. She did not want the animals to eat it. One morning the cow went to the lion. She wanted him to help her. The lion roared at them. The cow and her calf ran away. They found a man outside his house. The man loved the animals. He made a cow shed for them. The cow never went back to the forest.";
     public static String[] q5 = {"What did the forest have?", "Why did the cow and her calf run away?"};

@@ -4,6 +4,11 @@ import android.Manifest;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
@@ -14,24 +19,32 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Range;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ekn.gruzer.gaugelibrary.HalfGauge;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HandshakeCompletedListener;
 
 
 public class PreAssessment extends AppCompatActivity implements  View.OnClickListener {
@@ -40,6 +53,7 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
     Button next_button;
     Button record_button;
     Button read_button;
+
 
 
     // Audio Recording Settings
@@ -55,7 +69,7 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
 
     // Permission
     final int  REQUEST_PERSMISSION_CODE = 1000;
-    String filename = "";
+    String filename = "/dev/null";
 
 
     // Asyn stuff
@@ -72,6 +86,21 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
     Animation arrow_animation_fadeOut;
 
     String instructor_id;
+
+
+    //audio stuff
+
+    private static double mEMA = 0.0;
+    static final private double EMA_FILTER = 0.6;
+
+    // progress bar
+
+    ProgressBar progressBar;
+
+
+    /// Control variables or code locks
+    boolean mediaStarted = false;
+    boolean transcriptStarted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +125,10 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
         next_button = findViewById(R.id.next_button);
         record_button = findViewById(R.id.record_button);
         read_button = findViewById(R.id.read_button);
+
+
+        // progressbar
+        progressBar = findViewById(R.id.progressBar2);
 
         // set onclick listeners
         next_button.setOnClickListener(this);
@@ -154,8 +187,16 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
         arrow_animation_fadeOut = AnimationUtils.loadAnimation(this, R.anim.fadeout);
 
 
+        //progressBar
+
+        progressBar.setMax(15000);
+        progressBar.setProgress(0);
+
+
+
 
     }
+
 
     public void arrowBlink(){
         arrow_img.startAnimation(arrow_animation_blink);
@@ -173,36 +214,96 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
 
     public void recordStudent(View v){
 
-        Intent myIntent = new Intent(getBaseContext(), paragraph.class);
+       Intent myIntent = new Intent(getBaseContext(), paragraph.class);
         Assessment assessment = new Assessment(); // create new assessment object
         assessment.setASSESSMENT_KEY(ASSESSMENT_KEY); // assign proper key
-        assessment.setSTUDENT_ID(student_id);
+        assessment.setSTUDENT_ID(student_id); // needs to change to cloud id
         myIntent.putExtra("Assessment", assessment); //sent next activity
         myIntent.putExtra("instructor_id", instructor_id);
         startActivity(myIntent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
 
+
+
     }
 
     String txt;
+
+    Drawable drawable;
+
+    public void Func(View v){
+
+        startRecording();
+        ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+        exec.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+                // code to execute repeatedly
+                double num = getAmplitudeEMA();
+                progressBar.setProgress((int) num);
+            }
+        }, 0, 100, TimeUnit.MILLISECONDS);
+
+        if(!transcriptStarted){
+            drawable = read_button.getBackground();
+            Drawable newDrawable = drawable.getConstantState().newDrawable().mutate();
+            //read_button.setBackgroundColor(Color.BLUE);
+            int lightblue = Color.parseColor("#82b6ff"); //light blue
+            //int lightblue = Color.parseColor("#8B4513");
+
+            //int lightbrown = Color.parseColor("#eecab1"); // light brown
+            //int lightbrown = Color.parseColor("#7ab121"); // Green
+            int lightbrown = Color.parseColor("#FFFF00"); // bright yellow
+
+
+            newDrawable.setColorFilter(new PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY));
+            read_button.setBackground(newDrawable);
+            read_button.setTextColor(lightbrown);
+
+            SpeechAsync speechAsync = new SpeechAsync();
+            speechAsync.execute(v);
+            transcriptStarted = true;
+        }
+
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.read_button:
                 //arrow_img.setVisibility(View.INVISIBLE);
-                SpeechAsync speechAsync = new SpeechAsync();
-                speechAsync.execute(v);
+
+
+
+
+                Func(v);
+
+
+
+                //startRecording();
+                //RecordAsync recordAsync = new RecordAsync();
+                //recordAsync.execute(v);
+
+
 
                 break;
             case R.id.record_button:
+                Func(v);
+                /*
                 SpeechAsync speechAsync1 = new SpeechAsync();
                 speechAsync1.execute(v);
-
+                startRecording();
+                ScheduledThreadPoolExecutor exec1 = new ScheduledThreadPoolExecutor(1);
+                exec1.scheduleAtFixedRate(new Runnable() {
+                    public void run() {
+                        // code to execute repeatedly
+                        double num = getAmplitudeEMA();
+                        progressBar.setProgress((int) num);
+                    }
+                }, 0, 100, TimeUnit.MILLISECONDS);
+                */
                 break;
             case R.id.next_button: // go to the assessment
             {
-                //String txt = SpeechRecognition.convertSpeech1(filename);
-                //Toast.makeText(getApplicationContext(), txt , Toast.LENGTH_LONG).show();
+
                 Intent myIntent = new Intent(getBaseContext(), paragraph.class);
                 Assessment assessment = new Assessment(); // create new assessment object
                 assessment.setASSESSMENT_KEY(ASSESSMENT_KEY); // assign proper key
@@ -210,6 +311,10 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
                 myIntent.putExtra("Assessment", assessment); //sent next activity
                 myIntent.putExtra("instructor_id", instructor_id);
                 startActivity(myIntent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+
+
+                //Toast.makeText(PreAssessment.this, Double.toString(num), Toast.LENGTH_SHORT).show();
+
             }
                 break;
             default:
@@ -218,12 +323,43 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
     }
 
 
-    private void setupMediaRecorder() {
+    public void startRecording() {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        //this.mediaRecorder.setOutputFile(this.file.getAbsolutePath());
         mediaRecorder.setOutputFile(filename);
+
+        try {
+            mediaRecorder.prepare();
+        } catch (IOException e) {
+            Log.e("Prepare", "prepare() failed");
+        }
+        try{
+            mediaRecorder.start();
+            mediaStarted = true;
+        } catch (Exception ex) {
+            //Toast.makeText(PreAssessment.this, "No feedback", Toast.LENGTH_LONG).show();
+            mediaStarted = false;
+        }
+        //Toast.makeText(PreAssessment.this, "Started Recording", Toast.LENGTH_SHORT).show();
+    }
+
+    public double soundDb(double ampl){
+        return  20 * Math.log10(getAmplitudeEMA() / ampl);
+    }
+    public double getAmplitude() {
+        if (mediaRecorder != null)
+            return  (mediaRecorder.getMaxAmplitude());
+        else
+            return 0;
+
+    }
+    public double getAmplitudeEMA() {
+        double amp =  getAmplitude();
+        mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
+        return mEMA;
     }
 
     private void requestPermission() {
@@ -276,8 +412,8 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
 
         @Override
         protected void onPreExecute() {
-            read_button.setEnabled(false);
-            record_button.setEnabled(false);
+            //read_button.setEnabled(false);
+            //record_button.setEnabled(false);
             super.onPreExecute();
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
             config.setEndpointId(endpoint);
@@ -295,8 +431,7 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
                 Future<SpeechRecognitionResult> task = reco.recognizeOnceAsync();
                 assert(task != null);
 
-                // Note: this will block the UI thread, so eventually, you want to
-                //        register for the event (see full samples)
+
                 try {
                     result = task.get();
                 } catch (ExecutionException e) {
@@ -329,8 +464,18 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
 
         @Override
         protected void onPostExecute(String s) {
-            read_button.setEnabled(true);
-            record_button.setEnabled(true);
+            read_button.setBackground(drawable);
+            read_button.setTextColor(Color.BLACK);
+            if(mediaStarted){
+                mediaRecorder.stop();
+                mediaRecorder.release();
+                progressBar.setProgress(0);
+                mediaStarted = false;
+            }
+            transcriptStarted = false;
+
+            //read_button.setEnabled(true);
+            //record_button.setEnabled(true);
             super.onPostExecute(s);
             if(s.equalsIgnoreCase("canceled")){
                 Toast.makeText(PreAssessment.this,"Internet Connection Failed", Toast.LENGTH_LONG).show();
@@ -346,5 +491,6 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
 
             reco.close();
         }
+
     }
 }

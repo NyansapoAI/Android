@@ -61,7 +61,7 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
             DataBaseHandler = new dataBaseHandler(this);
             assessmentList = new ArrayList<Assessment>();
             //assessmentList = DataBaseHandler.getAllAssessment();
-            assessmentList = DataBaseHandler.getAllStudentAssessment(student.getLocal_id());
+            assessmentList = DataBaseHandler.getAllStudentAssessment(student.getCloud_id());
             //Toast.makeText(this,Integer.toString(assessmentList.size()), Toast.LENGTH_LONG ).show();
 
             //Assessment assessment =  assessmentList.get(0);

@@ -12,7 +12,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class student_assessments extends AppCompatActivity implements AssessmentCustomViewAdapter.OnAssessmentListener {
 
@@ -60,7 +69,7 @@ public class student_assessments extends AppCompatActivity implements Assessment
             public void onClick(View v) {
                 Intent intent = new Intent(student_assessments.this, studentDetails.class);
                 intent.putExtra("instructor_id", instructor_id);
-                intent.putExtra("student",student);;
+                intent.putExtra("student",student);
                 startActivity(intent);
             }
         });
@@ -77,9 +86,11 @@ public class student_assessments extends AppCompatActivity implements Assessment
         delete_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                databaseHandler.deleteStudent(student.getLocal_id());
-                Intent myIntent = new Intent(getBaseContext(), home.class);
+                //databaseHandler.deleteStudent(student.getLocal_id());
+                //deleteStudent(); // do on another thread later
+                Intent myIntent = new Intent(getBaseContext(), studentSettings.class);
                 myIntent.putExtra("instructor_id", instructor_id); // its id for now
+                myIntent.putExtra("student",student);
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(student_assessments.this).toBundle());
                 //Toast.makeText(student_assessments.this, "Deleted",Toast.LENGTH_SHORT).show();
             }
@@ -105,7 +116,12 @@ public class student_assessments extends AppCompatActivity implements Assessment
     }
 
     private void getAssessments() {
-        assessments =databaseHandler.getAllStudentAssessment(student.getLocal_id());
+        assessments =databaseHandler.getAllStudentAssessment(student.getCloud_id());
+        //Toast.makeText(this, student.getLocal_id(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, student.getCloud_id(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, student.toString(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, Integer.toString(assessments.size()), Toast.LENGTH_LONG).show();
+
     }
 
     private void addAssessment(View v) {
@@ -126,5 +142,40 @@ public class student_assessments extends AppCompatActivity implements Assessment
         intent.putExtra("student", student);
         intent.putExtra("assessment", assessments.get(position));
         startActivity(intent);
+    }
+
+    public void deleteStudent(){
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String url = "https://nyansapoai-api.azurewebsites.net/student/";
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
+                Toast.makeText(student_assessments.this, "Student Deleted",Toast.LENGTH_LONG).show();
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("student_id", student.getCloud_id());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+
     }
 }

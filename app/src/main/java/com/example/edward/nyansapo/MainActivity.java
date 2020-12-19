@@ -39,8 +39,8 @@ import static android.Manifest.permission.RECORD_AUDIO;
 public class MainActivity extends AppCompatActivity  {
 
     // declare view
-    EditText email;
-    EditText password;
+    EditText user_email;
+    EditText user_password;
 
     // declare database connection
     dataBaseHandler databasehelper;
@@ -63,11 +63,14 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        email = findViewById(R.id.email);
-        password = findViewById(R.id.password);
+        user_email = findViewById(R.id.email);
+        user_password = findViewById(R.id.password);
 
         // Initialize DatabaseHelper
         databasehelper = new dataBaseHandler(MainActivity.this); // might need to try catch
+
+        //checkUser();
+        //setContentView(R.layout.activity_main);
 
         int requestCode = 5; // unique code for the permission request
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{RECORD_AUDIO, INTERNET}, requestCode);
@@ -97,9 +100,11 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
+
     public void startSelector(View v){
 
-        login(email.getText().toString(), password.getText().toString());
+        login(user_email.getText().toString(), user_password.getText().toString());
+        //login("edward@kijenzi.com", "nyansapo");
         rotating_icon.setVisibility(View.VISIBLE);
         rotating_icon.startAnimation(loginAnimation);
         //email.setEnabled(false);
@@ -107,35 +112,6 @@ public class MainActivity extends AppCompatActivity  {
         signin.setEnabled(false);
         signup.setEnabled(false);
 
-        // need to check inputs and validate
-        /*
-
-        if(email.getText().toString() != null ){
-            instructor = databasehelper.getInstructorByEmail(email.getText().toString());
-
-        }else{
-            //Toast.makeText(getApplicationContext(), "Wrong Email or Password", Toast.LENGTH_SHORT).show();
-        }
-
-
-        // If password is correct login
-        if(instructor == null){
-            Toast.makeText(getApplicationContext(), "Wrong Email or Password", Toast.LENGTH_SHORT).show();
-        } else if(instructor.getPassword().compareTo(password.getText().toString()) == 0) {
-            Intent myIntent = new Intent(getBaseContext(), home.class);
-            //myIntent.putExtra("instructor_id", instructor.getCloud_id());
-            myIntent.putExtra("instructor_id", instructor.getCloud_id());
-            //Toast.makeText(getApplicationContext(), instructor.getCloud_id(), Toast.LENGTH_SHORT).show();
-            //Toast.makeText(getApplicationContext(), instructor.getLocal_id(), Toast.LENGTH_SHORT).show();
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-        }else{
-            String TAG = "MyActivity";
-            Log.i(TAG, "instructor.passoword: " + instructor.getPassword());
-            Log.i(TAG, "editText.password: " + password.getText().toString());
-            Log.i(TAG, "Logic " + (instructor.getPassword() == password.getText().toString()));
-            Toast.makeText(getApplicationContext(), "Wrong Email or Password", Toast.LENGTH_SHORT).show();
-        }
-        */
     }
 
 
@@ -157,6 +133,24 @@ public class MainActivity extends AppCompatActivity  {
                 //Toast.makeText(MainActivity.this, getToken(response), Toast.LENGTH_LONG).show();
                 Token = getToken(response);
 
+                String v =   databasehelper.addUser(email,Token,Token,"1"); // Cache User
+
+                // save instructor in local database
+                Instructor instructor = new Instructor();
+                instructor.setCloud_id(Token);
+                instructor.setEmail(email);
+                instructor.setFirstname("");
+                instructor.setLastname("");
+                databasehelper.addTeacher(instructor);
+                
+
+                /*if(v = true){
+                    Toast.makeText(MainActivity.this, "User is cached", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, databasehelper.getUserToken(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, databasehelper.getUserID(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, databasehelper.(), Toast.LENGTH_SHORT).show();
+                }*/
+
                 Intent myIntent = new Intent(getBaseContext(), home.class);
                 myIntent.putExtra("instructor_id", Token); // its id for now
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
@@ -172,7 +166,7 @@ public class MainActivity extends AppCompatActivity  {
                 String responseBody = null;
                 try {
                     responseBody = new String(error.networkResponse.data, "utf-8");
-                } catch (UnsupportedEncodingException e) {
+                } catch (Exception e) {  //UnsupportedEncoding
                     e.printStackTrace();
                 }
                 JSONObject data = null;
