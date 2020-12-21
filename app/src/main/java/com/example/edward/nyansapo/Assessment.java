@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public class Assessment implements Parcelable {
 
+   // "Edward Idun Amoah"
+
     public String STUDENT_ID = "";
     public String ASSESSMENT_KEY = "";
     public String LETTERS_CORRECT = "";
