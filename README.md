@@ -42,4 +42,6 @@ In case you are prompted to install any package use this format to install the p
 
 npm install --save package_name
 
+The command to run the app is npm start
+
 Email me at eai6@psu.edu if you encounter any issues
