@@ -7,7 +7,7 @@ The models for the mongodb database is saved in the models folder
 # API
 All api route codes will be saved in the api folder
 
-# indesx.js
+# index.js
 The server.js file will intialize the express server and listen for request
 
 # app.js
