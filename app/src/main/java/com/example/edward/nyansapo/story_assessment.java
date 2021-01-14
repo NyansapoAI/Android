@@ -375,7 +375,7 @@ public class story_assessment extends AppCompatActivity {
 
     }
 
-    public void goToThankYou() { // take to thank you page and grade as paragraph student
+    public void goToThankYou() { // take to thank you page and grade as paragraph student_activity
         Intent myIntent = new Intent(getBaseContext(), thankYou.class);
         assessment.setLEARNING_LEVEL("PARAGRAPH");
         assessment.setSTORY_WORDS_WRONG(story_words_wrong);

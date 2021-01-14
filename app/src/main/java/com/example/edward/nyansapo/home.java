@@ -59,7 +59,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
     ArrayAdapter arrayAdapter;
 
 
-    // student code
+    // student_activity code
     ArrayList<Student> students;
 
     // Instructor id
@@ -157,7 +157,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         //Token = intent.getStringExtra("Token");
         //Toast.makeText(getApplicationContext(), instructor_id , Toast.LENGTH_SHORT).show();
 
-        // code for student view
+        // code for student_activity view
         // connect to xml
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
 
@@ -226,7 +226,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         //students.get(position);
         Intent intent = new Intent(home.this, student_assessments.class);
         intent.putExtra("instructor_id", instructor_id);
-        intent.putExtra("student", students.get(position));
+        intent.putExtra("student_activity", students.get(position));
         //startActivity(intent);
         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
@@ -328,7 +328,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
                         JSONObject student = jsonArray.getJSONObject(i);
                         String cloud_id = student.getString("_id");
 
-                        //Toast.makeText(home.this,  cloud_id +"  "+ student.toString(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(home.this,  cloud_id +"  "+ student_activity.toString(), Toast.LENGTH_SHORT).show();
 
                         if(databasehelper.FindStudent(cloud_id) == 0){ // Not in local database
                             // assign values
@@ -343,7 +343,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
 
                             //Toast.makeText(home.this, firstname +" "+ lastname+" "+ age+" "+ notes+" "+learning_level+" "+std_class+" "+timestamp, Toast.LENGTH_SHORT).show();
                             //Toast.makeText(home.this, learning_level, Toast.LENGTH_SHORT).show();
-                            // create student instance
+                            // create student_activity instance
                             Student std = new Student();
                             std.setInstructor_id(instructor_id);
                             std.setCloud_id(cloud_id);
@@ -356,8 +356,8 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
                             std.setStd_class(std_class);
                             std.setTimestamp(timestamp);
                             //Toast.makeText(home.this, std.firstname + " "+std.getLastname() + " "+ std.getCloud_id()+" "+ std.getAge(), Toast.LENGTH_SHORT).show();
-                            databasehelper.addStudent(std); // add student to local database
-                            //Toast.makeText(home.this, "student saved", Toast.LENGTH_SHORT).show();
+                            databasehelper.addStudent(std); // add student_activity to local database
+                            //Toast.makeText(home.this, "student_activity saved", Toast.LENGTH_SHORT).show();
                         }
 
 
@@ -409,7 +409,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Toast.makeText(home.this, "Error "+ error.toString() , Toast.LENGTH_LONG).show();
-                    //databasehelper.addStudent(student);
+                    //databasehelper.addStudent(student_activity);
 
                 }
         }){

@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             android:onClick="addstudent"
-            android:text="add student" /> -->
+            android:text="add student_activity" /> -->
 
 
 

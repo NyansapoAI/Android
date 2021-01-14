@@ -95,7 +95,7 @@ public class registerStudent extends AppCompatActivity {
     public void goHome(View v){
 
         UUID uuid = UUID.randomUUID();
-        // Validation for inputs needs to happen before creating student
+        // Validation for inputs needs to happen before creating student_activity
 
         if(firstname.getText().toString() == "" || lastname.getText().toString() == ""
         || gender.getText().toString() == "" || notes.getText().toString() == "" || std_class.getText().toString() == "" ){
@@ -112,15 +112,15 @@ public class registerStudent extends AppCompatActivity {
             student.setTimestamp(new Date(System.currentTimeMillis()).toString());
             student.setLocal_id(uuid.toString());
             student.setInstructor_id(instructor_id);
-            //student.setInstructor_id("5f39b701b4270100524952ed");
+            //student_activity.setInstructor_id("5f39b701b4270100524952ed");
             student.setStd_class(std_class.getText().toString());
 
-            //Toast.makeText(getApplicationContext(), student.getInstructor_id() , Toast.LENGTH_SHORT).show();
-            // send student object to database
+            //Toast.makeText(getApplicationContext(), student_activity.getInstructor_id() , Toast.LENGTH_SHORT).show();
+            // send student_activity object to database
             try {
-                //createStudent(student); // save in cloud
+                //createStudent(student_activity); // save in cloud
                 postStudent(student);
-                //String uuid1 =  databasehelper.addStudent(student);
+                //String uuid1 =  databasehelper.addStudent(student_activity);
                 //Toast.makeText(getApplicationContext(), uuid1,Toast.LENGTH_LONG).show();
 
                 // go to home
@@ -128,7 +128,7 @@ public class registerStudent extends AppCompatActivity {
                 //myIntent.putExtra("instructor_id", instructor_id);
                 //startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             } catch (Error err){
-                Toast.makeText(getApplicationContext(), "Could not insert student",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Could not insert student_activity",Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -145,7 +145,7 @@ public class registerStudent extends AppCompatActivity {
                 student.setCloud_id(getId(response));
                 databasehelper.addStudent(student);
                 //Toast.makeText(registerStudent.this,"std"+ getId(response), Toast.LENGTH_LONG).show();
-                //Toast.makeText(registerStudent.this, "inst"+ student.getInstructor_id(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(registerStudent.this, "inst"+ student_activity.getInstructor_id(), Toast.LENGTH_LONG).show();
 
                 Intent myIntent = new Intent(getBaseContext(), home.class);
                 myIntent.putExtra("instructor_id", instructor_id);
@@ -155,7 +155,7 @@ public class registerStudent extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(registerStudent.this, error.toString() , Toast.LENGTH_LONG).show();
-                //databasehelper.addStudent(student);
+                //databasehelper.addStudent(student_activity);
             }
         }){
             @Override

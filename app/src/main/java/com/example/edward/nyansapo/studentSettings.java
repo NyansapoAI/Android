@@ -40,7 +40,7 @@ public class studentSettings extends AppCompatActivity {
     // buttons
     Button update, delete;
 
-    // student
+    // student_activity
     Student student;
     String instructor_id;
 
@@ -50,7 +50,7 @@ public class studentSettings extends AppCompatActivity {
         setContentView(R.layout.activity_student_settings);
 
         Intent intent = getIntent();
-        student = intent.getParcelableExtra("student");
+        student = intent.getParcelableExtra("student_activity");
         instructor_id = intent.getStringExtra("instructor_id");
 
         // toolbar
@@ -66,7 +66,7 @@ public class studentSettings extends AppCompatActivity {
                 //startActivity(new Intent(getApplicationContext(), home.class));
                 Intent intent = new Intent(studentSettings.this, student_assessments.class);
                 intent.putExtra("instructor_id", instructor_id);
-                intent.putExtra("student", student);
+                intent.putExtra("student_activity", student);
                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(studentSettings.this).toBundle());
             }
         });
@@ -106,7 +106,7 @@ public class studentSettings extends AppCompatActivity {
             public void onClick(View v) {
                 databasehelper.deleteStudent(student.getCloud_id());
                 deleteStudent(student.getCloud_id());
-                //Toast.makeText(studentSettings.this, student.getCloud_id(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(studentSettings.this, student_activity.getCloud_id(), Toast.LENGTH_LONG).show();
                 Intent myIntent = new Intent(getBaseContext(), home.class);
                 myIntent.putExtra("instructor_id", instructor_id); // its id for now
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(studentSettings.this).toBundle());
@@ -131,7 +131,7 @@ public class studentSettings extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //databasehelper.deleteStudent(student.getCloud_id());
+                //databasehelper.deleteStudent(student_activity.getCloud_id());
                 //Toast.makeText(studentSettings.this, "Student Deleted "+ response, Toast.LENGTH_SHORT).show();
                 //Intent myIntent = new Intent(getBaseContext(), home.class);
                 //myIntent.putExtra("instructor_id", instructor_id); // its id for now
@@ -187,7 +187,7 @@ public class studentSettings extends AppCompatActivity {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    //databasehelper.deleteStudent(student.getCloud_id());
+                    //databasehelper.deleteStudent(student_activity.getCloud_id());
                     //Toast.makeText(studentSettings.this, "Student Deleted "+ response, Toast.LENGTH_SHORT).show();
                     //Intent myIntent = new Intent(getBaseContext(), home.class);
                     //myIntent.putExtra("instructor_id", instructor_id); // its id for now

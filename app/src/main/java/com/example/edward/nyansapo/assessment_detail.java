@@ -34,9 +34,9 @@ public class assessment_detail extends AppCompatActivity {
         back_button = findViewById(R.id.back_button);
         delete_button = findViewById(R.id.delete_button);
 
-        // get student parcelable object
+        // get student_activity parcelable object
         Intent intent = getIntent();
-        student = intent.getParcelableExtra("student");
+        student = intent.getParcelableExtra("student_activity");
         assessment = intent.getParcelableExtra("assessment");
         instructor_id = intent.getStringExtra("instructor_id");
 
@@ -64,7 +64,7 @@ public class assessment_detail extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(assessment_detail.this, student_assessments.class);
                 intent.putExtra("instructor_id", instructor_id);
-                intent.putExtra("student", student);
+                intent.putExtra("student_activity", student);
                 startActivity(intent);
 
             }
@@ -76,7 +76,7 @@ public class assessment_detail extends AppCompatActivity {
                 dataBaseHandler.deleteAssessment(assessment.getLOCAL_ID());
                 Intent intent = new Intent(assessment_detail.this, student_assessments.class);
                 intent.putExtra("instructor_id", instructor_id);
-                intent.putExtra("student", student);
+                intent.putExtra("student_activity", student);
                 startActivity(intent);
 
             }

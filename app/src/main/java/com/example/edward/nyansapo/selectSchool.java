@@ -16,7 +16,7 @@ public class selectSchool extends AppCompatActivity {
     }
 
     public void openSchool(View v){
-        Intent myIntent = new Intent(getBaseContext(), student.class);
+        Intent myIntent = new Intent(getBaseContext(), student_activity.class);
         startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 

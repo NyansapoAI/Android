@@ -53,7 +53,7 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
             setContentView(R.layout.activity_student_details);
 
             Intent intent = getIntent();
-            student = intent.getParcelableExtra("student");
+            student = intent.getParcelableExtra("student_activity");
             instructor_id = intent.getStringExtra("instructor_id");
             //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
 
@@ -70,7 +70,7 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
                 public void onClick(View v) {
                     Intent intent = new Intent(studentDetails.this, student_assessments.class);
                     intent.putExtra("instructor_id", instructor_id);
-                    intent.putExtra("student", student);
+                    intent.putExtra("student_activity", student);
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(studentDetails.this).toBundle());
 
                 }
@@ -207,7 +207,7 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
                     });
 
 
-                    // set ui elements with student data
+                    // set ui elements with student_activity data
 
                     current_level.setText("UKN");
                     initial_level.setText("Unkown");
@@ -231,7 +231,7 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
     public void gohome(View v){ // function to handle home button
         Intent myIntent = new Intent(getBaseContext(), student_assessments.class);
         myIntent.putExtra("instructor_id", instructor_id);
-        myIntent.putExtra("student", student);
+        myIntent.putExtra("student_activity", student);
         startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
@@ -242,7 +242,7 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
 
     public void goAssessment(View v){ // function to handle new assessment button
         Intent myIntent = new Intent(getBaseContext(), SelectAssessment.class);
-        myIntent.putExtra("student", student);
+        myIntent.putExtra("student_activity", student);
         myIntent.putExtra("instructor_id", instructor_id);
         startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }

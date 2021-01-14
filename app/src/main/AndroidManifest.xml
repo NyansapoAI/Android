@@ -28,7 +28,7 @@
         <activity android:name=".registerSchool" />
         <activity android:name=".RegisterTeacher" />
         <activity android:name=".selectAssesment" />
-        <activity android:name=".student" />
+        <activity android:name=".student_activity" />
         <activity android:name=".selectSchool" />
         <activity android:name=".index">
             <intent-filter>

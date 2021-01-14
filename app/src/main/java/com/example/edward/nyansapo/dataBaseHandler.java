@@ -34,8 +34,8 @@ public class dataBaseHandler extends SQLiteOpenHelper {
 
     // Instructor Table
     public static final String INSTRUCTOR_TABLE = "instructor";
-    public static final String FIRSTNAME = "firstname"; // also for student table
-    public static final String LASTNAME = "lastname"; // also for student table
+    public static final String FIRSTNAME = "firstname"; // also for student_activity table
+    public static final String LASTNAME = "lastname"; // also for student_activity table
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
 
@@ -409,7 +409,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "+ STUDENT_TABLE +" ORDER BY "+ TIMESTAMP + " DESC ", null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            // create student object from entry
+            // create student_activity object from entry
             Student student = new Student();
             student.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME)));
             student.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME)));
@@ -437,7 +437,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "+ STUDENT_TABLE +" WHERE " + CLOUD_ID + " = '"+cloud_id+"'"+ " ORDER BY "+ TIMESTAMP + " DESC ", null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            // create student object from entry
+            // create student_activity object from entry
             Student student = new Student();
             student.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME)));
             student.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME)));
@@ -468,7 +468,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "+ STUDENT_TABLE +" WHERE " + CLOUD_ID + " = '"+cloud_id+"'"+ " ORDER BY "+ TIMESTAMP + " DESC ", null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            // create student object from entry
+            // create student_activity object from entry
             student = new Student();
             student.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME)));
             student.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME)));
@@ -494,7 +494,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "+ STUDENT_TABLE +" WHERE " + INSTRUCTOR_ID + " = '"+instructor_id+"'"+ " ORDER BY "+ TIMESTAMP + " DESC ", null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            // create student object from entry
+            // create student_activity object from entry
             Student student = new Student();
             student.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME)));
             student.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME)));

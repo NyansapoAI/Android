@@ -54,7 +54,7 @@ public class student_assessments extends AppCompatActivity implements Assessment
             case R.id.settings: {
                 Intent myIntent = new Intent(getBaseContext(), studentSettings.class);
                 myIntent.putExtra("instructor_id", instructor_id); // its id for now
-                myIntent.putExtra("student",student);
+                myIntent.putExtra("student_activity",student);
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(student_assessments.this).toBundle());
                 return true;
             }
@@ -65,7 +65,7 @@ public class student_assessments extends AppCompatActivity implements Assessment
             case R.id.analytics: {
                 Intent intent = new Intent(student_assessments.this, studentDetails.class);
                 intent.putExtra("instructor_id", instructor_id);
-                intent.putExtra("student",student);
+                intent.putExtra("student_activity",student);
                 startActivity(intent);
                 return true;
             }
@@ -96,9 +96,9 @@ public class student_assessments extends AppCompatActivity implements Assessment
             }
         });
 
-        // get student
+        // get student_activity
         Intent intent = getIntent();
-        student = intent.getParcelableExtra("student");
+        student = intent.getParcelableExtra("student_activity");
         instructor_id = intent.getStringExtra("instructor_id");
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
@@ -138,9 +138,9 @@ public class student_assessments extends AppCompatActivity implements Assessment
 
     private void getAssessments() {
         assessments =databaseHandler.getAllStudentAssessment(student.getCloud_id());
-        //Toast.makeText(this, student.getLocal_id(), Toast.LENGTH_LONG).show();
-        //Toast.makeText(this, student.getCloud_id(), Toast.LENGTH_LONG).show();
-        //Toast.makeText(this, student.toString(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, student_activity.getLocal_id(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, student_activity.getCloud_id(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, student_activity.toString(), Toast.LENGTH_LONG).show();
         //Toast.makeText(this, Integer.toString(assessments.size()), Toast.LENGTH_LONG).show();
 
     }
@@ -149,8 +149,8 @@ public class student_assessments extends AppCompatActivity implements Assessment
         /*
         Intent intent = new Intent(student_assessments.this, SelectAssessment.class);
         intent.putExtra("instructor_id", instructor_id);
-        intent.putExtra("student_id",student.getLocal_id());
-        intent.putExtra("student", student);
+        intent.putExtra("student_id",student_activity.getLocal_id());
+        intent.putExtra("student_activity", student_activity);
         //intent.putExtra("assessment", assessments.get(position));
         startActivity(intent);
 
@@ -166,7 +166,7 @@ public class student_assessments extends AppCompatActivity implements Assessment
         Intent intent = new Intent(student_assessments.this, assessment_detail.class);
         intent.putExtra("instructor_id", instructor_id);
         intent.putExtra("student_id",student.getLocal_id());
-        intent.putExtra("student", student);
+        intent.putExtra("student_activity", student);
         intent.putExtra("assessment", assessments.get(position));
         startActivity(intent);
     }

@@ -22,7 +22,7 @@ public class SelectAssessment extends AppCompatActivity  implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_assessment);
         Intent intent = getIntent();
-        student = intent.getParcelableExtra("student");
+        student = intent.getParcelableExtra("student_activity");
         instructor_id = intent.getStringExtra("instructor_id");
 
         // toolbar
@@ -38,7 +38,7 @@ public class SelectAssessment extends AppCompatActivity  implements View.OnClick
                 //startActivity(new Intent(getApplicationContext(), home.class));
                 Intent intent = new Intent(SelectAssessment.this, student_assessments.class);
                 intent.putExtra("instructor_id", instructor_id);
-                intent.putExtra("student", student);
+                intent.putExtra("student_activity", student);
                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SelectAssessment.this).toBundle());
             }
         });

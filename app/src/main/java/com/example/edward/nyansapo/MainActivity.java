@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity  {
                 String message = data.optString("message");
 
                 Toast.makeText(MainActivity.this, message , Toast.LENGTH_LONG).show();
-                //databasehelper.addStudent(student);
+                //databasehelper.addStudent(student_activity);
                 signin.setEnabled(true);
                 signup.setEnabled(true);
                 //rotating_icon.startAnimation();
