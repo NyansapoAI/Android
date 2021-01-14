@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -20,10 +21,29 @@ public class SelectAssessment extends AppCompatActivity  implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_assessment);
-
         Intent intent = getIntent();
         student = intent.getParcelableExtra("student");
         instructor_id = intent.getStringExtra("instructor_id");
+
+        // toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //startActivity(new Intent(getApplicationContext(), home.class));
+                Intent intent = new Intent(SelectAssessment.this, student_assessments.class);
+                intent.putExtra("instructor_id", instructor_id);
+                intent.putExtra("student", student);
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SelectAssessment.this).toBundle());
+            }
+        });
+
+
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
 
         button3 = findViewById(R.id.assessment3_button);

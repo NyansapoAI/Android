@@ -57,6 +57,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
     public static final String WORDS_CORRECT = "words_correct";
     public static final String WORDS_WRONG = "words_wrong";
     public static final String PARAGRAPH_WORDS_WRONG = "paragraph_words_wrong";
+    //public static final String STORY_WORDS_WRONG = "story_words_wrong";
     public static final String STORY_ANS_Q1 = "story_ans_q1";
     public static final String STORY_ANS_Q2 = "story_ans_q2";
 
@@ -124,6 +125,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
                 WORDS_CORRECT + " TEXT,"+
                 WORDS_WRONG + " TEXT,"+
                 PARAGRAPH_WORDS_WRONG + " TEXT,"+
+                //STORY_WORDS_WRONG + " TEXT,"+
                 STORY_ANS_Q1+ " TEXT,"+
                 STORY_ANS_Q2+ " TEXT,"+
                 LEARNING_LEVEL + " TEXT)";
@@ -385,6 +387,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         contentValues.put(LETTERS_WRONG ,assessment.getLETTERS_WRONG());
         contentValues.put(WORDS_WRONG ,assessment.getWORDS_WRONG());
         contentValues.put(PARAGRAPH_WORDS_WRONG,assessment.getPARAGRAPH_WORDS_WRONG());
+        //contentValues.put(STORY_WORDS_WRONG, assessment.getSTORY_WORDS_WRONG());
         contentValues.put(STORY_ANS_Q1,assessment.getSTORY_ANS_Q1());
         contentValues.put(STORY_ANS_Q2,assessment.getSTORY_ANS_Q2());
         contentValues.put(LEARNING_LEVEL,assessment.getLEARNING_LEVEL());
@@ -530,6 +533,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             assessment.setSTORY_ANS_Q2(cursor.getString(cursor.getColumnIndex(STORY_ANS_Q2)));
             assessment.setLEARNING_LEVEL(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
             assessment.setPARAGRAPH_WORDS_WRONG(cursor.getString(cursor.getColumnIndex(PARAGRAPH_WORDS_WRONG)));
+            //assessment.setSTORY_WORDS_WRONG(cursor.getString(cursor.getColumnIndex(STORY_WORDS_WRONG)));
             assessment.setTIMESTAMP(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
             arrayList.add(assessment);
             cursor.moveToNext();
@@ -558,6 +562,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             assessment.setSTORY_ANS_Q2(cursor.getString(cursor.getColumnIndex(STORY_ANS_Q2)));
             assessment.setLEARNING_LEVEL(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
             assessment.setPARAGRAPH_WORDS_WRONG(cursor.getString(cursor.getColumnIndex(PARAGRAPH_WORDS_WRONG)));
+            //assessment.setSTORY_WORDS_WRONG(cursor.getString(cursor.getColumnIndex(STORY_WORDS_WRONG)));
             assessment.setTIMESTAMP(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
             arrayList.add(assessment);
             cursor.moveToNext();

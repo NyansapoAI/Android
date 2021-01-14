@@ -222,7 +222,7 @@ public class word_assessment extends AppCompatActivity {
     public void changeWord(){
         progressBar.setProgress(0);
         if(words_tried > 4){ // if 6 has been tried
-            if(error_count < 3){
+            if(error_count < 2){
                 goToThankYou();
             }else{
                 goToLetter();

@@ -187,7 +187,7 @@ public class paragraph_assessment extends AppCompatActivity {
             sentence_count +=1; // increment sentence count
             paragraphButton.setText(sentences[sentence_count].trim());
         }else{ // move a level
-            if(error_count > 4){
+            if(error_count > 3){
                 goToWord();
             }else{
                 goToStory();

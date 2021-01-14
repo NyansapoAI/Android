@@ -115,7 +115,7 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
         instructor_id = intent.getStringExtra("instructor_id");
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
 
-        Toast.makeText(getApplicationContext(), "Click on the record button and read!", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), "Click on the record button and read!", Toast.LENGTH_LONG).show();
 
         // Request Runtime Permission
         if(!checkPermissionFromDevice())
@@ -303,13 +303,14 @@ public class PreAssessment extends AppCompatActivity implements  View.OnClickLis
                 break;
             case R.id.next_button: // go to the assessment
             {
-
+                //Toast.makeText(this, instructor_id +" pressed", Toast.LENGTH_LONG).show();
                 Intent myIntent = new Intent(getBaseContext(), paragraph.class);
                 Assessment assessment = new Assessment(); // create new assessment object
                 assessment.setASSESSMENT_KEY(ASSESSMENT_KEY); // assign proper key
                 assessment.setSTUDENT_ID(student_id);
                 myIntent.putExtra("Assessment", assessment); //sent next activity
                 myIntent.putExtra("instructor_id", instructor_id);
+                //Toast.makeText(this, assessment.toString() +"  "+ assessment.getSTUDENT_ID(), Toast.LENGTH_SHORT).show();
                 startActivity(myIntent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
 
 

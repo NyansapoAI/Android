@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/analytics"
+        android:icon="@drawable/ic_analytics"
+        android:title="Progress"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/add_student"
+        android:icon="@drawable/ic_add_person"
+        android:title="Add Student"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/sort"
+        android:title="Sort"
+        app:showAsAction="never" >
+        <menu>
+
+            <item android:id="@+id/level"
+                android:title="Level"
+                app:showAsAction="never" />
+
+            <item android:id="@+id/age"
+                android:title="Age"
+                app:showAsAction="never" />
+
+            <item android:id="@+id/name"
+                android:title="Name"
+                app:showAsAction="never" />
+
+        </menu>
+
+    </item>
+
+    <item android:id="@+id/filter"
+        android:title="Filter"
+        app:showAsAction="never" >
+        <menu>
+
+            <item android:id="@+id/letter"
+                android:title="Letter"
+                app:showAsAction="never" />
+
+            <item android:id="@+id/word"
+                android:title="Word"
+                app:showAsAction="never" />
+
+            <item android:id="@+id/paragraph"
+                android:title="Paragraph"
+                app:showAsAction="never" />
+
+            <item android:id="@+id/story"
+                android:title="Story"
+                app:showAsAction="never" />
+
+            <item android:id="@+id/male"
+                android:title="Male"
+                app:showAsAction="never" />
+
+            <item android:id="@+id/female"
+                android:title="Female"
+                app:showAsAction="never" />
+
+        </menu>
+
+    </item>
+
+    <item android:id="@+id/settings"
+        android:title="Settings"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/sync"
+        android:title="Sync"
+        app:showAsAction="never" />
+
+
+</menu>

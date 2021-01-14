@@ -4,11 +4,19 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.icu.text.UnicodeSetSpanner;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -42,7 +50,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
     EditText etText;
     FloatingActionButton btAdd;
     ListView listView;
-    Button update_button, account;
+
 
 
     // database helper
@@ -63,13 +71,85 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
     private static int MIN_DIST = 150;
     private GestureDetector gestureDetector;
 
+    //private DrawerLayout drawer;
+
+    View v;
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home_menu, menu);
+        return true;
+        //return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.add_student:
+                Intent myIntent = new Intent(getBaseContext(), registerStudent.class);
+                myIntent.putExtra("instructor_id", instructor_id);
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+                //Toast.makeText(this, "Add Selected", Toast.LENGTH_LONG).show();
+                return true;
+
+            case R.id.sync:
+                sync(instructor_id);
+                // Toast.makeText(this, "Search Selected", Toast.LENGTH_LONG).show();
+                return true;
+
+            case R.id.analytics:
+                Intent myIntent2 = new Intent(getBaseContext(), cumulativeProgress.class);
+                myIntent2.putExtra("instructor_id", instructor_id);
+                startActivity(myIntent2, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+                //Toast.makeText(this, "Attendace Selected", Toast.LENGTH_LONG).show();
+                return true;
+
+            case R.id.age:
+            case R.id.letter:
+            case R.id.word:
+            case R.id.paragraph:
+            case R.id.story:
+            case R.id.male:
+            case R.id.female:
+            case R.id.name:
+            case R.id.level:
+                Toast.makeText(this, "Under Development", Toast.LENGTH_LONG).show();
+                return true;
+
+            case R.id.settings:
+
+                Intent myIntent1 = new Intent(getBaseContext(), settings.class);
+                myIntent1.putExtra("instructor_id", instructor_id);
+                startActivity(myIntent1, ActivityOptions.makeSceneTransitionAnimation(home.this).toBundle());
+                //Toast.makeText(this, "female Selected", Toast.LENGTH_LONG).show();
+                return true;
+
+            default: return super.onOptionsItemSelected(item);
+
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        // toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        /*
+        drawer = findViewById(R.id.drawer_layout);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+         */
 
         // get intent values
         Intent intent = this.getIntent();
@@ -81,8 +161,6 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         // connect to xml
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
 
-        account = findViewById(R.id.account_settings);
-        update_button = findViewById(R.id.update_data);
 
         // Initialize DatabaseHelper
         databasehelper = new dataBaseHandler(home.this);
@@ -94,25 +172,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
             }
         });
 
-        update_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sync(instructor_id);
-            }
-        });
-
-        account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(home.this, "Under Development", Toast.LENGTH_SHORT).show();
-
-                Intent myIntent = new Intent(getBaseContext(), settings.class);
-                myIntent.putExtra("instructor_id", instructor_id);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(home.this).toBundle());
-
-
-            }
-        });
+        
         students = new ArrayList<Student>();
         getStudents(); // populate students ArrayList
 
@@ -126,6 +186,17 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         this.gestureDetector = new GestureDetector(home.this, this);
 
     }
+/*
+    @Override
+    public void onBackPressed() {
+        if(drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        }else{
+            super.onBackPressed();
+        }
+
+    }
+*/
 
 
     void getStudents(){
@@ -136,6 +207,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         //students = databasehelper.getAllStudent();
         students = databasehelper.getAllStudentOfInstructor(instructor_id);
     }
+
 
     public void addstudent(View v){
         Intent myIntent = new Intent(getBaseContext(), registerStudent.class);

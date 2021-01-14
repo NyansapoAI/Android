@@ -157,6 +157,7 @@ public class thankYou extends AppCompatActivity {
                 params.put("words_correct", assessment.getWORDS_CORRECT());
                 params.put("words_wrong", assessment.getWORDS_WRONG());
                 params.put("paragrahp_words_wrong", assessment.getPARAGRAPH_WORDS_WRONG());
+                //params.put("story_words_wrong", assessment.getSTORY_WORDS_WRONG());
                 params.put("story_ans_q1", assessment.getSTORY_ANS_Q1());
                 params.put("story_ans_q2", assessment.getSTORY_ANS_Q2());
                 return params;

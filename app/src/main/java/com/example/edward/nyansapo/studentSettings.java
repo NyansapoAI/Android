@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,6 +49,28 @@ public class studentSettings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_settings);
 
+        Intent intent = getIntent();
+        student = intent.getParcelableExtra("student");
+        instructor_id = intent.getStringExtra("instructor_id");
+
+        // toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //startActivity(new Intent(getApplicationContext(), home.class));
+                Intent intent = new Intent(studentSettings.this, student_assessments.class);
+                intent.putExtra("instructor_id", instructor_id);
+                intent.putExtra("student", student);
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(studentSettings.this).toBundle());
+            }
+        });
+
 
         // Assign variables
         firstname = findViewById(R.id.edit_firstname);
@@ -64,9 +87,7 @@ public class studentSettings extends AppCompatActivity {
         // database
         databasehelper = new dataBaseHandler(this);
 
-        Intent intent = getIntent();
-        student = intent.getParcelableExtra("student");
-        instructor_id = intent.getStringExtra("instructor_id");
+
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override

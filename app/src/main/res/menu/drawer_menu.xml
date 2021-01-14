@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ShowIn="navigation_view">
+
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/school1"
+            android:icon="@drawable/ic_school"
+            android:title="School1" />
+
+        <item android:id="@+id/school2"
+            android:icon="@drawable/ic_school"
+            android:title="School2" />
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/group1"
+            android:icon="@drawable/ic_group"
+            android:title="Group1" />
+
+        <item android:id="@+id/group2"
+            android:icon="@drawable/ic_group"
+            android:title="Group2" />
+    </group>
+
+
+
+
+    <item android:title="Communicate">
+        <menu>
+
+            <item android:id="@+id/share"
+                android:title="Share"
+                />
+
+            <item android:id="@+id/send"
+                android:title="Send"
+                />
+        </menu>
+    </item>
+</menu>

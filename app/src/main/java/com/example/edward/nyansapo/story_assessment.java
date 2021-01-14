@@ -195,6 +195,7 @@ public class story_assessment extends AppCompatActivity {
             sentence_count +=1; // increment sentence count
             story_view.setText(sentences[sentence_count].trim());
         }else{
+            assessment.setSTORY_WORDS_WRONG(story_words_wrong); // set story wrong words
             Intent myIntent = new Intent(getBaseContext(), storyQuestions.class);
             myIntent.putExtra("Assessment", assessment);
             myIntent.putExtra("instructor_id", instructor_id);
@@ -349,7 +350,7 @@ public class story_assessment extends AppCompatActivity {
                 //Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
                 //Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
                 //Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();
-                if (error_count > 10) { // if error less than 10 move to story level
+                if (error_count > 8) { // if error less than 8 move to story level
                     goToThankYou();
                 } else if (s != "no match") {
 
@@ -377,6 +378,7 @@ public class story_assessment extends AppCompatActivity {
     public void goToThankYou() { // take to thank you page and grade as paragraph student
         Intent myIntent = new Intent(getBaseContext(), thankYou.class);
         assessment.setLEARNING_LEVEL("PARAGRAPH");
+        assessment.setSTORY_WORDS_WRONG(story_words_wrong);
         myIntent.putExtra("Assessment", assessment);
         myIntent.putExtra("instructor_id", instructor_id);
         startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());

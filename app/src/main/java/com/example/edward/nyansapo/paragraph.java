@@ -27,9 +27,9 @@ public class paragraph extends AppCompatActivity {
         setContentView(R.layout.activity_paragraph);
         //mediaPlayer = MediaPlayer.create(getBaseContext(), R.raw.select);
         //mediaPlayer.start();
-        Intent intent = getIntent();
+        Intent intent = this.getIntent();
 
-        instructor_id = intent.getStringExtra("instructor_id");
+
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         paragraph1 = findViewById(R.id.paragraph1);
         paragraph2 = findViewById(R.id.paragraph2);
@@ -37,6 +37,7 @@ public class paragraph extends AppCompatActivity {
         assessment_content = new Assessment_Content();
 
         assessment = intent.getParcelableExtra("Assessment");
+        instructor_id = intent.getStringExtra("instructor_id");
         ASSESSMENT_KEY = assessment.getASSESSMENT_KEY();
 
         String[] para = getPara(ASSESSMENT_KEY);

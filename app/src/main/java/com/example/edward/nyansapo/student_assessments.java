@@ -7,6 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,7 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class student_assessments extends AppCompatActivity implements AssessmentCustomViewAdapter.OnAssessmentListener {
+public class student_assessments extends AppCompatActivity implements AssessmentCustomViewAdapter.OnAssessmentListener,  SelectAssessmentModal.AssessmentModalListener {
 
     dataBaseHandler databaseHandler;
     ArrayList arrayList;
@@ -33,14 +37,64 @@ public class student_assessments extends AppCompatActivity implements Assessment
     Student student;
 
     FloatingActionButton btAdd;
-    Button cumulative_progress, delete_button, back_button;
+
 
     String instructor_id;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.student_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.settings: {
+                Intent myIntent = new Intent(getBaseContext(), studentSettings.class);
+                myIntent.putExtra("instructor_id", instructor_id); // its id for now
+                myIntent.putExtra("student",student);
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(student_assessments.this).toBundle());
+                return true;
+            }
+            case R.id.add_assessment: {
+                addAssessment();
+                return true;
+            }
+            case R.id.analytics: {
+                Intent intent = new Intent(student_assessments.this, studentDetails.class);
+                intent.putExtra("instructor_id", instructor_id);
+                intent.putExtra("student",student);
+                startActivity(intent);
+                return true;
+            }
+            default: return super.onOptionsItemSelected(item);
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_assessments);
+
+        // toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //startActivity(new Intent(getApplicationContext(), home.class));
+                Intent myIntent = new Intent(getBaseContext(), home.class);
+                myIntent.putExtra("instructor_id", instructor_id); // its id for now
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(student_assessments.this).toBundle());
+            }
+        });
 
         // get student
         Intent intent = getIntent();
@@ -49,9 +103,7 @@ public class student_assessments extends AppCompatActivity implements Assessment
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         btAdd = findViewById(R.id.bt_add);
-        cumulative_progress = findViewById(R.id.cumulative_progress);
-        delete_button = findViewById(R.id.delete_button);
-        back_button = findViewById(R.id.back_button);
+
 
         // Initialize DatabaseHelper
         databaseHandler = new dataBaseHandler(this);
@@ -60,41 +112,10 @@ public class student_assessments extends AppCompatActivity implements Assessment
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addAssessment(v);
+                addAssessment();
             }
         });
 
-        cumulative_progress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(student_assessments.this, studentDetails.class);
-                intent.putExtra("instructor_id", instructor_id);
-                intent.putExtra("student",student);
-                startActivity(intent);
-            }
-        });
-
-        back_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent(getBaseContext(), home.class);
-                myIntent.putExtra("instructor_id", instructor_id); // its id for now
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(student_assessments.this).toBundle());
-            }
-        });
-
-        delete_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //databaseHandler.deleteStudent(student.getLocal_id());
-                //deleteStudent(); // do on another thread later
-                Intent myIntent = new Intent(getBaseContext(), studentSettings.class);
-                myIntent.putExtra("instructor_id", instructor_id); // its id for now
-                myIntent.putExtra("student",student);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(student_assessments.this).toBundle());
-                //Toast.makeText(student_assessments.this, "Deleted",Toast.LENGTH_SHORT).show();
-            }
-        });
 
         assessments = new ArrayList<Assessment>();
         getAssessments(); // populate students ArrayList
@@ -124,13 +145,19 @@ public class student_assessments extends AppCompatActivity implements Assessment
 
     }
 
-    private void addAssessment(View v) {
+    private void addAssessment() {
+        /*
         Intent intent = new Intent(student_assessments.this, SelectAssessment.class);
         intent.putExtra("instructor_id", instructor_id);
         intent.putExtra("student_id",student.getLocal_id());
         intent.putExtra("student", student);
         //intent.putExtra("assessment", assessments.get(position));
         startActivity(intent);
+
+         */
+
+        SelectAssessmentModal selectAssessmentModal = new SelectAssessmentModal();
+        selectAssessmentModal.show(getSupportFragmentManager(),"Select Assessment Modal");
     }
 
     @Override
@@ -176,6 +203,43 @@ public class student_assessments extends AppCompatActivity implements Assessment
         };
 
         requestQueue.add(stringRequest);
+
+    }
+
+    @Override
+    public void onButtonClicked(String text) {
+
+        //Toast.makeText(this,text, Toast.LENGTH_SHORT).show();
+
+        switch (text){
+            case "assessment_3":{
+                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
+                myIntent.putExtra("ASSESSMENT_KEY","3");
+                myIntent.putExtra("student_id",student.getCloud_id());
+                myIntent.putExtra("instructor_id", instructor_id);
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+                break;
+            }
+            case "assessment_4":{
+                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
+                myIntent.putExtra("ASSESSMENT_KEY","4");
+                myIntent.putExtra("student_id",student.getCloud_id());
+                myIntent.putExtra("instructor_id", instructor_id);
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+                break;
+            }
+            case "assessment_5":{
+                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
+                myIntent.putExtra("ASSESSMENT_KEY","5");
+                myIntent.putExtra("student_id",student.getCloud_id());
+                myIntent.putExtra("instructor_id", instructor_id);
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+                break;
+            }
+            default:{
+
+            }
+        }
 
     }
 }

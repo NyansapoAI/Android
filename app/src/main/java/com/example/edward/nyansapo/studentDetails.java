@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,11 +51,30 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_student_details);
+
             Intent intent = getIntent();
             student = intent.getParcelableExtra("student");
             instructor_id = intent.getStringExtra("instructor_id");
             //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
 
+
+            // toolbar
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(studentDetails.this, student_assessments.class);
+                    intent.putExtra("instructor_id", instructor_id);
+                    intent.putExtra("student", student);
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(studentDetails.this).toBundle());
+
+                }
+            });
 
 
 
