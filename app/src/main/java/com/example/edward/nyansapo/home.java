@@ -71,7 +71,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
     private static int MIN_DIST = 150;
     private GestureDetector gestureDetector;
 
-    //private DrawerLayout drawer;
+    private DrawerLayout drawer;
 
     View v;
 
@@ -141,7 +141,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*
+
         drawer = findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -149,7 +149,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-         */
+
 
         // get intent values
         Intent intent = this.getIntent();
@@ -186,7 +186,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         this.gestureDetector = new GestureDetector(home.this, this);
 
     }
-/*
+
     @Override
     public void onBackPressed() {
         if(drawer.isDrawerOpen(GravityCompat.START)){
@@ -196,7 +196,7 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         }
 
     }
-*/
+
 
 
     void getStudents(){

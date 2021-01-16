@@ -7,8 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".home"
-    tools:openDrawer="start">
+    tools:context=".home">
 
 
     <LinearLayout
@@ -23,15 +22,6 @@
         <include
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
-
-        <!--<Button
-            app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/bt_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            android:onClick="addstudent"
-            android:text="add student_activity" /> -->
 
 
 
@@ -62,12 +52,12 @@
 
     </LinearLayout>
 
-    <!--android.support.design.widget.NavigationView
+    <android.support.design.widget.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_gravity="start"
         app:headerLayout="@layout/nav_drawer"
-
-        app:menu="@menu/drawer_menu" -->
+        app:menu="@menu/drawer_menu" />
 
 </android.support.v4.widget.DrawerLayout>
 
