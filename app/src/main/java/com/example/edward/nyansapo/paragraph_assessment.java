@@ -136,6 +136,13 @@ public class paragraph_assessment extends AppCompatActivity {
                 recordStudent(v);
             }
         });
+
+        paragraphButton.setOnClickListener(new View.OnClickListener() { 
+            @Override
+            public void onClick(View view) {
+                recordStudent(view);
+            }
+        });
     }
     Drawable drawable;
 

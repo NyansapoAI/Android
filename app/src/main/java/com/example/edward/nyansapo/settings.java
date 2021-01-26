@@ -16,7 +16,7 @@ public class settings extends AppCompatActivity {
 
     String instructor_id;
 
-    Button home_button, update_button, download_data, logout_button;
+    Button  update_button,  logout_button;
     TextView firstname, lastname, email,password;
 
     dataBaseHandler databasehelper;
@@ -52,9 +52,8 @@ public class settings extends AppCompatActivity {
         instructor_id = intent.getStringExtra("instructor_id");
 
         // ui code
-        home_button = findViewById(R.id.home_button);
         update_button = findViewById(R.id.update_button);
-        download_data = findViewById(R.id.download_button);
+
         logout_button = findViewById(R.id.logout_button);
 
         firstname = findViewById(R.id.firstname);
@@ -62,12 +61,6 @@ public class settings extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
 
-        home_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gohome(v);
-            }
-        });
 
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,12 +80,6 @@ public class settings extends AppCompatActivity {
             }
         });
 
-        download_data.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(settings.this, "Under Development", Toast.LENGTH_LONG).show();
-            }
-        });
 
         setInstructorInfo();
 
@@ -137,9 +124,5 @@ public class settings extends AppCompatActivity {
 
     }
 
-    public void gohome(View v){
-        Intent myIntent = new Intent(getBaseContext(), home.class);
-        myIntent.putExtra("instructor_id", instructor_id);
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-    }
+
 }

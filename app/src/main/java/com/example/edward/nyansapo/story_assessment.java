@@ -378,7 +378,7 @@ public class story_assessment extends AppCompatActivity {
     public void goToThankYou() { // take to thank you page and grade as paragraph student_activity
         Intent myIntent = new Intent(getBaseContext(), thankYou.class);
         assessment.setLEARNING_LEVEL("PARAGRAPH");
-        assessment.setSTORY_WORDS_WRONG(story_words_wrong);
+        //assessment.setSTORY_WORDS_WRONG(story_words_wrong);
         myIntent.putExtra("Assessment", assessment);
         myIntent.putExtra("instructor_id", instructor_id);
         startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());

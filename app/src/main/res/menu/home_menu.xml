@@ -12,7 +12,7 @@
         android:title="Add Student"
         app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/sort"
+    <!--<item android:id="@+id/sort"
         android:title="Sort"
         app:showAsAction="never" >
         <menu>
@@ -64,7 +64,7 @@
 
         </menu>
 
-    </item>
+    </item>-->
 
     <item android:id="@+id/settings"
         android:title="Settings"

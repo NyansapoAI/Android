@@ -1,9 +1,14 @@
 package com.example.edward.nyansapo;
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.icu.text.UnicodeSetSpanner;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -39,12 +44,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class home extends AppCompatActivity implements CustomViewAdapter.OnStudentListener, GestureDetector.OnGestureListener {
+public class home extends AppCompatActivity implements CustomViewAdapter.OnStudentListener, NavigationView.OnNavigationItemSelectedListener {
 
     // Initialize Variables
     EditText etText;
@@ -106,15 +113,15 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
                 //Toast.makeText(this, "Attendace Selected", Toast.LENGTH_LONG).show();
                 return true;
 
-            case R.id.age:
-            case R.id.letter:
-            case R.id.word:
+            //case R.id.age:
+            //case R.id.letter:
+            //case R.id.word:
             case R.id.paragraph:
             case R.id.story:
-            case R.id.male:
-            case R.id.female:
-            case R.id.name:
-            case R.id.level:
+            //case R.id.male:
+            //case R.id.female:
+            //case R.id.name:
+            //case R.id.level:
                 Toast.makeText(this, "Under Development", Toast.LENGTH_LONG).show();
                 return true;
 
@@ -143,6 +150,8 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
 
 
         drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
@@ -181,9 +190,73 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         recyclerView.setLayoutManager(new LinearLayoutManager(home.this));
 
 
+    }
 
-        // Gesture initialization
-        this.gestureDetector = new GestureDetector(home.this, this);
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()){
+            /*case R.id.add_school:{
+                Toast.makeText(this, "Add school is under development", Toast.LENGTH_LONG).show();
+                break;
+            }
+            case R.id.add_group:{
+                Toast.makeText(this, "Add group is under development", Toast.LENGTH_LONG).show();
+                break;
+            }*/
+            case R.id.share:{
+                Toast.makeText(this, "Share App is under development", Toast.LENGTH_LONG).show();
+                break;
+            }
+            case R.id.send:{
+                //Toast.makeText(this, "Send data", Toast.LENGTH_LONG).show();
+                exportData();
+                break;
+            }
+        }
+
+        drawer.closeDrawer(GravityCompat.START);
+
+        return true;
+    }
+
+    public void exportApp(){
+        try{
+            Intent ShareAppIntent = new Intent(Intent.ACTION_SEND);
+            ShareAppIntent.setType("text/plain");
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void exportData(){
+        StringBuilder data = new StringBuilder();
+        data.append("Firstname,Lastname,Age,Gender,Class,Learning_Level"); // generate headers
+
+        for (Student student: students){ // generate csv data
+            data.append("\n"+student.getFirstname()+","+ student.getLastname()+","+student.getAge()+","+student.getGender()+","+student.getStd_class()+","+student.getLearning_level());
+        }
+
+        try{
+            // save file before sending
+            FileOutputStream out = openFileOutput("NyansapoData.csv", Context.MODE_PRIVATE);
+            out.write((data.toString()).getBytes());
+            out.close();
+
+            // export file
+            Context context = getApplicationContext();
+            File filelocation = new File(getFilesDir(), "NyansapoData.csv");
+            Uri path = FileProvider.getUriForFile(context, "com.example.edward.nyansapo.fileprovider", filelocation);
+            Intent fileIntent = new Intent(Intent.ACTION_SEND);
+            fileIntent.setType("text/csv");
+            fileIntent.putExtra(Intent.EXTRA_SUBJECT,"Nyansapo Data");
+            fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            fileIntent.putExtra(Intent.EXTRA_STREAM, path);
+            startActivity(Intent.createChooser(fileIntent,"Export Data"));
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -266,35 +339,6 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         return super.onTouchEvent(event);
     }
 
-    @Override
-    public boolean onDown(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
-    }
 
 
     // update code

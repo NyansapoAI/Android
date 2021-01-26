@@ -33,7 +33,7 @@ public class SelectAssessmentModal extends BottomSheetDialogFragment {
             }
         });
 
-        assessment3.setOnClickListener(new View.OnClickListener() {
+        assessment4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onButtonClicked("assessment_4");
@@ -41,7 +41,7 @@ public class SelectAssessmentModal extends BottomSheetDialogFragment {
             }
         });
 
-        assessment3.setOnClickListener(new View.OnClickListener() {
+        assessment5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onButtonClicked("assessment_5");
