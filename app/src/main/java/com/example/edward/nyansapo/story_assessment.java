@@ -195,7 +195,9 @@ public class story_assessment extends AppCompatActivity {
             sentence_count +=1; // increment sentence count
             story_view.setText(sentences[sentence_count].trim());
         }else{
-            assessment.setSTORY_WORDS_WRONG(story_words_wrong); // set story wrong words
+            //assessment.setSTORY_WORDS_WRONG(story_words_wrong); // set story wrong words
+            String temp = assessment.getPARAGRAPH_WORDS_WRONG();
+            assessment.setPARAGRAPH_WORDS_WRONG(temp + story_words_wrong);
             Intent myIntent = new Intent(getBaseContext(), storyQuestions.class);
             myIntent.putExtra("Assessment", assessment);
             myIntent.putExtra("instructor_id", instructor_id);
@@ -344,13 +346,12 @@ public class story_assessment extends AppCompatActivity {
                 Toast.makeText(story_assessment.this, "Try Again", Toast.LENGTH_LONG).show();
             } else {
                 String error_txt = SpeechRecognition.compareTranscript(expected_txt, s);
-                story_words_wrong += error_txt;
                 //error_count += SpeechRecognition.countError(error_txt);
                 //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
                 //Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
                 //Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
                 //Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();
-                if (error_count > 8) { // if error less than 8 move to story level
+                if (error_count > 12) { // if error less than 8 move to story level
                     goToThankYou();
                 } else if (s != "no match") {
 
@@ -359,11 +360,21 @@ public class story_assessment extends AppCompatActivity {
                             tries ++; // incremnent tries
                             Toast.makeText(view.getContext(), "Try Again!" , Toast.LENGTH_LONG).show();
                         }else{
+                            //story_words_wrong += error_txt.trim() + ",";
+                            if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
+                                //words_correct += ","+expected_txt.trim();
+                                story_words_wrong  +=  error_txt.trim()+",";
+                            }
                             error_count += SpeechRecognition.countError(error_txt);
                             nextParagraph(view);
                         }
 
                     }else{
+                        //story_words_wrong += error_txt.trim() + ",";
+                        if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
+                            //words_correct += ","+expected_txt.trim();
+                            story_words_wrong  +=  error_txt.trim()+",";
+                        }
                         error_count += SpeechRecognition.countError(error_txt);
                         nextParagraph(view);;
                     }
@@ -378,6 +389,8 @@ public class story_assessment extends AppCompatActivity {
     public void goToThankYou() { // take to thank you page and grade as paragraph student_activity
         Intent myIntent = new Intent(getBaseContext(), thankYou.class);
         assessment.setLEARNING_LEVEL("PARAGRAPH");
+        String temp = assessment.getPARAGRAPH_WORDS_WRONG();
+        assessment.setPARAGRAPH_WORDS_WRONG(temp + story_words_wrong);
         //assessment.setSTORY_WORDS_WRONG(story_words_wrong);
         myIntent.putExtra("Assessment", assessment);
         myIntent.putExtra("instructor_id", instructor_id);

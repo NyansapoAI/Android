@@ -17,7 +17,7 @@ public class Assessment implements Parcelable {
     public String WORDS_CORRECT = "";
     public String WORDS_WRONG = "";
     public String PARAGRAPH_WORDS_WRONG = "";
-    public String STORY_WORDS_WRONG = "";
+    //public String STORY_WORDS_WRONG = "";
     public String STORY_ANS_Q1 = "";
     public String STORY_ANS_Q2 = "";
     public String LEARNING_LEVEL = "";
@@ -38,7 +38,7 @@ public class Assessment implements Parcelable {
         this.WORDS_CORRECT = WORDS_CORRECT;
         this.WORDS_WRONG = WORDS_WRONG;
         this.PARAGRAPH_WORDS_WRONG = PARAGRAPH_WORDS_WRONG;
-        this.STORY_WORDS_WRONG = STORY_WORDS_WRONG;
+        //this.STORY_WORDS_WRONG = STORY_WORDS_WRONG;
         this.STORY_ANS_Q1 = STORY_ANS_Q1;
         this.STORY_ANS_Q2 = STORY_ANS_Q2;
         this.LEARNING_LEVEL = LEARNING_LEVEL;
@@ -55,7 +55,7 @@ public class Assessment implements Parcelable {
         WORDS_CORRECT = in.readString();
         WORDS_WRONG = in.readString();
         PARAGRAPH_WORDS_WRONG = in.readString();
-        STORY_WORDS_WRONG = in.readString();
+        //STORY_WORDS_WRONG = in.readString();
         STORY_ANS_Q1 = in.readString();
         STORY_ANS_Q2 = in.readString();
         LEARNING_LEVEL = in.readString();
@@ -131,13 +131,14 @@ public class Assessment implements Parcelable {
         this.PARAGRAPH_WORDS_WRONG = PARAGRAPH_WORDS_WRONG;
     }
 
-    public String getSTORY_WORDS_WRONG() {
+    /*public String getSTORY_WORDS_WRONG() {
         return STORY_WORDS_WRONG;
     }
 
     public void setSTORY_WORDS_WRONG(String STORY_WORDS_WRONG) {
         this.STORY_WORDS_WRONG = STORY_WORDS_WRONG;
     }
+     */
 
     public String getSTORY_ANS_Q1() {
         return STORY_ANS_Q1;
@@ -204,7 +205,7 @@ public class Assessment implements Parcelable {
         dest.writeString(PARAGRAPH_WORDS_WRONG);
         dest.writeString(STORY_ANS_Q1);
         dest.writeString(STORY_ANS_Q2);
-        dest.writeString(STORY_WORDS_WRONG);
+        //dest.writeString(STORY_WORDS_WRONG);
         dest.writeString(LEARNING_LEVEL);
         dest.writeString(LOCAL_ID);
         dest.writeString(CLOUD_ID);

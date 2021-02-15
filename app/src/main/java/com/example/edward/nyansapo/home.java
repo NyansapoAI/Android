@@ -51,7 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class home extends AppCompatActivity implements CustomViewAdapter.OnStudentListener, NavigationView.OnNavigationItemSelectedListener {
+public class home extends AppCompatActivity implements CustomViewAdapter.OnStudentListener, NavigationView.OnNavigationItemSelectedListener, AddDialog.AddDialogListener {
 
     // Initialize Variables
     EditText etText;
@@ -138,6 +138,8 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
         }
 
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -279,6 +281,18 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
 
         //students = databasehelper.getAllStudent();
         students = databasehelper.getAllStudentOfInstructor(instructor_id);
+
+        if(students.size() == 0){
+            // create an info alert
+            openDialog();
+        }
+    }
+
+    public void openDialog(){
+        AddDialog addDialog = new AddDialog();
+        addDialog.setInfo("Add Student", "Do you want to add a student?");
+        addDialog.show(getSupportFragmentManager(), "Add student");
+
     }
 
 
@@ -517,5 +531,12 @@ public class home extends AppCompatActivity implements CustomViewAdapter.OnStude
 
         }
 
+    }
+
+    @Override
+    public void onYesClicked() {
+        Intent myIntent = new Intent(getBaseContext(), registerStudent.class);
+        myIntent.putExtra("instructor_id", instructor_id);
+        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 }

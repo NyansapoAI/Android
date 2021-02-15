@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -33,6 +34,10 @@ public class RegisterTeacher extends AppCompatActivity {
     EditText password1;
     EditText password2;
 
+    // progress_bar
+    int network_lock;
+    Button register;
+    loading_progressBar progressBar;
     // declare database connection
     dataBaseHandler databasehelper;
 
@@ -54,12 +59,28 @@ public class RegisterTeacher extends AppCompatActivity {
         password1 = findViewById(R.id.password1);
         password2 = findViewById(R.id.password2);
 
+        register = findViewById(R.id.register_teacher);
 
         // Initialize DatabaseHelper
         databasehelper = new dataBaseHandler(RegisterTeacher.this); // might need to try catch
 
         // initialize object
         instructor = new Instructor();
+
+        // progress bar
+        network_lock = 0;
+        progressBar = new loading_progressBar(RegisterTeacher.this);
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(network_lock == 0){
+                    startSelector(view);
+                }else{
+                    Toast.makeText(RegisterTeacher.this, "Registering Instructor Wait ...", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
     }
 
     public void startSelector(View v){
@@ -68,6 +89,9 @@ public class RegisterTeacher extends AppCompatActivity {
         String pass2 = password2.getText().toString();
 
         if(pass1.compareTo(pass2) == 0){ // password validated
+
+            network_lock = 1;
+            progressBar.showDialog();
 
             // populate instructor object
             instructor.setEmail(email.getText().toString());
@@ -93,18 +117,24 @@ public class RegisterTeacher extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                network_lock = 0;
+                progressBar.dismissDialog();
                 //Toast.makeText(RegisterTeacher.this, getId(response), Toast.LENGTH_LONG).show();
                 instructor.setCloud_id(getId(response)); // set cloud id
                 instructor.setLocal_id(UUID.randomUUID().toString());  // set local id
                 //Toast.makeText(RegisterTeacher.this, instructor.getCloud_id(), Toast.LENGTH_LONG).show();
                 databasehelper.addTeacher(instructor);
 
-                Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
+                Intent myIntent = new Intent(getBaseContext(), home.class);
+                myIntent.putExtra("instructor_id", getId(response)); // its id for now
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(RegisterTeacher.this).toBundle());
+
             }
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                network_lock = 0;
+                progressBar.dismissDialog();
                 String responseBody = null;
                 try {
                     responseBody = new String(error.networkResponse.data, "utf-8");

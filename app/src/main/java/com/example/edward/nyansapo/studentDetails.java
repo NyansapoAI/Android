@@ -30,7 +30,6 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
     TextView student_name;
     TextView initial_level;
     TextView current_level;
-    TextView attendance_record;
     TextView assessments_taken;
 
     // buttons
@@ -101,7 +100,7 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
             current_level = findViewById(R.id.current_level);
             assessments_taken = findViewById(R.id.assessments_taken);
 
-            assessments_taken.setText(student.getAge());
+            assessments_taken.setText("0"); // updated
             student_name.setText(student.getFirstname() + ' ' + student.getLastname());
 
             // code for buttons
@@ -128,7 +127,7 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
 
                 series.setAnimated(true);
                 graphView.addSeries(series);
-                graphView.setTitle("Literacy Level Vs. Time");
+                graphView.setTitle("Literacy Level Vs. Time of Current Assessments");
                 graphView.getViewport().setXAxisBoundsManual(true);
                 graphView.getViewport().setMinX(1);
                 graphView.getViewport().setMaxX(5);
@@ -170,15 +169,15 @@ public class studentDetails extends AppCompatActivity  implements  View.OnClickL
                     LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[]{
                             new DataPoint(0, 0),
                             new DataPoint(1, 0),
-                            new DataPoint(2, 2),
-                            new DataPoint(3, 2),
-                            new DataPoint(4, 4),
+                            new DataPoint(2, 0),
+                            new DataPoint(3, 0),
+                            new DataPoint(4, 0),
                             //new DataPoint(5, 5)
                     });
 
                     series.setAnimated(true); // set animation
                     graphView.addSeries(series);
-                    graphView.setTitle("Literacy Level Vs. Time");
+                    graphView.setTitle("No Assessment has been recorded");
 
                     graphView.getViewport().setXAxisBoundsManual(true);
                     graphView.getViewport().setMinX(1);

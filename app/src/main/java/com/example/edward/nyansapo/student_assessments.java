@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class student_assessments extends AppCompatActivity implements AssessmentCustomViewAdapter.OnAssessmentListener,  SelectAssessmentModal.AssessmentModalListener {
+public class student_assessments extends AppCompatActivity implements AssessmentCustomViewAdapter.OnAssessmentListener,  SelectAssessmentModal.AssessmentModalListener, AddDialog.AddDialogListener {
 
     dataBaseHandler databaseHandler;
     ArrayList arrayList;
@@ -138,12 +138,20 @@ public class student_assessments extends AppCompatActivity implements Assessment
 
     private void getAssessments() {
         assessments =databaseHandler.getAllStudentAssessment(student.getCloud_id());
-        //Toast.makeText(this, student_activity.getLocal_id(), Toast.LENGTH_LONG).show();
-        //Toast.makeText(this, student_activity.getCloud_id(), Toast.LENGTH_LONG).show();
-        //Toast.makeText(this, student_activity.toString(), Toast.LENGTH_LONG).show();
-        //Toast.makeText(this, Integer.toString(assessments.size()), Toast.LENGTH_LONG).show();
+
+        if(assessments.size() == 0){
+            openDialog();
+        }
 
     }
+
+    public void openDialog(){
+        AddDialog addDialog = new AddDialog();
+        addDialog.setInfo("Add Assessment", "Do you want to add an Assessment?");
+        addDialog.show(getSupportFragmentManager(), "Add Assessment");
+
+    }
+
 
     private void addAssessment() {
         /*
@@ -241,5 +249,10 @@ public class student_assessments extends AppCompatActivity implements Assessment
             }
         }
 
+    }
+
+    @Override
+    public void onYesClicked() {
+        addAssessment();
     }
 }

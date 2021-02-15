@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -40,11 +41,17 @@ public class registerStudent extends AppCompatActivity {
     EditText std_class;
     EditText notes;
 
+    Button addStudent;
+
     // Initialize database connection
     dataBaseHandler databasehelper;
 
     // Instructor id
     String instructor_id;
+
+    // Progress bar
+    loading_progressBar progressBar;
+    int network_lock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +92,24 @@ public class registerStudent extends AppCompatActivity {
         // Initialize DatabaseHelper
         databasehelper = new dataBaseHandler(registerStudent.this);
 
+        // progress bar
+        network_lock = 0;
+        progressBar = new loading_progressBar(registerStudent.this);
+
+        addStudent = findViewById(R.id.create_button);
+        addStudent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(network_lock == 0){
+                    network_lock = 1;
+                    register(view);
+                }else{
+                    Toast.makeText(registerStudent.this, "Registering Student Wait ...", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
     }
 
     public void startAssessment(View v){
@@ -92,8 +117,8 @@ public class registerStudent extends AppCompatActivity {
         startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
-    public void goHome(View v){
-
+    public void register(View v){
+        progressBar.showDialog();
         UUID uuid = UUID.randomUUID();
         // Validation for inputs needs to happen before creating student_activity
 
@@ -142,13 +167,16 @@ public class registerStudent extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                network_lock = 0;
+                progressBar.dismissDialog();
                 student.setCloud_id(getId(response));
                 databasehelper.addStudent(student);
                 //Toast.makeText(registerStudent.this,"std"+ getId(response), Toast.LENGTH_LONG).show();
                 //Toast.makeText(registerStudent.this, "inst"+ student_activity.getInstructor_id(), Toast.LENGTH_LONG).show();
 
-                Intent myIntent = new Intent(getBaseContext(), home.class);
+                Intent myIntent = new Intent(getBaseContext(), student_assessments.class);
                 myIntent.putExtra("instructor_id", instructor_id);
+                myIntent.putExtra("student_activity",student);
                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(registerStudent.this).toBundle());
             }
         }, new com.android.volley.Response.ErrorListener() {

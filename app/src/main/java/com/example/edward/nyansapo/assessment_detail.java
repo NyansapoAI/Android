@@ -1,8 +1,10 @@
 package com.example.edward.nyansapo;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -47,8 +49,36 @@ public class assessment_detail extends AppCompatActivity {
         letters_wrong_view.setText(assessment.getLETTERS_WRONG());
         question1.setText(assessment.getSTORY_ANS_Q1());
         question2.setText(assessment.getSTORY_ANS_Q2());
+        //Toast.makeText(this, "Q1"+ assessment.getSTORY_ANS_Q1() + " "+ assessment.getSTORY_ANS_Q2(), Toast.LENGTH_LONG).show();
 
         dataBaseHandler = new dataBaseHandler(this);
+
+
+        // toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(assessment_detail.this, student_assessments.class);
+                intent.putExtra("instructor_id", instructor_id);
+                intent.putExtra("student_activity", student);
+                startActivity(intent);
+                /*
+                //startActivity(new Intent(getApplicationContext(), home.class));
+                Intent myIntent = new Intent(getBaseContext(), home.class);
+                myIntent.putExtra("instructor_id", instructor_id); // its id for now
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(assessment_detail.this).toBundle());
+
+                 */
+            }
+        });
+
 
         /*Toast.makeText(this,assessment.getLETTERS_WRONG(), Toast.LENGTH_SHORT).show();
         Toast.makeText(this,assessment.getLETTERS_CORRECT(), Toast.LENGTH_SHORT).show();
