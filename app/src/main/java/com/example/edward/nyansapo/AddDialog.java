@@ -5,8 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatDialogFragment;
-import android.widget.LinearLayout;
+import androidx.appcompat.app.AppCompatDialogFragment;
 
 public class AddDialog extends AppCompatDialogFragment {
     private AddDialogListener Listener;

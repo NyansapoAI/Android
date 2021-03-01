@@ -2,18 +2,12 @@ package com.example.edward.nyansapo;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
+import androidx.appcompat.app.AppCompatActivity;
+
 public class Interface_selecter extends AppCompatActivity {
 
     @Override

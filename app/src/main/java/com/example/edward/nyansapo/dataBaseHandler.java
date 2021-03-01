@@ -6,20 +6,12 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import java.lang.annotation.Target;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Timer;
 import java.util.UUID;
-
-import static java.util.Calendar.DATE;
 
 public class dataBaseHandler extends SQLiteOpenHelper {
 

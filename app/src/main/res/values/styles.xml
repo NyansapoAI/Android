@@ -11,8 +11,22 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:padding">50dp</item>
+
     </style>
 
 
+    <style name="FirebaseUI.AuthMethodPicker.Logo">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">@dimen/fui_auth_method_button_width</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:clipToPadding">false</item>
+        <!-- These have to be padding instead of margin so the shadows aren't clipped. -->
+        <item name="android:paddingLeft">65dp</item>
+        <item name="android:paddingRight">65dp</item>
+
+    </style>
 
 </resources>
