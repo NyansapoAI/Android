@@ -1,4 +1,4 @@
-package com.example.edward.nyansapo.presentation.ui
+package com.example.edward.nyansapo.presentation.ui.login
 
 import android.os.Bundle
 import android.util.Log

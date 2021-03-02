@@ -14,13 +14,20 @@
         android:roundIcon="@drawable/small_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".presentation.ui.MainActivity2">
+        <activity android:name=".presentation.ui.learning_level.LearningLevelActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".presentation.ui.begin_assessment.BeginAssessementActivity" />
+        <activity android:name=".presentation.ui.individual_activities.IndividualActivitiesActivity" />
+        <activity android:name=".presentation.ui.activities.ActivitiesActivity">
+
+        </activity>
+        <activity android:name=".presentation.ui.login.MainActivity2"></activity>
         <activity android:name=".studentSettings" />
         <activity android:name=".MainActivity" />
         <activity android:name=".QuestionStory" />
@@ -38,11 +45,14 @@
         <activity android:name=".student_activity" />
         <activity android:name=".selectSchool" />
         <activity android:name=".index">
-           <!-- <intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity android:name=".TeacherLogin" />
         <activity android:name=".Interface_selecter" />

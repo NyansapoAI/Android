@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_assess"
+        android:icon="@drawable/ic_assess"
+        android:title="Assess" />
+
+      <item
+          android:id="@+id/action_grouping"
+          android:icon="@drawable/ic_grouping"
+          android:title="Grouping" />
+      <item
+          android:id="@+id/action_home"
+          android:icon="@drawable/ic_home"
+          android:title="Home" />
+      <item
+          android:id="@+id/action_patterns"
+          android:icon="@drawable/ic_patterns"
+          android:title="Patterns" />
+      <item
+          android:id="@+id/action_activities"
+          android:icon="@drawable/ic_activities"
+          android:title="Activities" />
+
+
+</menu>
