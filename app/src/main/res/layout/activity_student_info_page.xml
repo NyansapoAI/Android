@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".presentation.ui.student.StudentInfoPageActivity">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_gravity="center_vertical"
+
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/light_bulb" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:layout_height="wrap_content"
+            tools:text="Word" />
+
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/exclamation_image" />
+
+    </LinearLayout>
+    
+    
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"/>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Assessment 4" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Assessment 5" />
+
+</LinearLayout>

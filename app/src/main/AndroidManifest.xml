@@ -9,25 +9,27 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@drawable/small_logo"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@drawable/small_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".presentation.ui.learning_level.LearningLevelActivity">
-
+        <activity android:name=".presentation.ui.student.IndividualStudentPageActivity"></activity>
+        <activity android:name=".presentation.ui.student.StudentInfoPageActivity" />
+        <activity android:name=".presentation.ui.begin_assessment_chooser.BeginAssessMentChooserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".presentation.ui.learning_level.LearningLevelActivity" />
         <activity android:name=".presentation.ui.begin_assessment.BeginAssessementActivity" />
         <activity android:name=".presentation.ui.individual_activities.IndividualActivitiesActivity" />
-        <activity android:name=".presentation.ui.activities.ActivitiesActivity">
-
-        </activity>
-        <activity android:name=".presentation.ui.login.MainActivity2"></activity>
+        <activity android:name=".presentation.ui.activities.ActivitiesActivity" />
+        <activity android:name=".presentation.ui.login.MainActivity2" />
         <activity android:name=".studentSettings" />
         <activity android:name=".MainActivity" />
         <activity android:name=".QuestionStory" />
