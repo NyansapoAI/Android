@@ -10,23 +10,27 @@
     <TextView
         android:layout_width="match_parent"
         android:textAppearance="@android:style/TextAppearance.Large"
-        android:text="Please Choose an Avatar"
+        android:text="Choose A character"
         android:gravity="center"
         android:layout_height="wrap_content"/>
 
 
     <LinearLayout
+        android:background="@drawable/bg_avatar"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.flaviofaria.kenburnsview.KenBurnsView
+        <ImageView
+
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_weight="1"
             android:src="@drawable/nyansapo_avatar_cheeta" />
 
-        <com.flaviofaria.kenburnsview.KenBurnsView
+        <ImageView
+
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_weight="1"
@@ -34,29 +38,35 @@
 
     </LinearLayout>
 
-    <com.flaviofaria.kenburnsview.KenBurnsView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/nyansapo_avatar_elelphant" />
+
 
    <LinearLayout
-        android:layout_width="match_parent"
+       android:background="@drawable/bg_avatar"
+
+       android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.flaviofaria.kenburnsview.KenBurnsView
+        <ImageView
+            android:background="@drawable/bg_avatar"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_weight="1"
             android:src="@drawable/nyansapo_avatar_rhino" />
 
-        <com.flaviofaria.kenburnsview.KenBurnsView
+        <ImageView
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_weight="1"
             android:src="@drawable/nyansapo_avatar_waterbuffalo" />
 
     </LinearLayout>
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/bg_avatar"
+
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/nyansapo_avatar_elelphant" />
 
 </LinearLayout>

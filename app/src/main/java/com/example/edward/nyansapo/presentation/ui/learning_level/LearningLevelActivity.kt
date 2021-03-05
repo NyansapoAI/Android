@@ -46,8 +46,7 @@ class LearningLevelActivity : AppCompatActivity() {
             tab.text = (binding.viewpager!!.adapter as ViewPagerAdapter?)!!.mFragmentNames[position] //Sets tabs names as mentioned in ViewPagerAdapter fragmentNames array, this can be implemented in many different ways.
         }.attach()
 
-        tabs.setTabMode(TabLayout.MODE_SCROLLABLE)
-        tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val position = tab?.position
                 Log.d(TAG, "onTabSelected: $position")
