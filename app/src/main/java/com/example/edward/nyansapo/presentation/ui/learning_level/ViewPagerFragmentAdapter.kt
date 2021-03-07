@@ -2,23 +2,34 @@ package com.example.edward.nyansapo.presentation.ui.learning_level
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.edward.nyansapo.presentation.ui.activities.TabScreensFragment
+import com.example.edward.nyansapo.presentation.utils.TabEnum
 
 
-class ViewPagerAdapter(fa: FragmentActivity?) : FragmentStateAdapter(fa!!) {
-    val mFragments: Array<Fragment> = arrayOf<Fragment>(
+class ViewPagerAdapter(fa: FragmentActivity?, val tabEnum: TabEnum) : FragmentStateAdapter(fa!!) {
 
-           LearningLevelFragment(),
-            LearningLevelFragment(),
-            LearningLevelFragment(),
-            LearningLevelFragment(),
-            LearningLevelFragment(),
-            LearningLevelFragment()
-    )
-    val mFragmentNames = arrayOf( //Tabs names array
+    val mFragments: MutableList<Fragment> = mutableListOf<Fragment>()
+
+
+    init {
+         when(tabEnum){
+            TabEnum.ACTIVITES-> {
+                repeat(6) {
+                    mFragments.add(TabScreensFragment())
+                }
+            }
+            TabEnum.LEARNING_LEVELS-> {
+                repeat(6) {
+                    mFragments.add(TabScreenLearningFragment())
+                }
+            }
+        }
+
+    }
+
+    val mFragmentNames = arrayOf(
+            //Tabs names array
             "Letters",
             "Word",
             "Paragraph",

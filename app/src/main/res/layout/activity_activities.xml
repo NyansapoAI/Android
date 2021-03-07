@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/appbarLayout"
-        tools:listitem="@layout/item_individual_activities">
+        tools:listitem="@layout/item_student">
 
     </androidx.recyclerview.widget.RecyclerView>
 

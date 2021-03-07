@@ -1,141 +1,109 @@
-package com.example.edward.nyansapo;
+package com.example.edward.nyansapo
 
-import android.app.ActivityOptions;
-import android.content.Intent;
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
-import android.view.View;
-import android.widget.Button;
+import android.app.ActivityOptions
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import com.example.edward.nyansapo.PreAssessment
+import com.example.edward.nyansapo.presentation.utils.Constants
 
-public class SelectAssessment extends AppCompatActivity  implements View.OnClickListener{
-
-    Button button3, button4, button5, button6, button7, button8, button9, button10;
-
-    Student student;
-
-    String instructor_id;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_assessment);
-        Intent intent = getIntent();
-        student = intent.getParcelableExtra("student_activity");
-        instructor_id = intent.getStringExtra("instructor_id");
+class SelectAssessment : AppCompatActivity(), View.OnClickListener {
+    var button3: Button? = null
+    var button4: Button? = null
+    var button5: Button? = null
+    var button6: Button? = null
+    var button7: Button? = null
+    var button8: Button? = null
+    var button9: Button? = null
+    var button10: Button? = null
+    var student: Student? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_select_assessment)
+        val intent = intent
+        student = Constants.studentDocumentSnapshot!!.toObject(Student::class.java)
 
         // toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(getApplicationContext(), home.class));
-                Intent intent = new Intent(SelectAssessment.this, student_assessments.class);
-                intent.putExtra("instructor_id", instructor_id);
-                intent.putExtra("student_activity", student);
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SelectAssessment.this).toBundle());
-            }
-        });
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        toolbar.setNavigationOnClickListener { //startActivity(new Intent(getApplicationContext(), home.class));
+            val intent = Intent(this@SelectAssessment, student_assessments::class.java)
+             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@SelectAssessment).toBundle())
+        }
 
 
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
-
-        button3 = findViewById(R.id.assessment3_button);
-        button4 = findViewById(R.id.assessment4_button);
-        button5 = findViewById(R.id.assessment5_button);
-        button6 = findViewById(R.id.assessment6_button);
-        button7 = findViewById(R.id.assessment7_button);
-        button8 = findViewById(R.id.assessment8_button);
-        button9 = findViewById(R.id.assessment9_button);
-        button10 = findViewById(R.id.assessment10_button);
-
-        button3.setOnClickListener(this);
-        button4.setOnClickListener(this);
-        button5.setOnClickListener(this);
-        button6.setOnClickListener(this);
-        button7.setOnClickListener(this);
-        button8.setOnClickListener(this);
-        button9.setOnClickListener(this);
-        button10.setOnClickListener(this);
-
-        button6.setEnabled(false);
-        button7.setEnabled(false);
-        button8.setEnabled(false);
-        button9.setEnabled(false);
-        button10.setEnabled(false);
+        button3 = findViewById(R.id.assessment3_button)
+        button4 = findViewById(R.id.assessment4_button)
+        button5 = findViewById(R.id.assessment5_button)
+        button6 = findViewById(R.id.assessment6_button)
+        button7 = findViewById(R.id.assessment7_button)
+        button8 = findViewById(R.id.assessment8_button)
+        button9 = findViewById(R.id.assessment9_button)
+        button10 = findViewById(R.id.assessment10_button)
+        button3!!.setOnClickListener(this)
+        button4!!.setOnClickListener(this)
+        button5!!.setOnClickListener(this)
+        button6!!.setOnClickListener(this)
+        button7!!.setOnClickListener(this)
+        button8!!.setOnClickListener(this)
+        button9!!.setOnClickListener(this)
+        button10!!.setOnClickListener(this)
+        button6!!.setEnabled(false)
+        button7!!.setEnabled(false)
+        button8!!.setEnabled(false)
+        button9!!.setEnabled(false)
+        button10!!.setEnabled(false)
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.assessment3_button:{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","3");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                myIntent.putExtra("instructor_id", instructor_id);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.assessment3_button -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "3")
+                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
-            case R.id.assessment4_button:{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","4");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                myIntent.putExtra("instructor_id", instructor_id);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
+            R.id.assessment4_button -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "4")
+                  startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
-            case R.id.assessment5_button:{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","5");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                myIntent.putExtra("instructor_id", instructor_id);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
+            R.id.assessment5_button -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "5")
+                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
-            case R.id.assessment6_button:{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","6");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                myIntent.putExtra("instructor_id", instructor_id);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
+            R.id.assessment6_button -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "6")
+                  startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
-            case R.id.assessment7_button:{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","7");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                myIntent.putExtra("instructor_id", instructor_id);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
+            R.id.assessment7_button -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "7")
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
-            case R.id.assessment8_button:{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","8");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
+            R.id.assessment8_button -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "8")
+               startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
-            case R.id.assessment9_button:{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","9");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
+            R.id.assessment9_button -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "9")
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
-            case R.id.assessment10_button:{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","10");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
+            R.id.assessment10_button -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "10")
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
-            default:{
-
+            else -> {
             }
         }
     }

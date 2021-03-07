@@ -4,7 +4,7 @@ package com.example.edward.nyansapo.db.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Student2 implements Parcelable {
+public class Student2 {
 
     public String local_id;
     public String cloud_id;
@@ -27,31 +27,8 @@ public class Student2 implements Parcelable {
     }
 
 
-    protected Student2(Parcel in) {
-        local_id = in.readString();
-        cloud_id = in.readString();
-        firstname = in.readString();
-        lastname = in.readString();
-        age = in.readString();
-        gender = in.readString();
-        notes = in.readString();
-        timestamp = in.readString();
-        instructor_id = in.readString();
-        learning_level = in.readString();
-        std_class = in.readString();
-    }
 
-    public static final Creator<Student2> CREATOR = new Creator<Student2>() {
-        @Override
-        public Student2 createFromParcel(Parcel in) {
-            return new Student2(in);
-        }
 
-        @Override
-        public Student2[] newArray(int size) {
-            return new Student2[size];
-        }
-    };
 
     // getters
     public String getFirstname() {
@@ -149,23 +126,6 @@ public class Student2 implements Parcelable {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(local_id);
-        dest.writeString(cloud_id);
-        dest.writeString(firstname);
-        dest.writeString(lastname);
-        dest.writeString(age);
-        dest.writeString(gender);
-        dest.writeString(notes);
-        dest.writeString(timestamp);
-        dest.writeString(instructor_id);
-        dest.writeString(learning_level);
-        dest.writeString(std_class);
-    }
+
 }

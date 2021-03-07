@@ -1,18 +1,23 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Bridge">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
+
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:layout_gravity">center</item>
+      <!--  <item name="android:layout_gravity">center</item>
         <item name="android:padding">50dp</item>
+-->
+
 
     </style>
 
@@ -26,6 +31,7 @@
         <!-- These have to be padding instead of margin so the shadows aren't clipped. -->
         <item name="android:paddingLeft">65dp</item>
         <item name="android:paddingRight">65dp</item>
+
 
     </style>
 

@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import androidx.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -69,6 +68,9 @@ public class dataBaseHandler extends SQLiteOpenHelper {
     public static final String USER_CLOUD_ID = "user_cloud_id";
     public static final String USERTOKEN = "usertoken";
     public static final String USERACTIVE = "useractive";
+
+
+    SQLiteDatabase writableDatabase;
 
     public dataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -141,21 +143,56 @@ public class dataBaseHandler extends SQLiteOpenHelper {
 
 
         // create user table
-        String userTable = "create table " + USER_TABLE + " ("+
+        String userTable = "create table " + USER_TABLE + " (" +
                 USEREMAIL + " TEXT," +
                 USER_CLOUD_ID + " TEXT," +
-                USERTOKEN + " TEXT,"+
+                USERTOKEN + " TEXT," +
                 USERACTIVE + " TEXT)";
 
 
+        sqLiteDatabase.execSQL(createTable);
+        sqLiteDatabase.execSQL(instructorTable);
+        sqLiteDatabase.execSQL(studentTable);
+        sqLiteDatabase.execSQL(assessmentTable);
+        sqLiteDatabase.execSQL(attendanceTable);
+        sqLiteDatabase.execSQL(groupTable);
+        sqLiteDatabase.execSQL(userTable);
 
-         sqLiteDatabase.execSQL(createTable);
-         sqLiteDatabase.execSQL(instructorTable);
-         sqLiteDatabase.execSQL(studentTable);
-         sqLiteDatabase.execSQL(assessmentTable);
-         sqLiteDatabase.execSQL(attendanceTable);
-         sqLiteDatabase.execSQL(groupTable);
-         sqLiteDatabase.execSQL(userTable);
+
+      //  putDummyDataIntoDatabase();
+
+    }
+
+    private void putDummyDataIntoDatabase() {
+
+        Student student1 = new Student();
+        student1.setFirstname("justice");
+        student1.setLastname("eli");
+        student1.setInstructor_id("123");
+        student1.setInstructor_id("123");
+
+        addStudent(student1);
+
+        Student student2 = new Student();
+        student2.setFirstname("silvia");
+        student2.setLastname("ndonika");
+        student2.setInstructor_id("123");
+
+        addStudent(student2);
+
+        Student student3 = new Student();
+        student3.setFirstname("philip");
+        student3.setLastname("saint");
+        student3.setInstructor_id("123");
+
+        addStudent(student3);
+
+        Student student4 = new Student();
+        student4.setFirstname("boyler");
+        student4.setLastname("falopi");
+        student4.setInstructor_id("123");
+
+        addStudent(student4);
 
     }
 
@@ -297,7 +334,10 @@ public class dataBaseHandler extends SQLiteOpenHelper {
 
     public String addStudent(Student student){
         //get WriteAble Database
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        if (writableDatabase==null){
+            writableDatabase = this.getWritableDatabase();
+
+        }
         // create contentValues
         String uuid = UUID.randomUUID().toString();
         ContentValues contentValues = new ContentValues();
@@ -315,7 +355,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         //Add Values into Database
 
         try{
-            long r = sqLiteDatabase.insert(STUDENT_TABLE, null,contentValues);
+            long r = writableDatabase.insert(STUDENT_TABLE, null,contentValues);
             return Long.toString(r);
         }catch (Error error){
         }

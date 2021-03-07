@@ -7,43 +7,44 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
         android:id="@+id/appbarLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            tools:menu="@menu/learning_level_menu"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            tools:menu="@menu/learning_level_menu" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
-            app:tabMode="scrollable"
-            app:layout_scrollFlags="scroll|enterAlways"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:tabMode="scrollable" />
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager"
         android:layout_below="@+id/appbarLayout"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation"
-        app:layout_anchorGravity="bottom" />
+        android:layout_width="match_parent"
+        android:layout_marginBottom="8dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_navigation_main" />
+
+
 </RelativeLayout>

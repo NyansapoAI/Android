@@ -8,6 +8,7 @@ import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.databinding.ActivityLearningLevelBinding
+import com.example.edward.nyansapo.presentation.utils.TabEnum
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_learning_level.*
@@ -30,6 +31,17 @@ class LearningLevelActivity : AppCompatActivity() {
         setUpViewPager()
 
     }
+    private fun setUpToolbar() {
+
+        binding.toolbar.inflateMenu(R.menu.learning_level_menu)
+        binding.toolbar.setTitle("Grouping")
+        toolbar.setOnMenuItemClickListener { item->
+
+
+            true
+
+        }
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -40,7 +52,7 @@ class LearningLevelActivity : AppCompatActivity() {
 
     fun setUpViewPager() {
 
-        binding.viewpager!!.adapter = ViewPagerAdapter(this) //Attach the adapter with our ViewPagerAdapter passing the host activity
+        binding.viewpager!!.adapter = ViewPagerAdapter(this,TabEnum.LEARNING_LEVELS) //Attach the adapter with our ViewPagerAdapter passing the host activity
         TabLayoutMediator(tabs, binding.viewpager!!
         ) { tab, position ->
             tab.text = (binding.viewpager!!.adapter as ViewPagerAdapter?)!!.mFragmentNames[position] //Sets tabs names as mentioned in ViewPagerAdapter fragmentNames array, this can be implemented in many different ways.

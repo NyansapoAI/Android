@@ -1,236 +1,193 @@
-package com.example.edward.nyansapo;
+package com.example.edward.nyansapo
 
-import android.app.ActivityOptions;
-import android.content.Intent;
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.app.ActivityOptions
+import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.os.Bundle
+import android.view.*
+import android.view.View
+import android.view.ViewGroup.*
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import com.android.volley.*
+import com.example.edward.nyansapo.home
+import com.example.edward.nyansapo.presentation.utils.Constants
+import java.util.*
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import java.util.HashMap;
-import java.util.Map;
-
-public class studentSettings extends AppCompatActivity {
-
+class studentSettings : AppCompatActivity() {
     // Initialize variables
-    EditText firstname;
-    EditText lastname;
-    EditText age;
-    EditText gender;
-    EditText std_class;
-    EditText notes;
+    var firstname: EditText? = null
+    var lastname: EditText? = null
+    var age: EditText? = null
+    var gender: EditText? = null
+    var std_class: EditText? = null
+    var notes: EditText? = null
 
-    // database
-    dataBaseHandler databasehelper;
 
     // buttons
-    Button update, delete;
+    var update: Button? = null
+    var delete: Button? = null
 
     // student_activity
-    Student student;
-    String instructor_id;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_settings);
-
-        Intent intent = getIntent();
-        student = intent.getParcelableExtra("student_activity");
-        instructor_id = intent.getStringExtra("instructor_id");
+    var student: Student? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_student_settings)
+        initProgressBar()
+        val intent = intent
+        student = Constants.studentDocumentSnapshot?.toObject(Student::class.java)
 
         // toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(getApplicationContext(), home.class));
-                Intent intent = new Intent(studentSettings.this, student_assessments.class);
-                intent.putExtra("instructor_id", instructor_id);
-                intent.putExtra("student_activity", student);
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(studentSettings.this).toBundle());
-            }
-        });
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        toolbar.setNavigationOnClickListener { //startActivity(new Intent(getApplicationContext(), home.class));
+            val intent = Intent(this@studentSettings, student_assessments::class.java)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@studentSettings).toBundle())
+        }
 
 
         // Assign variables
-        firstname = findViewById(R.id.edit_firstname);
-        lastname = findViewById(R.id.edit_lastname);
-        age = findViewById(R.id.edit_age);
-        gender = findViewById(R.id.edit_gender);
-        std_class = findViewById(R.id.edit_class);
-        notes = findViewById(R.id.edit_notes);
+        firstname = findViewById(R.id.edit_firstname)
+        lastname = findViewById(R.id.edit_lastname)
+        age = findViewById(R.id.edit_age)
+        gender = findViewById(R.id.edit_gender)
+        std_class = findViewById(R.id.edit_class)
+        notes = findViewById(R.id.edit_notes)
 
         // buttons
-        update = findViewById(R.id.std_update);
-        delete = findViewById(R.id.std_delete);
+        update = findViewById(R.id.std_update)
+        delete = findViewById(R.id.std_delete)
 
-        // database
-        databasehelper = new dataBaseHandler(this);
-
+        update!!.setOnClickListener(View.OnClickListener { //Toast.makeText(studentSettings.this, "Under Development", Toast.LENGTH_LONG).show();
 
 
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(studentSettings.this, "Under Development", Toast.LENGTH_LONG).show();
-                databasehelper.updateStudent(student.getCloud_id(),firstname.getText().toString(), lastname.getText().toString(), age.getText().toString(), gender.getText().toString(), notes.getText().toString(), std_class.getText().toString());
-                updateStudent();
-                Intent myIntent = new Intent(getBaseContext(), home.class);
-                myIntent.putExtra("instructor_id", instructor_id); // its id for now
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(studentSettings.this).toBundle());
+            val student = Student()
+            student.setFirstname(firstname!!.getText().toString())
+            student.setLastname(lastname!!.getText().toString())
+            student.setAge(age!!.getText().toString())
+            student.setGender(gender!!.getText().toString())
+            student.setNotes(notes!!.getText().toString())
+            student.setStd_class(std_class!!.getText().toString())
+
+
+
+            updateStudent(student) {
+                val myIntent = Intent(baseContext, home::class.java)
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@studentSettings).toBundle())
+
             }
-        });
-
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                databasehelper.deleteStudent(student.getCloud_id());
-                deleteStudent(student.getCloud_id());
+        })
+        delete!!.setOnClickListener(View.OnClickListener {
+            deleteStudent {
                 //Toast.makeText(studentSettings.this, student_activity.getCloud_id(), Toast.LENGTH_LONG).show();
-                Intent myIntent = new Intent(getBaseContext(), home.class);
-                myIntent.putExtra("instructor_id", instructor_id); // its id for now
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(studentSettings.this).toBundle());
+                val myIntent = Intent(baseContext, home::class.java)
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@studentSettings).toBundle())
 
             }
-        });
+        })
 
         // do on some thread
-        populateInfo();
+        populateInfo()
+    }
+
+    fun updateStudent(student: Student, onComplete: () -> Unit) {
+        showProgress(true)
+        Constants.studentDocumentSnapshot?.reference?.set(student)?.addOnSuccessListener {
+            showProgress(false)
+            onComplete()
+
+        }
+    }
+
+    fun deleteStudent(onComplete: () -> Unit) {
+        showProgress(true)
+        Constants.studentDocumentSnapshot!!.reference.delete().addOnSuccessListener {
+            showProgress(false)
+            onComplete()
+        }
 
     }
 
-    public void updateStudent(){
+    fun populateInfo() {
+        firstname!!.setText(student!!.getFirstname())
+        lastname!!.setText(student!!.getLastname())
+        age!!.setText(student!!.getAge())
+        gender!!.setText(student!!.getGender())
+        std_class!!.setText(student!!.getStd_class())
+        notes!!.setText(student!!.getNotes())
+    }
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "https://nyansapoai-api.azurewebsites.net/student/update";
+    /////////////////////PROGRESS_BAR////////////////////////////
+    lateinit var dialog: AlertDialog
 
-        //StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,  new com.android.volley.Response.Listener<String>() )
+    private fun showProgress(show: Boolean) {
 
+        if (show) {
+            dialog.show()
 
+        } else {
+            dialog.dismiss()
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //databasehelper.deleteStudent(student_activity.getCloud_id());
-                //Toast.makeText(studentSettings.this, "Student Deleted "+ response, Toast.LENGTH_SHORT).show();
-                //Intent myIntent = new Intent(getBaseContext(), home.class);
-                //myIntent.putExtra("instructor_id", instructor_id); // its id for now
-                //startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(studentSettings.this).toBundle());
-            }
-        }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(studentSettings.this, error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams(){
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("student_id", student.getCloud_id());
-                params.put("firstname", firstname.getText().toString() );
-                params.put("lastname", lastname.getText().toString());
-                params.put("age", age.getText().toString());
-                params.put("gender", gender.getText().toString());
-                params.put("std_class", std_class.getText().toString());
-                params.put("notes", notes.getText().toString());
-                return params;
-
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                10000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        requestQueue.add(stringRequest);
-
+        }
 
     }
 
+    private fun initProgressBar() {
 
-    public void deleteStudent(String student_id){
-            RequestQueue requestQueue = Volley.newRequestQueue(this);
-            String url = "https://nyansapoai-api.azurewebsites.net/student/delete";
-
-            //StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,  new com.android.volley.Response.Listener<String>() )
-
-
-
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    //databasehelper.deleteStudent(student_activity.getCloud_id());
-                    //Toast.makeText(studentSettings.this, "Student Deleted "+ response, Toast.LENGTH_SHORT).show();
-                    //Intent myIntent = new Intent(getBaseContext(), home.class);
-                    //myIntent.putExtra("instructor_id", instructor_id); // its id for now
-                    //startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(studentSettings.this).toBundle());
-                }
-            }, new com.android.volley.Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(studentSettings.this, error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }){
-                @Override
-                protected Map<String, String> getParams(){
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("student_id", student_id);
-                    return params;
-
-                }
-
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("Content-Type", "application/x-www-form-urlencoded");
-                    return params;
-                }
-            };
-
-            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                    10000,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-            requestQueue.add(stringRequest);
-
+        dialog = setProgressDialog(this, "Loading..")
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
     }
 
+    fun setProgressDialog(context: Context, message: String): AlertDialog {
+        val llPadding = 30
+        val ll = LinearLayout(context)
+        ll.orientation = LinearLayout.HORIZONTAL
+        ll.setPadding(llPadding, llPadding, llPadding, llPadding)
+        ll.gravity = Gravity.CENTER
+        var llParam = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT)
+        llParam.gravity = Gravity.CENTER
+        ll.layoutParams = llParam
 
+        val progressBar = ProgressBar(context)
+        progressBar.isIndeterminate = true
+        progressBar.setPadding(0, 0, llPadding, 0)
+        progressBar.layoutParams = llParam
 
+        llParam = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT)
+        llParam.gravity = Gravity.CENTER
+        val tvText = TextView(context)
+        tvText.text = message
+        tvText.setTextColor(Color.parseColor("#000000"))
+        tvText.textSize = 20.toFloat()
+        tvText.layoutParams = llParam
 
+        ll.addView(progressBar)
+        ll.addView(tvText)
 
-    public void populateInfo(){
-        firstname.setText(student.getFirstname());
-        lastname.setText(student.getLastname());
-        age.setText(student.getAge());
-        gender.setText(student.getGender());
-        std_class.setText(student.getStd_class());
-        notes.setText(student.getNotes());
+        val builder = AlertDialog.Builder(context)
+        builder.setCancelable(true)
+        builder.setView(ll)
+
+        val dialog = builder.create()
+        val window = dialog.window
+        if (window != null) {
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog.window?.attributes)
+            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+            dialog.window?.attributes = layoutParams
+        }
+        return dialog
     }
+
+    //end progressbar
 }

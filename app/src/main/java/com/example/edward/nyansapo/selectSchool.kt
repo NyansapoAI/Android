@@ -1,39 +1,40 @@
-package com.example.edward.nyansapo;
+package com.example.edward.nyansapo
 
-import android.app.ActivityOptions;
-import android.content.Intent;
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
+import android.os.Bundle
+import com.example.edward.nyansapo.R
+import android.content.Intent
+import com.example.edward.nyansapo.student_activity
+import android.app.ActivityOptions
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.edward.nyansapo.registerSchool
 
-public class selectSchool extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_school);
+class selectSchool : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_select_school)
     }
 
-    public void openSchool(View v){
-        Intent myIntent = new Intent(getBaseContext(), student_activity.class);
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+    fun openSchool(v: View?) {
+        val myIntent = Intent(baseContext, student_activity::class.java)
+        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
-    public void exportData(View v){
-        Toast.makeText(getApplicationContext(), "Data has been exported successfully", Toast.LENGTH_LONG).show();
+    fun exportData(v: View?) {
+        Toast.makeText(applicationContext, "Data has been exported successfully", Toast.LENGTH_LONG).show()
     }
 
-    public void newSchool(View v){
-        Intent myIntent = new Intent(getBaseContext(), registerSchool.class);
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+    fun newSchool(v: View?) {
+        val myIntent = Intent(baseContext, registerSchool::class.java)
+        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
-    public void selectFilter(View v){
-        Toast.makeText(getApplicationContext(), "Selected Filter", Toast.LENGTH_LONG).show();
+    fun selectFilter(v: View?) {
+        Toast.makeText(applicationContext, "Selected Filter", Toast.LENGTH_LONG).show()
     }
 
-    public void selectSort(View v){
-        Toast.makeText(getApplicationContext(), "Selected Sort", Toast.LENGTH_LONG).show();
+    fun selectSort(v: View?) {
+        Toast.makeText(applicationContext, "Selected Sort", Toast.LENGTH_LONG).show()
     }
 }

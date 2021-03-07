@@ -1,34 +1,31 @@
-package com.example.edward.nyansapo;
+package com.example.edward.nyansapo
 
-import android.app.ActivityOptions;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
+import android.app.ActivityOptions
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.example.edward.nyansapo.MainActivity
 
-
-import androidx.appcompat.app.AppCompatActivity;
-
-public class Interface_selecter extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_interface_selecter);
+class Interface_selecter : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_interface_selecter)
     }
-/*
+
+    /*
     public void startTeacherInterface(View v){
         Intent myIntent = new Intent(getBaseContext(), Begin_Assessment.class);
         startActivity(myIntent);
     }
 */
-    public void startStudentInterface(View v){
-        Intent myIntent = new Intent(getBaseContext(), registerStudent.class);
-        startActivity(myIntent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+    fun startStudentInterface(v: View?) {
+        val myIntent = Intent(baseContext, registerStudent::class.java)
+        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
-    public void goHome(View v){
-        Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+    fun goHome(v: View?) {
+        val myIntent = Intent(baseContext, MainActivity::class.java)
+        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
-
 }

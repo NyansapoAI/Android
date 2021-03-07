@@ -1,127 +1,94 @@
-package com.example.edward.nyansapo;
+package com.example.edward.nyansapo
 
-import android.app.ActivityOptions;
-import android.content.Intent;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
+import android.app.ActivityOptions
+import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.os.Bundle
+import android.view.*
+import android.view.View
+import android.view.ViewGroup.*
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.edward.nyansapo.SelectAssessmentModal.AssessmentModalListener
+import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.firestore.Query
+import kotlinx.android.synthetic.main.activity_home.*
+import java.util.*
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDialog.AddDialogListener {
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-public class student_assessments extends AppCompatActivity implements AssessmentCustomViewAdapter.OnAssessmentListener,  SelectAssessmentModal.AssessmentModalListener, AddDialog.AddDialogListener {
-
-    dataBaseHandler databaseHandler;
-    ArrayList arrayList;
-    ArrayAdapter arrayAdapter;
-
-    ArrayList<Assessment> assessments;
-    Student student;
-
-    FloatingActionButton btAdd;
-
-
-    String instructor_id;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.student_menu, menu);
-        return true;
+    lateinit var adapter: StudentAssessmentAdapter
+    var arrayList: ArrayList<*>? = null
+    var arrayAdapter: ArrayAdapter<*>? = null
+    var assessments: ArrayList<Assessment>? = null
+    var student: Student? = null
+    var btAdd: FloatingActionButton? = null
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.student_menu, menu)
+        return true
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.settings: {
-                Intent myIntent = new Intent(getBaseContext(), studentSettings.class);
-                myIntent.putExtra("instructor_id", instructor_id); // its id for now
-                myIntent.putExtra("student_activity",student);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(student_assessments.this).toBundle());
-                return true;
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.settings -> {
+                val myIntent = Intent(baseContext, studentSettings::class.java)
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@student_assessments).toBundle())
+                true
             }
-            case R.id.add_assessment: {
-                addAssessment();
-                return true;
+            R.id.add_assessment -> {
+                addAssessment()
+                true
             }
-            case R.id.analytics: {
-                Intent intent = new Intent(student_assessments.this, studentDetails.class);
-                intent.putExtra("instructor_id", instructor_id);
-                intent.putExtra("student_activity",student);
-                startActivity(intent);
-                return true;
+            R.id.analytics -> {
+                val intent = Intent(this@student_assessments, studentDetails::class.java)
+                 startActivity(intent)
+                true
             }
-            default: return super.onOptionsItemSelected(item);
+            else -> super.onOptionsItemSelected(item)
         }
-
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_assessments);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_student_assessments)
+
+        initProgressBar()
 
         // toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(getApplicationContext(), home.class));
-                Intent myIntent = new Intent(getBaseContext(), home.class);
-                myIntent.putExtra("instructor_id", instructor_id); // its id for now
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(student_assessments.this).toBundle());
-            }
-        });
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        toolbar.setNavigationOnClickListener { //startActivity(new Intent(getApplicationContext(), home.class));
+            val myIntent = Intent(baseContext, home::class.java)
+            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@student_assessments).toBundle())
+        }
 
         // get student_activity
-        Intent intent = getIntent();
-        student = intent.getParcelableExtra("student_activity");
-        instructor_id = intent.getStringExtra("instructor_id");
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        btAdd = findViewById(R.id.bt_add);
+        val intent = intent
+        student = intent.getParcelableExtra("student_activity")
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        btAdd = findViewById(R.id.bt_add)
 
 
         // Initialize DatabaseHelper
-        databaseHandler = new dataBaseHandler(this);
+        btAdd = findViewById(R.id.bt_add)
+        btAdd!!.setOnClickListener(View.OnClickListener { addAssessment() })
+        assessments = ArrayList()
+        initRecyclerViewAdapter()
+        setSwipeListenerForItems()
 
-        btAdd = findViewById(R.id.bt_add);
-        btAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addAssessment();
-            }
-        });
-
-
-        assessments = new ArrayList<Assessment>();
-        getAssessments(); // populate students ArrayList
+ // populate students ArrayList
         //Toast.makeText(this,assessments.toString(), Toast.LENGTH_LONG).show();
-        AssessmentCustomViewAdapter assessmentCustomViewAdapter = new AssessmentCustomViewAdapter(this, assessments, this::OnAssessmentClick);
-        recyclerView.setAdapter(assessmentCustomViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         /*Assessment assessment =  assessments.get(0);
         Toast.makeText(this,assessment.getLETTERS_WRONG(), Toast.LENGTH_SHORT).show();
@@ -132,27 +99,42 @@ public class student_assessments extends AppCompatActivity implements Assessment
         Toast.makeText(this,assessment.getSTORY_ANS_Q1(), Toast.LENGTH_SHORT).show();
         Toast.makeText(this,assessment.getSTORY_ANS_Q2(), Toast.LENGTH_SHORT).show();
         Toast.makeText(this,assessment.getLEARNING_LEVEL(), Toast.LENGTH_SHORT).show();*/
-
     }
 
-    private void getAssessments() {
-        assessments =databaseHandler.getAllStudentAssessment(student.getCloud_id());
+    private fun initRecyclerViewAdapter() {
+        val query: Query = FirebaseUtils.assessmentsCollection
+        val firestoreRecyclerOptions = FirestoreRecyclerOptions.Builder<Assessment>().setQuery(query, Assessment::class.java)
+                .setLifecycleOwner(this).build()
 
-        if(assessments.size() == 0){
-            openDialog();
-        }
 
-    }
-
-    public void openDialog(){
-        AddDialog addDialog = new AddDialog();
-        addDialog.setInfo("Add Assessment", "Do you want to add an Assessment?");
-        addDialog.show(getSupportFragmentManager(), "Add Assessment");
+        adapter = StudentAssessmentAdapter(this, firestoreRecyclerOptions, {
+            onAssmentClicked(it) })
+        recyclerview.setLayoutManager(LinearLayoutManager(this))
+        recyclerview.setAdapter(adapter)
 
     }
 
 
-    private void addAssessment() {
+    private fun setSwipeListenerForItems() {
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                adapter?.deleteFromDatabase(viewHolder.adapterPosition)
+            }
+        }).attachToRecyclerView(recyclerview)
+    }
+
+
+    fun openDialog() {
+        val addDialog = AddDialog()
+        addDialog.setInfo("Add Assessment", "Do you want to add an Assessment?")
+        addDialog.show(supportFragmentManager, "Add Assessment")
+    }
+
+    private fun addAssessment() {
         /*
         Intent intent = new Intent(student_assessments.this, SelectAssessment.class);
         intent.putExtra("instructor_id", instructor_id);
@@ -162,96 +144,113 @@ public class student_assessments extends AppCompatActivity implements Assessment
         startActivity(intent);
 
          */
-
-        SelectAssessmentModal selectAssessmentModal = new SelectAssessmentModal();
-        selectAssessmentModal.show(getSupportFragmentManager(),"Select Assessment Modal");
+        val selectAssessmentModal = SelectAssessmentModal()
+        selectAssessmentModal.show(supportFragmentManager, "Select Assessment Modal")
     }
 
-    @Override
-    public void OnAssessmentClick(int position) {
+     fun onAssmentClicked(assessment: Assessment) {
         //students.get(position);
-        Intent intent = new Intent(student_assessments.this, assessment_detail.class);
-        intent.putExtra("instructor_id", instructor_id);
-        intent.putExtra("student_id",student.getLocal_id());
-        intent.putExtra("student_activity", student);
-        intent.putExtra("assessment", assessments.get(position));
-        startActivity(intent);
+        val intent = Intent(this@student_assessments, assessment_detail::class.java)
+        intent.putExtra("assessment", assessment)
+        startActivity(intent)
     }
 
-    public void deleteStudent(){
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "https://nyansapoai-api.azurewebsites.net/student/";
-        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url, new com.android.volley.Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
-                Toast.makeText(student_assessments.this, "Student Deleted",Toast.LENGTH_LONG).show();
-            }
-        }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams(){
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("student_id", student.getCloud_id());
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        requestQueue.add(stringRequest);
-
-    }
-
-    @Override
-    public void onButtonClicked(String text) {
+    override fun onButtonClicked(text: String) {
 
         //Toast.makeText(this,text, Toast.LENGTH_SHORT).show();
+        when (text) {
+            "assessment_3" -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "3")
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            }
+            "assessment_4" -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "4")
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            }
+            "assessment_5" -> {
+                val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("ASSESSMENT_KEY", "5")
+                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            }
+            else -> {
+            }
+        }
+    }
 
-        switch (text){
-            case "assessment_3":{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","3");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                myIntent.putExtra("instructor_id", instructor_id);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
-            }
-            case "assessment_4":{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","4");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                myIntent.putExtra("instructor_id", instructor_id);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
-            }
-            case "assessment_5":{
-                Intent myIntent = new Intent(getBaseContext(), PreAssessment.class);
-                myIntent.putExtra("ASSESSMENT_KEY","5");
-                myIntent.putExtra("student_id",student.getCloud_id());
-                myIntent.putExtra("instructor_id", instructor_id);
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                break;
-            }
-            default:{
+    override fun onYesClicked() {
+        addAssessment()
+    }
 
-            }
+
+    /////////////////////PROGRESS_BAR////////////////////////////
+    lateinit var dialog: AlertDialog
+
+     fun showProgress(show: Boolean) {
+
+        if (show) {
+            dialog.show()
+
+        } else {
+            dialog.dismiss()
+
         }
 
     }
 
-    @Override
-    public void onYesClicked() {
-        addAssessment();
+    private fun initProgressBar() {
+
+        dialog = setProgressDialog(this, "Loading..")
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
     }
+
+    fun setProgressDialog(context: Context, message: String): AlertDialog {
+        val llPadding = 30
+        val ll = LinearLayout(context)
+        ll.orientation = LinearLayout.HORIZONTAL
+        ll.setPadding(llPadding, llPadding, llPadding, llPadding)
+        ll.gravity = Gravity.CENTER
+        var llParam = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT)
+        llParam.gravity = Gravity.CENTER
+        ll.layoutParams = llParam
+
+        val progressBar = ProgressBar(context)
+        progressBar.isIndeterminate = true
+        progressBar.setPadding(0, 0, llPadding, 0)
+        progressBar.layoutParams = llParam
+
+        llParam = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT)
+        llParam.gravity = Gravity.CENTER
+        val tvText = TextView(context)
+        tvText.text = message
+        tvText.setTextColor(Color.parseColor("#000000"))
+        tvText.textSize = 20.toFloat()
+        tvText.layoutParams = llParam
+
+        ll.addView(progressBar)
+        ll.addView(tvText)
+
+        val builder = AlertDialog.Builder(context)
+        builder.setCancelable(true)
+        builder.setView(ll)
+
+        val dialog = builder.create()
+        val window = dialog.window
+        if (window != null) {
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog.window?.attributes)
+            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+            dialog.window?.attributes = layoutParams
+        }
+        return dialog
+    }
+
+    //end progressbar
 }

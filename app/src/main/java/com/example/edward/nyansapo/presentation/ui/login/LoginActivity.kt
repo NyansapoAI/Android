@@ -9,12 +9,11 @@ import com.firebase.ui.auth.AuthUI.IdpConfig.*
 import com.google.firebase.auth.FirebaseAuth
 import java.util.*
 
-class MainActivity2 : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
     private val firebaseAuth = FirebaseAuth.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
-        checkIfUserIsLoggedIn()
+         checkIfUserIsLoggedIn()
     }
 
     private fun checkIfUserIsLoggedIn() {
