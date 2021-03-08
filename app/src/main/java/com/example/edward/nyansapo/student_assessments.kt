@@ -84,10 +84,19 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
         btAdd = findViewById(R.id.bt_add)
         btAdd!!.setOnClickListener(View.OnClickListener { addAssessment() })
         assessments = ArrayList()
-        initRecyclerViewAdapter()
-        setSwipeListenerForItems()
+        showProgress(true)
+        FirebaseUtils.assessmentsCollection().get().addOnSuccessListener {
+            showProgress(false)
+            if (it.isEmpty) {
+                openDialog()
+            }
 
- // populate students ArrayList
+            initRecyclerViewAdapter()
+            setSwipeListenerForItems()
+
+        }
+
+        // populate students ArrayList
         //Toast.makeText(this,assessments.toString(), Toast.LENGTH_LONG).show();
 
         /*Assessment assessment =  assessments.get(0);
@@ -102,7 +111,7 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
     }
 
     private fun initRecyclerViewAdapter() {
-        val query: Query = FirebaseUtils.assessmentsCollection
+        val query: Query = FirebaseUtils.assessmentsCollection()
         val firestoreRecyclerOptions = FirestoreRecyclerOptions.Builder<Assessment>().setQuery(query, Assessment::class.java)
                 .setLifecycleOwner(this).build()
 

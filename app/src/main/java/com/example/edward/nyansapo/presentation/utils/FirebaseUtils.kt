@@ -15,8 +15,9 @@ object FirebaseUtils {
 
     val studentsCollection: CollectionReference
         get() = FirebaseFirestore.getInstance().collection(Constants.COLLECTION_ROOT + "/" + instructor_id + "/" + Constants.COLLECTION_STUDENTS)
-    val assessmentsCollection: CollectionReference
-        get() = studentsCollection.document(Constants.studentDocumentSnapshot!!.id).collection(COLLECTION_ASSESSMENTS)
+    fun assessmentsCollection(): CollectionReference{
+       return studentsCollection.document(Constants.studentDocumentSnapshot!!.id).collection(COLLECTION_ASSESSMENTS)
+    }
 
 
     fun instructor(onComplete: (Instructor?) -> Unit) {

@@ -76,7 +76,7 @@ class letter_assessment : AppCompatActivity() {
         val intent = intent
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment = intent.getParcelableExtra("Assessment")
-        ASSESSMENT_KEY = assessment!!.getASSESSMENT_KEY()
+        ASSESSMENT_KEY = assessment!!.ASSESSMENT_KEY
         assessment_content = Assessment_Content()
         letter = getLetters(ASSESSMENT_KEY)
 
@@ -300,9 +300,9 @@ class letter_assessment : AppCompatActivity() {
 
 
             val myIntent = Intent(baseContext, thankYou::class.java)
-            assessment!!.letterS_CORRECT = letters_correct
-            assessment!!.letterS_WRONG = letters_wrong
-            assessment!!.learninG_LEVEL = "LETTER"
+            assessment!!.LETTERS_CORRECT = letters_correct
+            assessment!!.LETTERS_WRONG = letters_wrong
+            assessment!!.LEARNING_LEVEL = "LETTER"
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }

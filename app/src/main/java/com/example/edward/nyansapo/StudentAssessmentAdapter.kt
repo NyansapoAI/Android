@@ -27,8 +27,8 @@ class StudentAssessmentAdapter(private val studentAssessments: student_assessmen
             holder.binding.apply {
 
                 nameView.setText("Assessment " + Integer.toString(position + 1))
-                levelView.setText(getLevelKey(model.getLEARNING_LEVEL()))
-                timestampView.setText(model.getTIMESTAMP().split("GMT".toRegex()).toTypedArray().get(0))
+                levelView.setText(getLevelKey(model.LEARNING_LEVEL))
+                timestampView.setText(model.TIMESTAMP?.split("GMT".toRegex())?.toTypedArray()?.get(0))
 
             }
 

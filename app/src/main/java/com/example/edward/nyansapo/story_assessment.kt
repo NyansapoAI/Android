@@ -70,7 +70,7 @@ class story_assessment : AppCompatActivity() {
         val intent = intent
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment = intent.getParcelableExtra("Assessment")
-        ASSESSMENT_KEY = assessment!!.getASSESSMENT_KEY()
+        ASSESSMENT_KEY = assessment!!.ASSESSMENT_KEY
         assessment_content = Assessment_Content()
         story = getStory(ASSESSMENT_KEY)
         back_button = findViewById(R.id.back_button)
@@ -146,7 +146,7 @@ class story_assessment : AppCompatActivity() {
             story_view!!.text = sentences[sentence_count].trim { it <= ' ' }
         } else {
             //assessment.setSTORY_WORDS_WRONG(story_words_wrong); // set story wrong words
-            val temp = assessment!!.paragrapH_WORDS_WRONG
+            val temp = assessment!!.PARAGRAPH_WORDS_WRONG
 
 
             val map = mapOf("PARAGRAPH_WORDS_WRONG " to temp + story_words_wrong)
@@ -155,7 +155,7 @@ class story_assessment : AppCompatActivity() {
             Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
 
-                assessment!!.paragrapH_WORDS_WRONG = temp + story_words_wrong
+                assessment!!.PARAGRAPH_WORDS_WRONG = temp + story_words_wrong
                 val myIntent = Intent(baseContext, storyQuestions::class.java)
                 myIntent.putExtra("Assessment", assessment)
                 myIntent.putExtra("question", "0")
@@ -316,7 +316,7 @@ class story_assessment : AppCompatActivity() {
 
 
     fun goToThankYou() { // take to thank you page and grade as paragraph student_activity
-        val temp = assessment!!.paragrapH_WORDS_WRONG
+        val temp = assessment!!.PARAGRAPH_WORDS_WRONG
 
         val map = mapOf("LEARNING_LEVEL " to "PARAGRAPH","PARAGRAPH_WORDS_WRONG" to temp + story_words_wrong)
 
@@ -324,8 +324,8 @@ class story_assessment : AppCompatActivity() {
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
             val myIntent = Intent(baseContext, thankYou::class.java)
-            assessment!!.learninG_LEVEL = "PARAGRAPH"
-           assessment!!.paragrapH_WORDS_WRONG = temp + story_words_wrong
+            assessment!!.LEARNING_LEVEL = "PARAGRAPH"
+           assessment!!.PARAGRAPH_WORDS_WRONG = temp + story_words_wrong
             //assessment.setSTORY_WORDS_WRONG(story_words_wrong);
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())

@@ -69,7 +69,6 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
-
                             .setAvailableProviders(Arrays.asList(
                                     AuthUI.IdpConfig.EmailBuilder().build(),
                             ))

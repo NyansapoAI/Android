@@ -33,7 +33,7 @@ class paragraph : AppCompatActivity() {
         paragraph2 = findViewById(R.id.paragraph2)
         assessment_content = Assessment_Content()
         assessment =Constants.assessmentDocumentSnapshot!!.toObject(Assessment::class.java)!!
-        ASSESSMENT_KEY = assessment.getASSESSMENT_KEY()
+        ASSESSMENT_KEY = assessment.ASSESSMENT_KEY
         val para = getPara(ASSESSMENT_KEY)
         paragraph1!!.setText(para[0])
         paragraph2!!.setText(para[1])

@@ -36,6 +36,16 @@ import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
 class PreAssessment : AppCompatActivity(), View.OnClickListener {
+
+    companion object {
+        //audio stuff
+        private var mEMA = 0.0
+        private const val EMA_FILTER = 0.6
+
+        private  const val TAG="PreAssessment"
+
+    }
+
     // button ui
     var next_button: Button? = null
     var record_button: Button? = null
@@ -150,10 +160,10 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
     fun recordStudent(v: View?) {
         val myIntent = Intent(baseContext, paragraph::class.java)
         val assessment = Assessment() // create new assessment object
-        assessment.assessmenT_KEY = ASSESSMENT_KEY // assign proper key
+        assessment.ASSESSMENT_KEY = ASSESSMENT_KEY // assign proper key
 
         showProgress(true)
-        FirebaseUtils.assessmentsCollection.add(assessment).addOnSuccessListener {
+        FirebaseUtils.assessmentsCollection().add(assessment).addOnSuccessListener {
 
             it.get().addOnSuccessListener {
                 showProgress(false)
@@ -172,6 +182,10 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
     var txt: String? = null
     var drawable: Drawable? = null
     fun Func(v: View?) {
+
+        Log.d(TAG, "Func: started recording")
+
+
         startRecording()
         val exec = ScheduledThreadPoolExecutor(1)
         exec.scheduleAtFixedRate({ // code to execute repeatedly
@@ -207,11 +221,11 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
                 //Toast.makeText(this, instructor_id +" pressed", Toast.LENGTH_LONG).show();
                 val myIntent = Intent(baseContext, paragraph::class.java)
                 val assessment = Assessment() // create new assessment object
-                assessment.assessmenT_KEY = ASSESSMENT_KEY // assign proper key
+                assessment.ASSESSMENT_KEY = ASSESSMENT_KEY // assign proper key
 
 
                 showProgress(true)
-                FirebaseUtils.assessmentsCollection.add(assessment).addOnSuccessListener {
+                FirebaseUtils.assessmentsCollection().add(assessment).addOnSuccessListener {
 
                     it.get().addOnSuccessListener {
                         showProgress(false)
@@ -368,11 +382,6 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
             return null  }
     }
 
-    companion object {
-        //audio stuff
-        private var mEMA = 0.0
-        private const val EMA_FILTER = 0.6
-    }
 
       /////////////////////PROGRESS_BAR////////////////////////////
           lateinit var dialog: AlertDialog
@@ -441,4 +450,6 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
           }
 
           //end progressbar
+
+
 }

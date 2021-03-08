@@ -63,7 +63,7 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
         assessmentList = ArrayList()
         //assessmentList = DataBaseHandler.getAllAssessment();
         showProgress(true)
-        FirebaseUtils.assessmentsCollection.get().addOnSuccessListener {
+        FirebaseUtils.assessmentsCollection().get().addOnSuccessListener {
             showProgress(false)
 
             assessmentList = it.toObjects(Assessment::class.java) as ArrayList<Assessment>
@@ -115,7 +115,7 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
             assessments_taken!!.setText(Integer.toString(num))
             var i = 0
             while (i < num && i < 5) {
-                series.appendData(DataPoint((i + 1).toDouble(), getLevelIndex(assessmentList!!.get(i).getLEARNING_LEVEL()).toDouble()), true, 5)
+                series.appendData(DataPoint((i + 1).toDouble(), getLevelIndex(assessmentList!!.get(i).LEARNING_LEVEL).toDouble()), true, 5)
                 i++
             }
             series.setAnimated(true)
@@ -141,8 +141,8 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
                     } else super.formatLabel(value, isValueX)
                 }
             }
-            current_level!!.setText(assessmentList.get(num - 1).getLEARNING_LEVEL())
-            initial_level!!.setText(assessmentList.get(0).getLEARNING_LEVEL())
+            current_level!!.setText(assessmentList.get(num - 1).LEARNING_LEVEL)
+            initial_level!!.setText(assessmentList.get(0).LEARNING_LEVEL)
         } else {
             graphView = findViewById<View>(R.id.graphview) as GraphView
             /*

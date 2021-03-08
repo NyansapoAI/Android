@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_register_student.*
@@ -115,10 +116,14 @@ class registerStudent : AppCompatActivity() {
         FirebaseUtils.studentsCollection.add(student).addOnSuccessListener {
             Toasty.success(this, "Success adding student").show()
 
-            val myIntent = Intent(baseContext, student_assessments::class.java)
-            myIntent.putExtra("instructor_id", instructor_id)
-            myIntent.putExtra("student_activity", student)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@registerStudent).toBundle())
+           it.get().addOnSuccessListener {
+               Constants.studentDocumentSnapshot=it
+               val myIntent = Intent(baseContext, student_assessments::class.java)
+               myIntent.putExtra("instructor_id", instructor_id)
+               myIntent.putExtra("student_activity", student)
+               startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@registerStudent).toBundle())
+
+           }
 
 
         }.addOnFailureListener {

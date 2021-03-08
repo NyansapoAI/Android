@@ -104,8 +104,19 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         bt_add.setOnClickListener(View.OnClickListener { v -> addstudent(v) })
         initProgressBar()
-        initRecyclerViewAdapter()
-        setSwipeListenerForItems()
+        showProgress(true)
+        FirebaseUtils.studentsCollection.get().addOnSuccessListener {
+            showProgress(false)
+
+            if (it.isEmpty){
+                openDialog()
+            }
+
+            initRecyclerViewAdapter()
+            setSwipeListenerForItems()
+
+        }
+
 
     }
 

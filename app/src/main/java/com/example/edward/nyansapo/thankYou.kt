@@ -52,7 +52,7 @@ class thankYou : AppCompatActivity() {
 
     fun storeAssessment() {
         //dataBaseHandler.addAssessment(assessment);
-        assessment!!.timestamp = Date(System.currentTimeMillis()).toString()
+        assessment!!.TIMESTAMP = Date(System.currentTimeMillis()).toString()
 
         // first update in cloud and if successful update locally
         //dataBaseHandler.addAssessment(assessment);
@@ -63,7 +63,7 @@ class thankYou : AppCompatActivity() {
 
     fun updateLearning_level(assessment: Assessment?) {
 
-        val map = mapOf("LEARNING_LEVEL" to assessment?.learninG_LEVEL)
+        val map = mapOf("LEARNING_LEVEL" to assessment?.LEARNING_LEVEL)
         showProgress(true)
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)

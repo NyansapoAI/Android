@@ -2,7 +2,6 @@ package com.example.edward.nyansapo
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -42,13 +41,13 @@ class HomeAdapter(private val home: home, options: FirestoreRecyclerOptions<Stud
     private fun setOnClickListeners(holder: ViewHolder, position: Int) {
 
 
-        holder.itemView.setOnClickListener(View.OnClickListener {
+        holder.itemView.setOnClickListener {
             if (position == RecyclerView.NO_POSITION) {
-                return@OnClickListener
+               return@setOnClickListener
             }
             Constants.studentDocumentSnapshot=snapshots.getSnapshot(position)
             onStudentClick()
-        })
+        }
     }
 
     fun deleteFromDatabase(position: Int) {

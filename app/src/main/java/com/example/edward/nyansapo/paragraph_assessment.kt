@@ -66,7 +66,7 @@ class paragraph_assessment : AppCompatActivity() {
 
         //Toast.makeText(this, "Click on the Record Button to read or click on change to change the prompt", Toast.LENGTH_LONG).show();
         assessment = intent.getParcelableExtra("Assessment")
-        ASSESSMENT_KEY = assessment!!.getASSESSMENT_KEY()
+        ASSESSMENT_KEY = assessment!!.ASSESSMENT_KEY
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment_content = Assessment_Content()
         val para = getPara(ASSESSMENT_KEY)
@@ -318,7 +318,7 @@ class paragraph_assessment : AppCompatActivity() {
             showProgress(false)
 
 
-            assessment!!.paragrapH_WORDS_WRONG = paragraph_words_wrong // set words wrong
+            assessment!!.PARAGRAPH_WORDS_WRONG = paragraph_words_wrong // set words wrong
             val myIntent = Intent(baseContext, story_assessment::class.java)
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
@@ -333,7 +333,7 @@ class paragraph_assessment : AppCompatActivity() {
         showProgress(true)
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
-            assessment!!.paragrapH_WORDS_WRONG = paragraph_words_wrong
+            assessment!!.PARAGRAPH_WORDS_WRONG = paragraph_words_wrong
             val myIntent = Intent(baseContext, word_assessment::class.java)
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())

@@ -4,7 +4,7 @@ package com.example.edward.nyansapo.db.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.room.Entity;
+
 
 import java.util.Date;
 import java.util.UUID;

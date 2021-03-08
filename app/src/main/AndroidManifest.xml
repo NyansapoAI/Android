@@ -52,7 +52,7 @@
         <activity android:name=".selectAssesment" />
         <activity android:name=".student_activity" />
         <activity android:name=".selectSchool" />
-        <activity android:name=".index">
+        <activity android:name=".index.index2">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

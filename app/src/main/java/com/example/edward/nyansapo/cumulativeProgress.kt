@@ -109,7 +109,7 @@ class cumulativeProgress : AppCompatActivity() {
         assessments = dataBaseHandler!!.allAssessment as ArrayList<Assessment>?
         var words_wrong = ""
         for (assessment in assessments!!) {
-            words_wrong = words_wrong + assessment.wordS_WRONG + assessment.paragrapH_WORDS_WRONG
+            words_wrong = words_wrong + assessment.WORDS_WRONG + assessment.PARAGRAPH_WORDS_WRONG
         }
 
         //Toast.makeText(this, words_wrong, Toast.LENGTH_LONG).show();

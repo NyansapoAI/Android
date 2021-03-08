@@ -48,7 +48,7 @@ class storyQuestions : AppCompatActivity() {
         val intent = intent
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment = intent.getParcelableExtra("Assessment")
-        ASSESSMENT_KEY = assessment.getASSESSMENT_KEY()
+        ASSESSMENT_KEY = assessment.ASSESSMENT_KEY
         assessment_content = Assessment_Content()
         questions = getQuestions(ASSESSMENT_KEY)
         story_score = 0
@@ -79,18 +79,18 @@ class storyQuestions : AppCompatActivity() {
             0 -> {
                 question_count++
                 question_button!!.text = questions[question_count]
-                assessment!!.storY_ANS_Q1 = answer_view!!.text.toString()
+                assessment!!.STORY_ANS_Q1 = answer_view!!.text.toString()
                 //Toast.makeText(this, answer_view.getText().toString(), Toast.LENGTH_LONG).show();
                 answer_view!!.text = ""
             }
             1 -> {
 
                 //Toast.makeText(this, answer_view.getText().toString(), Toast.LENGTH_LONG).show();
-                assessment!!.storY_ANS_Q2 = answer_view!!.text.toString()
+                assessment!!.STORY_ANS_Q2 = answer_view!!.text.toString()
                 if (checkAns(assessment) > 0) { // one or all is correct
-                    assessment!!.learninG_LEVEL = "ABOVE"
+                    assessment!!.LEARNING_LEVEL = "ABOVE"
                 } else {
-                    assessment!!.learninG_LEVEL = "STORY"
+                    assessment!!.LEARNING_LEVEL = "STORY"
                 }
                 val myIntent = Intent(baseContext, thankYou::class.java)
                 myIntent.putExtra("Assessment", assessment)
@@ -102,8 +102,8 @@ class storyQuestions : AppCompatActivity() {
     }
 
     fun checkAns(assessment: Assessment?): Int {
-        story_score = nyansapoNLP!!.evaluateAnswer(assessment!!.storY_ANS_Q1, assessment.assessmenT_KEY.toInt(), 0) +
-                nyansapoNLP!!.evaluateAnswer(assessment.storY_ANS_Q2, assessment.assessmenT_KEY.toInt(), 1)
+        story_score = nyansapoNLP!!.evaluateAnswer(assessment!!.STORY_ANS_Q1, assessment.ASSESSMENT_KEY.toInt(), 0) +
+                nyansapoNLP!!.evaluateAnswer(assessment.STORY_ANS_Q2, assessment.ASSESSMENT_KEY.toInt(), 1)
 
         //Toast.makeText(this, Integer.toString(story_score), Toast.LENGTH_LONG).show();
         return if (story_score > 110) {
