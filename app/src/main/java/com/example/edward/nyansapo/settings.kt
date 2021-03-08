@@ -69,10 +69,9 @@ class settings : AppCompatActivity() {
         //Get instructor
           FirebaseUtils.getCurrentUser {
 
-              val instructor: Instructor? =it?.toObject(Instructor::class.java)
-              email!!.text = instructor?.getEmail()
-              firstname!!.text = instructor?.getFirstname()
-              lastname!!.text = instructor?.getLastname()
+             email!!.text = FirebaseUtils.firebaseAuth.currentUser?.email
+              firstname!!.text = FirebaseUtils.firebaseAuth.currentUser?.displayName
+              lastname!!.text =  FirebaseUtils.firebaseAuth.currentUser?.displayName
 
           }
         //Instructor ins = databasehelper.getInstructorByEmail("edward@kijenzi.com");

@@ -1,11 +1,8 @@
-package com.example.edward.nyansapo.index
+package com.example.edward.nyansapo
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.MainActivity
-import com.example.edward.nyansapo.R
-import com.example.edward.nyansapo.home
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import kotlinx.android.synthetic.main.activity_index.*
 

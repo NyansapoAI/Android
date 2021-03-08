@@ -1,31 +1,16 @@
 package com.example.edward.nyansapo
 
-import android.Manifest.permission
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import com.android.volley.*
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.edward.nyansapo.presentation.ui.login.LoginActivity.Companion.RC_SIGN_IN
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import es.dmoral.toasty.Toasty
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -34,33 +19,14 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
     }
 
-    // declare view
-    var user_email: EditText? = null
-    var user_password: EditText? = null
-    var Token = ""
-    lateinit var loginAnimation: Animation
-    var rotating_icon: ImageView? = null
-    var signin: Button? = null
-    var signup: Button? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         checkIfUserIsLoggedIn()
 
-        user_email = findViewById(R.id.email)
-        user_password = findViewById(R.id.password)
-        val requestCode = 5 // unique code for the permission request
-        ActivityCompat.requestPermissions(this@MainActivity, arrayOf(permission.RECORD_AUDIO, permission.INTERNET), requestCode)
-        loginAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate)
-        loginAnimation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {}
-            override fun onAnimationEnd(animation: Animation) {}
-            override fun onAnimationRepeat(animation: Animation) {}
-        })
-        rotating_icon = findViewById(R.id.rotating_icon)
-        signin = findViewById(R.id.signin)
-        signup = findViewById(R.id.signup)
+
     }
 
     private fun checkIfUserIsLoggedIn() {
@@ -111,7 +77,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun successLoggedIn() {
-        FirebaseUtils.isInstructorSetUp { flag->
+
+        goToHomePage()
+
+
+
+/*        FirebaseUtils.isInstructorSetUp { flag->
             if (flag==true){
 
                 goToHomePage()
@@ -120,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                 registerInstructor()
 
             }
-        }
+        }*/
     }
 
     private fun goToHomePage() {
@@ -133,15 +104,6 @@ class MainActivity : AppCompatActivity() {
         Toasty.error(this, message).show()
     }
 
-    fun startSelector(v: View?) {
-        //login("edward@kijenzi.com", "nyansapo");
-        rotating_icon!!.visibility = View.VISIBLE
-        rotating_icon!!.startAnimation(loginAnimation)
-        //email.setEnabled(false);
-        //password.setEnabled(false);
-        signin!!.isEnabled = false
-        signup!!.isEnabled = false
-    }
 
     fun registerInstructor() {
         val myIntent = Intent(baseContext, RegisterTeacher::class.java)
