@@ -20,22 +20,35 @@
 
 
         </activity>
-        <activity android:name=".presentation.ui.student.IndividualStudentPageActivity" />
-        <activity android:name=".presentation.ui.student.StudentInfoPageActivity" />
+        <activity android:name=".presentation.ui.student.IndividualStudentPageActivity" >
+
+        </activity>
+        <activity android:name=".presentation.ui.student.StudentInfoPageActivity" >
+
+        </activity>
         <activity android:name=".presentation.ui.begin_assessment_chooser.BeginAssessMentChooserActivity">
-           <!-- <intent-filter>
+
+        </activity>
+        <activity android:name=".presentation.ui.learning_level.LearningLevelActivity" >
+
+
+        </activity>
+        <activity android:name=".presentation.ui.begin_assessment.BeginAssessementActivity" >
+
+        </activity>
+        <activity android:name=".presentation.ui.individual_activities.IndividualActivitiesActivity" >
+
+        </activity>
+        <activity android:name=".presentation.ui.activities.ActivitiesActivity" >
+
+        </activity>
+        <activity android:name=".presentation.ui.login.LoginActivity" >
+          <!--  <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
-        <activity android:name=".presentation.ui.learning_level.LearningLevelActivity" >
-
-        </activity>
-        <activity android:name=".presentation.ui.begin_assessment.BeginAssessementActivity" />
-        <activity android:name=".presentation.ui.individual_activities.IndividualActivitiesActivity" />
-        <activity android:name=".presentation.ui.activities.ActivitiesActivity" />
-        <activity android:name=".presentation.ui.login.LoginActivity" />
         <activity android:name=".studentSettings" />
         <activity android:name=".MainActivity" />
         <activity android:name=".QuestionStory" />

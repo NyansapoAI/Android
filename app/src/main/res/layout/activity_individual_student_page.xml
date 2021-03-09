@@ -1,163 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp"
     tools:context=".presentation.ui.student.IndividualStudentPageActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Keyword: "
-            android:textAppearance="@android:style/TextAppearance.Large" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Keyword: "
+                android:textAppearance="@android:style/TextAppearance.Large" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textColor="@android:color/black"
+                android:text="Mombasa "
+                tools:text="Mombasa " />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@mipmap/flowchart_p_w"
+            tools:src="@mipmap/flowchart_p_w" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.Large"
-            android:textColor="@android:color/black"
-            tools:text="Mombasa " />
-    </LinearLayout>
+            tools:text="Word"
+            android:text="Word" />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        tools:src="@mipmap/flowchart_p_w" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        tools:text="Word" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_correct_word"
+                android:gravity="center"
+                android:minWidth="50dp"
+                android:text="kite"
+                tools:textColor="@android:color/holo_green_dark" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_correct_word"
+                android:gravity="center"
+                android:minWidth="50dp"
+                android:text="toy"
+                tools:textColor="@android:color/holo_green_dark" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_correct_word"
+                android:gravity="center"
+                android:minWidth="50dp"
+                android:text="river"
+                tools:textColor="@android:color/holo_green_dark" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_wrong_word"
+                android:gravity="center"
+                android:minWidth="50dp"
+                android:text="school"
+                tools:textColor="@android:color/holo_red_dark" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_correct_word"
+                android:gravity="center"
+                android:text="school"
+                tools:textColor="@android:color/holo_green_dark" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/bg_correct_word"
+                android:gravity="center"
+
+                android:text="cube"
+                tools:textColor="@android:color/holo_green_dark" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+
+                android:background="@drawable/bg_wrong_word"
+                android:gravity="center"
+                android:text="mother"
+                tools:textColor="@android:color/holo_red_dark" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/bg_wrong_word"
+                android:gravity="center"
+                android:text="bed"
+                tools:textColor="@android:color/holo_red_dark" />
+        </LinearLayout>
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/bg_correct_word"
-            android:gravity="center"
-            android:minWidth="50dp"
-            android:text="kite"
-            android:textSize="30sp"
-            tools:textColor="@android:color/holo_green_dark" />
+            android:layout_marginTop="10dp"
+            android:text="Paragraph"
+            android:textAppearance="@android:style/TextAppearance.Large" />
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/paragraphTxtView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_correct_word"
-            android:gravity="center"
-            android:minWidth="50dp"
-            android:text="toy"
-            android:textSize="30sp"
-            tools:textColor="@android:color/holo_green_dark" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_correct_word"
-            android:gravity="center"
-            android:minWidth="50dp"
-            android:text="river"
-            android:textSize="30sp"
-            tools:textColor="@android:color/holo_green_dark" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_wrong_word"
-            android:gravity="center"
-            android:minWidth="50dp"
-            android:text="school"
-            android:textSize="30sp"
-            tools:textColor="@android:color/holo_red_dark" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/bg_correct_word"
-            android:gravity="center"
-           android:text="school"
-
-            android:textSize="30sp"
-            tools:textColor="@android:color/holo_green_dark" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/bg_correct_word"
-            android:gravity="center"
-
-            android:text="cube"
-            android:textSize="30sp"
-            tools:textColor="@android:color/holo_green_dark" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="5dp"
-
-            android:background="@drawable/bg_wrong_word"
-            android:gravity="center"
-            android:text="mother"
-            android:textSize="30sp"
-            tools:textColor="@android:color/holo_red_dark" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/bg_wrong_word"
-            android:gravity="center"
-             android:text="bed"
-            android:textSize="30sp"
-            tools:textColor="@android:color/holo_red_dark" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Paragraph"
-        android:textAppearance="@android:style/TextAppearance.Large" />
-
-    <TextView
-        android:id="@+id/paragraphTxtView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:textColor="@android:color/holo_green_dark"
-        tools:text="One morning, the cow went to the lion. She
+            android:layout_marginTop="10dp"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@android:color/holo_green_dark"
+            tools:text="One morning, the cow went to the lion. She
 wanted him to help her. The lion roared at them.
 The cow and her calf ran away. They found a
 man outside his house. The man loved the
@@ -166,4 +167,9 @@ never went back to the forest.
 " />
 
 
-</LinearLayout>
+
+
+    </LinearLayout>
+
+
+</ScrollView>

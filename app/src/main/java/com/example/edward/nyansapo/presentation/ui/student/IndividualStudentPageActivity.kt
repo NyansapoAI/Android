@@ -30,10 +30,10 @@ class IndividualStudentPageActivity : AppCompatActivity() {
                 "animals. He made a cow shed for them. The cow\n" +
                 "never went back to the forest.")
 
-        wordtoSpan.setSpan(ForegroundColorSpan(Color.RED), 15, 30, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        wordtoSpan.setSpan(ForegroundColorSpan(Color.RED), 50, 60, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        wordtoSpan.setSpan(ForegroundColorSpan(Color.RED), 17, 29, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        wordtoSpan.setSpan(ForegroundColorSpan(Color.RED), 50, 61, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         wordtoSpan.setSpan(ForegroundColorSpan(Color.RED), 90,100, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        wordtoSpan.setSpan(ForegroundColorSpan(Color.RED), 150,170, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        wordtoSpan.setSpan(ForegroundColorSpan(Color.RED), 152,167, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         binding.paragraphTxtView.text = wordtoSpan
     }

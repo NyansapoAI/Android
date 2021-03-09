@@ -25,7 +25,8 @@
             android:layout_gravity="center_vertical"
             android:textAppearance="@android:style/TextAppearance.Large"
             android:layout_height="wrap_content"
-            tools:text="Word" />
+            tools:text="Word"
+          android:text="Mombasa"/>
 
         <ImageView
             android:layout_gravity="center_vertical"
