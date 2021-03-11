@@ -72,7 +72,7 @@ class word_assessment : AppCompatActivity() {
         val intent = intent
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment = intent.getParcelableExtra("Assessment")
-        ASSESSMENT_KEY = assessment!!.ASSESSMENT_KEY
+        ASSESSMENT_KEY = assessment!!.assessmentKey
         assessment_content = Assessment_Content()
         word = getWords(ASSESSMENT_KEY)
 
@@ -306,8 +306,8 @@ class word_assessment : AppCompatActivity() {
             showProgress(false)
 
 
-            assessment!!.WORDS_WRONG = words_wrong
-            assessment!!.WORDS_CORRECT = words_correct
+            assessment!!.wordsWrong = words_wrong
+            assessment!!.wordsCorrect = words_correct
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
@@ -322,9 +322,9 @@ class word_assessment : AppCompatActivity() {
         assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
             val myIntent = Intent(baseContext, thankYou::class.java)
-            assessment!!.WORDS_WRONG = words_wrong
-            assessment!!.WORDS_CORRECT = words_correct
-            assessment!!.LEARNING_LEVEL = "WORD"
+            assessment!!.wordsWrong = words_wrong
+            assessment!!.wordsCorrect = words_correct
+            assessment!!.learningLevel = "WORD"
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
 

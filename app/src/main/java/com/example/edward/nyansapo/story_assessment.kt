@@ -56,7 +56,7 @@ class story_assessment : AppCompatActivity() {
     var filename = "/dev/null"
 
     // progress bar
-    var progressBar: ProgressBar? = null
+    var progressBar2: ProgressBar? = null
 
     /// Control variables or code locks
     var mediaStarted = false
@@ -70,7 +70,7 @@ class story_assessment : AppCompatActivity() {
         val intent = intent
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment = intent.getParcelableExtra("Assessment")
-        ASSESSMENT_KEY = assessment!!.ASSESSMENT_KEY
+        ASSESSMENT_KEY = assessment!!.assessmentKey
         assessment_content = Assessment_Content()
         story = getStory(ASSESSMENT_KEY)
         back_button = findViewById(R.id.back_button)
@@ -78,13 +78,16 @@ class story_assessment : AppCompatActivity() {
         story_view = findViewById(R.id.story_view)
 
         // progressbar
-        progressBar = findViewById(R.id.progressBar2)
-        progressBar!!.setMax(15000)
-        progressBar!!.setProgress(0)
+        progressBar2 = findViewById(R.id.progressBar2)
+        progressBar2!!.setMax(15000)
+        progressBar2!!.setProgress(0)
 
 
         //story = "One day the wind chased the sun away. It told the sun to go to another sky. The sun did not go. The next morning, the wind ran after the sun. The sun fell down and started crying. That is how it began to rain. We clapped for Juma.\\n\\n One day the wind chased the sun away. It told the sun to go to another sky. The sun did not go. The next morning, the wind ran after the sun. The sun fell down and started crying. That is how it began to rain. We clapped for Juma.";
-        sentences = story!!.split("[.]".toRegex()).toTypedArray()
+        sentences = story!!.split("[.]".toRegex()).toTypedArray().filter { line ->
+            line.trim().isNotBlank()
+        }.toTypedArray()
+
         sentence_count = 0
         tries = 0
         //story_view.setText(story);
@@ -123,7 +126,7 @@ class story_assessment : AppCompatActivity() {
         val exec = ScheduledThreadPoolExecutor(1)
         exec.scheduleAtFixedRate({ // code to execute repeatedly
             val num = amplitudeEMA
-            progressBar!!.progress = num.toInt()
+            progressBar2!!.progress = num.toInt()
         }, 0, 100, TimeUnit.MILLISECONDS)
     }
 
@@ -139,14 +142,14 @@ class story_assessment : AppCompatActivity() {
 
     fun nextParagraph(v: View?) {
         tries = 0
-        progressBar!!.progress = 0
+        progressBar2!!.progress = 0
         if (sentence_count < sentences.size - 1) {
             //back_button.setEnabled(true);
             sentence_count += 1 // increment sentence count
             story_view!!.text = sentences[sentence_count].trim { it <= ' ' }
         } else {
             //assessment.setSTORY_WORDS_WRONG(story_words_wrong); // set story wrong words
-            val temp = assessment!!.PARAGRAPH_WORDS_WRONG
+            val temp = assessment!!.paragraphWordsWrong
 
 
             val map = mapOf("PARAGRAPH_WORDS_WRONG " to temp + story_words_wrong)
@@ -155,7 +158,7 @@ class story_assessment : AppCompatActivity() {
             Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
 
-                assessment!!.PARAGRAPH_WORDS_WRONG = temp + story_words_wrong
+                assessment!!.paragraphWordsWrong = temp + story_words_wrong
                 val myIntent = Intent(baseContext, storyQuestions::class.java)
                 myIntent.putExtra("Assessment", assessment)
                 myIntent.putExtra("question", "0")
@@ -238,7 +241,7 @@ class story_assessment : AppCompatActivity() {
             if (mediaStarted) {
                 mediaRecorder!!.stop()
                 mediaRecorder!!.release()
-                progressBar!!.progress = 0
+                progressBar2!!.progress = 0
                 mediaStarted = false
             }
             transcriptStarted = false
@@ -316,7 +319,7 @@ class story_assessment : AppCompatActivity() {
 
 
     fun goToThankYou() { // take to thank you page and grade as paragraph student_activity
-        val temp = assessment!!.PARAGRAPH_WORDS_WRONG
+        val temp = assessment!!.paragraphWordsWrong
 
         val map = mapOf("LEARNING_LEVEL " to "PARAGRAPH","PARAGRAPH_WORDS_WRONG" to temp + story_words_wrong)
 
@@ -324,8 +327,8 @@ class story_assessment : AppCompatActivity() {
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
             val myIntent = Intent(baseContext, thankYou::class.java)
-            assessment!!.LEARNING_LEVEL = "PARAGRAPH"
-           assessment!!.PARAGRAPH_WORDS_WRONG = temp + story_words_wrong
+            assessment!!.learningLevel = "PARAGRAPH"
+           assessment!!.paragraphWordsWrong = temp + story_words_wrong
             //assessment.setSTORY_WORDS_WRONG(story_words_wrong);
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())

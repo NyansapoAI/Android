@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.edward.nyansapo.presentation.ui.login.LoginActivity.Companion.RC_SIGN_IN
+import com.example.edward.nyansapo.presentation.ui.pattern.SetPatternActivity
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
@@ -78,6 +79,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun successLoggedIn() {
 
+      //  goToSetPattern()
+
         goToHomePage()
 
 
@@ -92,6 +95,11 @@ class MainActivity : AppCompatActivity() {
 
             }
         }*/
+    }
+
+    private fun goToSetPattern() {
+        val intent=Intent(this,SetPatternActivity::class.java)
+        startActivity(intent)
     }
 
     private fun goToHomePage() {

@@ -149,7 +149,8 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-ktx:$roomVersion"
 */
-
+    //pattern lock view
+    compile 'com.andrognito.patternlockview:patternlockview:1.0.0'
 
 }
 

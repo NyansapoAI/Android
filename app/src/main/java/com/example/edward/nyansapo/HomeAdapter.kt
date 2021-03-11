@@ -7,10 +7,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.edward.nyansapo.databinding.StudentRowBinding
 import com.example.edward.nyansapo.presentation.utils.Constants
+import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.Query
 import es.dmoral.toasty.Toasty
 
 class HomeAdapter(private val home: home, options: FirestoreRecyclerOptions<Student?>,  val onStudentClick: ()->Unit) : FirestoreRecyclerAdapter<Student, HomeAdapter.ViewHolder>(options) {
@@ -28,9 +30,21 @@ class HomeAdapter(private val home: home, options: FirestoreRecyclerOptions<Stud
                 nameView.setText(model.getFirstname() + " " + model.getLastname())
                 ageView.setText("Age: " + model.getAge())
                 genderView.setText("Gender: " + model.getGender())
-                levelView.setText(model.getLearning_level())
-                levelView.setText(getLevelKey(model.getLearning_level()))
                 classView.setText("Class: " + model.getStd_class())
+
+                //  levelView.setText(model.getLearning_level())
+
+                FirebaseUtils.studentsCollection.document(snapshots.getSnapshot(position).id
+                ).collection(Constants.COLLECTION_ASSESSMENTS).orderBy("TIMESTAMP", Query.Direction.DESCENDING).get().addOnSuccessListener {
+
+                    if (!it.isEmpty){
+                        val level = it.toObjects(Assessment::class.java).get(0).learningLevel
+
+                        levelView.setText(getLevelKey(level))
+
+                    }
+
+                    }
 
             }
 

@@ -91,10 +91,10 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
                 openDialog()
             }
 
-            initRecyclerViewAdapter()
-            setSwipeListenerForItems()
 
         }
+        initRecyclerViewAdapter()
+        setSwipeListenerForItems()
 
         // populate students ArrayList
         //Toast.makeText(this,assessments.toString(), Toast.LENGTH_LONG).show();
@@ -111,7 +111,7 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
     }
 
     private fun initRecyclerViewAdapter() {
-        val query: Query = FirebaseUtils.assessmentsCollection()
+        val query: Query = FirebaseUtils.assessmentsCollection().orderBy("timestamp",Query.Direction.DESCENDING)
         val firestoreRecyclerOptions = FirestoreRecyclerOptions.Builder<Assessment>().setQuery(query, Assessment::class.java)
                 .setLifecycleOwner(this).build()
 

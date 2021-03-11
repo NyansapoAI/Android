@@ -4,11 +4,9 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.provider.SyncStateContract
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.paragraph_assessment
 import com.example.edward.nyansapo.presentation.utils.Constants
 
 class paragraph : AppCompatActivity() {
@@ -33,7 +31,7 @@ class paragraph : AppCompatActivity() {
         paragraph2 = findViewById(R.id.paragraph2)
         assessment_content = Assessment_Content()
         assessment =Constants.assessmentDocumentSnapshot!!.toObject(Assessment::class.java)!!
-        ASSESSMENT_KEY = assessment.ASSESSMENT_KEY
+        ASSESSMENT_KEY = assessment.assessmentKey
         val para = getPara(ASSESSMENT_KEY)
         paragraph1!!.setText(para[0])
         paragraph2!!.setText(para[1])

@@ -48,12 +48,12 @@ class assessment_detail : AppCompatActivity() {
         assessment = Constants.assessmentDocumentSnapshot!!.toObject(Assessment::class.java)!!
 
         // set assessment info into ui
-        literacy_level!!.setText(assessment.LEARNING_LEVEL)
-        para_words_wrong!!.setText(assessment.PARAGRAPH_WORDS_WRONG)
-        words_wrong_view!!.setText(assessment.WORDS_WRONG)
-        letters_wrong_view!!.setText(assessment.LETTERS_WRONG)
-        question1!!.setText(assessment.STORY_ANS_Q1)
-        question2!!.setText(assessment.STORY_ANS_Q2)
+        literacy_level!!.setText(assessment.learningLevel)
+        para_words_wrong!!.setText(assessment.paragraphWordsWrong)
+        words_wrong_view!!.setText(assessment.wordsWrong)
+        letters_wrong_view!!.setText(assessment.lettersWrong)
+        question1!!.setText(assessment.storyAnswerQ1)
+        question2!!.setText(assessment.storyAnswerQ2)
         //Toast.makeText(this, "Q1"+ assessment.getSTORY_ANS_Q1() + " "+ assessment.getSTORY_ANS_Q2(), Toast.LENGTH_LONG).show();
 
 

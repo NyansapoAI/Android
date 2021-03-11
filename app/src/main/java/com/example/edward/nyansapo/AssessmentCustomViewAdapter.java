@@ -34,9 +34,9 @@ public class AssessmentCustomViewAdapter extends  RecyclerView.Adapter<Assessmen
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.name_view.setText("Assessment "+Integer.toString(i + 1));
-        myViewHolder.level_view.setText(getLevelKey(assessments.get(i).getLEARNING_LEVEL()));
-        myViewHolder.timestamp_view.setText(assessments.get(i).getTIMESTAMP().split("GMT")[0]);
-
+        myViewHolder.level_view.setText(getLevelKey(assessments.get(i).getLearningLevel()));
+   /*     myViewHolder.timestamp_view.setText(assessments.get(i).getTIMESTAMP().split("GMT")[0]);
+*/
     }
 
 

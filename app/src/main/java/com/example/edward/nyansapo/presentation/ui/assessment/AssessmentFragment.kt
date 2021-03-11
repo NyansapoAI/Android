@@ -1,4 +1,4 @@
-package com.example.edward.nyansapo.presentation.ui.begin_assessment
+package com.example.edward.nyansapo.presentation.ui.assessment
 
 import android.os.Bundle
 import android.view.View

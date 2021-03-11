@@ -1,6 +1,7 @@
 package com.example.edward.nyansapo
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +14,14 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.DocumentSnapshot
 import es.dmoral.toasty.Toasty
+import java.text.DateFormat
 
 class StudentAssessmentAdapter(private val studentAssessments: student_assessments, options: FirestoreRecyclerOptions<Assessment?>, val onAssessmentClick: (Assessment) -> Unit) : FirestoreRecyclerAdapter<Assessment, StudentAssessmentAdapter.ViewHolder>(options) {
+
+    companion object {
+            private  const val TAG="StudentAssessmentAdapte"
+        }
+
     private val context: Context? = studentAssessments
     private lateinit var currentSnapshot: DocumentSnapshot
     private val parentData: Student? = null
@@ -27,8 +34,16 @@ class StudentAssessmentAdapter(private val studentAssessments: student_assessmen
             holder.binding.apply {
 
                 nameView.setText("Assessment " + Integer.toString(position + 1))
-                levelView.setText(getLevelKey(model.LEARNING_LEVEL))
-                timestampView.setText(model.TIMESTAMP?.split("GMT".toRegex())?.toTypedArray()?.get(0))
+                levelView.setText(getLevelKey(model.learningLevel))
+
+
+                try {
+                    val date=DateFormat.getDateTimeInstance().format(model.timestamp)
+                    timestampView.setText(date)
+
+                }catch (e:Exception){
+                    Log.e(TAG, "onBindViewHolder: ${e.message}",e )
+                }
 
             }
 

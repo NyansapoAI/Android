@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
-import com.example.edward.nyansapo.settings
 import com.jjoe64.graphview.DefaultLabelFormatter
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
@@ -115,7 +114,7 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
             assessments_taken!!.setText(Integer.toString(num))
             var i = 0
             while (i < num && i < 5) {
-                series.appendData(DataPoint((i + 1).toDouble(), getLevelIndex(assessmentList!!.get(i).LEARNING_LEVEL).toDouble()), true, 5)
+                series.appendData(DataPoint((i + 1).toDouble(), getLevelIndex(assessmentList!!.get(i).learningLevel).toDouble()), true, 5)
                 i++
             }
             series.setAnimated(true)
@@ -141,8 +140,8 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
                     } else super.formatLabel(value, isValueX)
                 }
             }
-            current_level!!.setText(assessmentList.get(num - 1).LEARNING_LEVEL)
-            initial_level!!.setText(assessmentList.get(0).LEARNING_LEVEL)
+            current_level!!.setText(assessmentList.get(num - 1).learningLevel)
+            initial_level!!.setText(assessmentList.get(0).learningLevel)
         } else {
             graphView = findViewById<View>(R.id.graphview) as GraphView
             /*

@@ -9,17 +9,14 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.*
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.home
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.google.firebase.firestore.SetOptions
-import java.util.*
 
 class thankYou : AppCompatActivity() {
     var done_button: Button? = null
@@ -52,7 +49,6 @@ class thankYou : AppCompatActivity() {
 
     fun storeAssessment() {
         //dataBaseHandler.addAssessment(assessment);
-        assessment!!.TIMESTAMP = Date(System.currentTimeMillis()).toString()
 
         // first update in cloud and if successful update locally
         //dataBaseHandler.addAssessment(assessment);
@@ -63,7 +59,7 @@ class thankYou : AppCompatActivity() {
 
     fun updateLearning_level(assessment: Assessment?) {
 
-        val map = mapOf("LEARNING_LEVEL" to assessment?.LEARNING_LEVEL)
+        val map = mapOf("LEARNING_LEVEL" to assessment?.learningLevel)
         showProgress(true)
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)

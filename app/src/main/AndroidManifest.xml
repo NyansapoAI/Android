@@ -16,38 +16,27 @@
         android:roundIcon="@drawable/small_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.edward.nyansapo.presentation.ui.main.MainActivity2">
+        <activity
+            android:theme="@style/AppTheme.FullScreen"
+            android:name=".presentation.ui.pattern.PatternActivity"></activity>
+        <activity android:name=".presentation.ui.pattern.SetPatternActivity" />
+        <activity android:name=".presentation.ui.main.MainActivity2" />
+        <activity android:name=".presentation.ui.student.IndividualStudentPageActivity" />
+        <activity android:name=".presentation.ui.student.StudentInfoPageActivity" />
+        <activity android:name=".presentation.ui.assessment.BeginAssessMentChooserActivity" />
+        <activity android:name=".presentation.ui.learning_level.LearningLevelActivity" />
+        <activity android:name=".presentation.ui.assessment.BeginAssessementActivity" />
+        <activity android:name=".presentation.ui.individual_activities.IndividualActivitiesActivity" />
+        <activity android:name=".presentation.ui.activities.ActivitiesActivity" />
+        <activity android:name=".presentation.ui.login.LoginActivity">
 
-
-        </activity>
-        <activity android:name=".presentation.ui.student.IndividualStudentPageActivity" >
-
-        </activity>
-        <activity android:name=".presentation.ui.student.StudentInfoPageActivity" >
-
-        </activity>
-        <activity android:name=".presentation.ui.begin_assessment_chooser.BeginAssessMentChooserActivity">
-
-        </activity>
-        <activity android:name=".presentation.ui.learning_level.LearningLevelActivity" >
-
-
-        </activity>
-        <activity android:name=".presentation.ui.begin_assessment.BeginAssessementActivity" >
-
-        </activity>
-        <activity android:name=".presentation.ui.individual_activities.IndividualActivitiesActivity" >
-
-        </activity>
-        <activity android:name=".presentation.ui.activities.ActivitiesActivity" >
-
-        </activity>
-        <activity android:name=".presentation.ui.login.LoginActivity" >
-          <!--  <intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity android:name=".studentSettings" />
         <activity android:name=".MainActivity" />
@@ -66,7 +55,6 @@
         <activity android:name=".student_activity" />
         <activity android:name=".selectSchool" />
         <activity android:name=".index2">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

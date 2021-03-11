@@ -7,8 +7,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.edward.nyansapo.home
-import com.example.edward.nyansapo.paragraph
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.jjoe64.graphview.DefaultLabelFormatter
 import com.jjoe64.graphview.GraphView
@@ -56,44 +54,48 @@ class cumulativeProgress : AppCompatActivity() {
 
         getStudents{list ->
            students=list
-        }
-        sortStudents(students)
-        letters.setText(Integer.toString(list_letters!!.size))
-        words.setText(Integer.toString(list_words!!.size))
-        paragraph.setText(Integer.toString(list_paragraph!!.size))
-        story.setText(Integer.toString(list_story!!.size))
-        total.setText(Integer.toString((students as ArrayList<Student>).size))
-        val graph = findViewById<View>(R.id.cumulative_graph) as GraphView
-        val series = BarGraphSeries(arrayOf<DataPoint>(
-                DataPoint(1.toDouble(), list_letters!!.size.toDouble()),
-                DataPoint(2.toDouble(), list_words!!.size.toDouble()),
-                DataPoint(3.toDouble(), list_paragraph!!.size.toDouble()),
-                DataPoint(4.toDouble(), list_story!!.size.toDouble()),
-                DataPoint(5.toDouble(), (students as ArrayList<Student>).size.toDouble())))
-        series.isAnimated = true
-        graph.addSeries(series)
-        graph.title = "Students Vs. Literacy Level"
-        graph.viewport.isXAxisBoundsManual = true
-        graph.viewport.setMinX(1.0)
-        graph.viewport.setMaxX(5.0)
-        graph.viewport.isYAxisBoundsManual = true
-        graph.viewport.setMinY(0.0)
-        graph.viewport.setMaxY((students as ArrayList<Student>).size.toDouble())
-        graph.gridLabelRenderer.labelFormatter = object : DefaultLabelFormatter() {
-            override fun formatLabel(value: Double, isValueX: Boolean): String {
-                return if (isValueX) {
-                    when (value.toInt()) {
-                        1 -> "Letter"
-                        2 -> "Word"
-                        3 -> "Paragraph"
-                        4 -> "Story"
-                        5 -> "Total"
-                        else -> "U"
-                    }
-                } else super.formatLabel(value, isValueX)
+
+
+            sortStudents(students)
+            letters.setText(Integer.toString(list_letters!!.size))
+            words.setText(Integer.toString(list_words!!.size))
+            paragraph.setText(Integer.toString(list_paragraph!!.size))
+            story.setText(Integer.toString(list_story!!.size))
+            total.setText(Integer.toString((students as ArrayList<Student>).size))
+            val graph = findViewById<View>(R.id.cumulative_graph) as GraphView
+            val series = BarGraphSeries(arrayOf<DataPoint>(
+                    DataPoint(1.toDouble(), list_letters!!.size.toDouble()),
+                    DataPoint(2.toDouble(), list_words!!.size.toDouble()),
+                    DataPoint(3.toDouble(), list_paragraph!!.size.toDouble()),
+                    DataPoint(4.toDouble(), list_story!!.size.toDouble()),
+                    DataPoint(5.toDouble(), (students as ArrayList<Student>).size.toDouble())))
+            series.isAnimated = true
+            graph.addSeries(series)
+            graph.title = "Students Vs. Literacy Level"
+            graph.viewport.isXAxisBoundsManual = true
+            graph.viewport.setMinX(1.0)
+            graph.viewport.setMaxX(5.0)
+            graph.viewport.isYAxisBoundsManual = true
+            graph.viewport.setMinY(0.0)
+            graph.viewport.setMaxY((students as ArrayList<Student>).size.toDouble())
+            graph.gridLabelRenderer.labelFormatter = object : DefaultLabelFormatter() {
+                override fun formatLabel(value: Double, isValueX: Boolean): String {
+                    return if (isValueX) {
+                        when (value.toInt()) {
+                            1 -> "Letter"
+                            2 -> "Word"
+                            3 -> "Paragraph"
+                            4 -> "Story"
+                            5 -> "Total"
+                            else -> "U"
+                        }
+                    } else super.formatLabel(value, isValueX)
+                }
             }
+            setMissedWords()
+
         }
-        setMissedWords()
+
     }
 
     private fun getStudents(onComplete:(List<Student>)->Unit) {
@@ -109,7 +111,7 @@ class cumulativeProgress : AppCompatActivity() {
         assessments = dataBaseHandler!!.allAssessment as ArrayList<Assessment>?
         var words_wrong = ""
         for (assessment in assessments!!) {
-            words_wrong = words_wrong + assessment.WORDS_WRONG + assessment.PARAGRAPH_WORDS_WRONG
+            words_wrong = words_wrong + assessment.wordsWrong + assessment.paragraphWordsWrong
         }
 
         //Toast.makeText(this, words_wrong, Toast.LENGTH_LONG).show();

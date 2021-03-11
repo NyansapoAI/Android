@@ -17,6 +17,9 @@ import com.microsoft.cognitiveservices.speech.SpeechRecognizer
 import java.util.concurrent.ExecutionException
 
 class storyQuestions : AppCompatActivity() {
+    private val Q_1: String = "q1"
+    private val Q_2: String = "q2"
+    private val SHARED_PREF = "shared_pref"
     var mediaPlayer: MediaPlayer? = null
     var question_button: Button? = null
     var submit_button: Button? = null
@@ -26,7 +29,7 @@ class storyQuestions : AppCompatActivity() {
     var story_view: TextView? = null
     var story_txt: String? = null
     var question_count = 0
-  lateinit  var questions: Array<String>
+    lateinit var questions: Array<String>
 
     // assessment content
     var assessment_content: Assessment_Content? = null
@@ -48,7 +51,7 @@ class storyQuestions : AppCompatActivity() {
         val intent = intent
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment = intent.getParcelableExtra("Assessment")
-        ASSESSMENT_KEY = assessment.ASSESSMENT_KEY
+        ASSESSMENT_KEY = assessment.assessmentKey
         assessment_content = Assessment_Content()
         questions = getQuestions(ASSESSMENT_KEY)
         story_score = 0
@@ -66,12 +69,47 @@ class storyQuestions : AppCompatActivity() {
         })
         record_button!!.setOnClickListener(View.OnClickListener { v -> recordStudent(v) })
         story_button!!.setOnClickListener(View.OnClickListener { //recordStudent(v);
+
+            saveStudentAnswer()
             val myIntent = Intent(baseContext, QuestionStory::class.java)
             myIntent.putExtra("Assessment", assessment)
-           myIntent.putExtra("story", story_txt)
+            myIntent.putExtra("story", story_txt)
             myIntent.putExtra("question", Integer.toString(question_count))
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@storyQuestions).toBundle())
         })
+    }
+
+    private fun saveStudentAnswer() {
+        val share_pref = getSharedPreferences(SHARED_PREF, MODE_PRIVATE)
+
+        when (question_count) {
+            0 -> {
+                share_pref.edit().putString(Q_1, answer_view?.text.toString()).commit()
+
+            }
+            1 -> {
+                share_pref.edit().putString(Q_2, answer_view?.text.toString()).commit()
+
+            }
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val share_pref = getSharedPreferences(SHARED_PREF, MODE_PRIVATE)
+        when (question_count) {
+            0 -> {
+                answer_view?.text = share_pref.getString(Q_1, null)
+
+            }
+            1 -> {
+                answer_view?.text = share_pref.getString(Q_2, null)
+
+            }
+        }
+
     }
 
     fun submitAnswer(v: View?) {
@@ -79,18 +117,18 @@ class storyQuestions : AppCompatActivity() {
             0 -> {
                 question_count++
                 question_button!!.text = questions[question_count]
-                assessment!!.STORY_ANS_Q1 = answer_view!!.text.toString()
+                assessment!!.storyAnswerQ1 = answer_view!!.text.toString()
                 //Toast.makeText(this, answer_view.getText().toString(), Toast.LENGTH_LONG).show();
                 answer_view!!.text = ""
             }
             1 -> {
 
                 //Toast.makeText(this, answer_view.getText().toString(), Toast.LENGTH_LONG).show();
-                assessment!!.STORY_ANS_Q2 = answer_view!!.text.toString()
+                assessment!!.storyAnswerQ2 = answer_view!!.text.toString()
                 if (checkAns(assessment) > 0) { // one or all is correct
-                    assessment!!.LEARNING_LEVEL = "ABOVE"
+                    assessment!!.learningLevel = "ABOVE"
                 } else {
-                    assessment!!.LEARNING_LEVEL = "STORY"
+                    assessment!!.learningLevel = "STORY"
                 }
                 val myIntent = Intent(baseContext, thankYou::class.java)
                 myIntent.putExtra("Assessment", assessment)
@@ -102,8 +140,8 @@ class storyQuestions : AppCompatActivity() {
     }
 
     fun checkAns(assessment: Assessment?): Int {
-        story_score = nyansapoNLP!!.evaluateAnswer(assessment!!.STORY_ANS_Q1, assessment.ASSESSMENT_KEY.toInt(), 0) +
-                nyansapoNLP!!.evaluateAnswer(assessment.STORY_ANS_Q2, assessment.ASSESSMENT_KEY.toInt(), 1)
+        story_score = nyansapoNLP!!.evaluateAnswer(assessment!!.storyAnswerQ1, assessment.assessmentKey.toInt(), 0) +
+                nyansapoNLP!!.evaluateAnswer(assessment.storyAnswerQ2, assessment.assessmentKey.toInt(), 1)
 
         //Toast.makeText(this, Integer.toString(story_score), Toast.LENGTH_LONG).show();
         return if (story_score > 110) {

@@ -19,7 +19,6 @@ import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.edward.nyansapo.presentation.utils.Constants
-import com.example.edward.nyansapo.word_assessment
 import com.google.firebase.firestore.SetOptions
 import com.microsoft.cognitiveservices.speech.*
 import java.io.IOException
@@ -28,6 +27,16 @@ import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
 class paragraph_assessment : AppCompatActivity() {
+
+    companion object {
+        //audio stuff
+        private  const val TAG="paragraph_assessment"
+
+        private var mEMA = 0.0
+        private const val EMA_FILTER = 0.6
+    }
+
+
     var mediaPlayer: MediaPlayer? = null
     var paragraphButton: Button? = null
     var changeButton: Button? = null
@@ -66,7 +75,7 @@ class paragraph_assessment : AppCompatActivity() {
 
         //Toast.makeText(this, "Click on the Record Button to read or click on change to change the prompt", Toast.LENGTH_LONG).show();
         assessment = intent.getParcelableExtra("Assessment")
-        ASSESSMENT_KEY = assessment!!.ASSESSMENT_KEY
+        ASSESSMENT_KEY = assessment!!.assessmentKey
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment_content = Assessment_Content()
         val para = getPara(ASSESSMENT_KEY)
@@ -77,7 +86,12 @@ class paragraph_assessment : AppCompatActivity() {
         } else {
             para[1]
         }
-        sentences = paragraph!!.split("[.]".toRegex()).toTypedArray()
+
+
+        sentences = paragraph!!.split("[.]".toRegex()).toTypedArray().filter { line->
+            line.trim().isNotBlank()
+        }.toTypedArray()
+
         paragraphButton = findViewById(R.id.paragraph1)
 
 
@@ -132,6 +146,9 @@ class paragraph_assessment : AppCompatActivity() {
     }
 
     fun changeSentence() {
+
+
+        Log.d(TAG, "changeSentence: ${sentences.toString()}")
         progressBar!!.progress = 0
         //Toast.makeText(this, Integer.toString(error_count) , Toast.LENGTH_LONG).show();
         tries = 0 // everytime a sentence is changed tries go to one
@@ -318,7 +335,7 @@ class paragraph_assessment : AppCompatActivity() {
             showProgress(false)
 
 
-            assessment!!.PARAGRAPH_WORDS_WRONG = paragraph_words_wrong // set words wrong
+            assessment!!.paragraphWordsWrong = paragraph_words_wrong // set words wrong
             val myIntent = Intent(baseContext, story_assessment::class.java)
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
@@ -333,7 +350,7 @@ class paragraph_assessment : AppCompatActivity() {
         showProgress(true)
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
-            assessment!!.PARAGRAPH_WORDS_WRONG = paragraph_words_wrong
+            assessment!!.paragraphWordsWrong = paragraph_words_wrong
             val myIntent = Intent(baseContext, word_assessment::class.java)
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
@@ -371,11 +388,6 @@ class paragraph_assessment : AppCompatActivity() {
         }
     }
 
-    companion object {
-        //audio stuff
-        private var mEMA = 0.0
-        private const val EMA_FILTER = 0.6
-    }
 
     /////////////////////PROGRESS_BAR////////////////////////////
     lateinit var dialog: AlertDialog

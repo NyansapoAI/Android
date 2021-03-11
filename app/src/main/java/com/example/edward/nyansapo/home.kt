@@ -112,11 +112,11 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
                 openDialog()
             }
 
-            initRecyclerViewAdapter()
-            setSwipeListenerForItems()
 
         }
 
+        initRecyclerViewAdapter()
+        setSwipeListenerForItems()
 
     }
 

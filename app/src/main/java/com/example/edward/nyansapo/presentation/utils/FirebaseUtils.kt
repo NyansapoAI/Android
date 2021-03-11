@@ -3,20 +3,27 @@ package com.example.edward.nyansapo.presentation.utils
 import com.example.edward.nyansapo.Instructor
 import com.example.edward.nyansapo.presentation.utils.Constants.COLLECTION_ASSESSMENTS
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 
 object FirebaseUtils {
+
+
+    val settings = FirebaseFirestoreSettings.Builder()
+            .setTimestampsInSnapshotsEnabled(true)
+            .build();
+
     val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     val firestoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
+    init {
+        firestoreInstance.setFirestoreSettings(settings);
+    }
 
     val studentsCollection: CollectionReference
         get() = FirebaseFirestore.getInstance().collection(Constants.COLLECTION_ROOT + "/" + instructor_id + "/" + Constants.COLLECTION_STUDENTS)
-    fun assessmentsCollection(): CollectionReference{
-       return studentsCollection.document(Constants.studentDocumentSnapshot!!.id).collection(COLLECTION_ASSESSMENTS)
+
+    fun assessmentsCollection(): CollectionReference {
+        return studentsCollection.document(Constants.studentDocumentSnapshot!!.id).collection(COLLECTION_ASSESSMENTS)
     }
 
 

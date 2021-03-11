@@ -23,7 +23,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.edward.nyansapo.MainActivity
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.microsoft.cognitiveservices.speech.ResultReason
@@ -160,7 +159,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
     fun recordStudent(v: View?) {
         val myIntent = Intent(baseContext, paragraph::class.java)
         val assessment = Assessment() // create new assessment object
-        assessment.ASSESSMENT_KEY = ASSESSMENT_KEY // assign proper key
+        assessment.assessmentKey = ASSESSMENT_KEY // assign proper key
 
         showProgress(true)
         FirebaseUtils.assessmentsCollection().add(assessment).addOnSuccessListener {
@@ -221,7 +220,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
                 //Toast.makeText(this, instructor_id +" pressed", Toast.LENGTH_LONG).show();
                 val myIntent = Intent(baseContext, paragraph::class.java)
                 val assessment = Assessment() // create new assessment object
-                assessment.ASSESSMENT_KEY = ASSESSMENT_KEY // assign proper key
+                assessment.assessmentKey = ASSESSMENT_KEY // assign proper key
 
 
                 showProgress(true)
