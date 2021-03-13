@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -33,7 +33,7 @@ class SelectAssessment : AppCompatActivity(), View.OnClickListener {
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener { //startActivity(new Intent(getApplicationContext(), home.class));
             val intent = Intent(this@SelectAssessment, student_assessments::class.java)
-             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@SelectAssessment).toBundle())
+             startActivity(intent)
         }
 
 
@@ -66,42 +66,42 @@ class SelectAssessment : AppCompatActivity(), View.OnClickListener {
             R.id.assessment3_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "3")
-                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                 startActivity(myIntent)
             }
             R.id.assessment4_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "4")
-                  startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                  startActivity(myIntent)
             }
             R.id.assessment5_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "5")
-                 startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                 startActivity(myIntent)
             }
             R.id.assessment6_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "6")
-                  startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                  startActivity(myIntent)
             }
             R.id.assessment7_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "7")
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(myIntent)
             }
             R.id.assessment8_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "8")
-               startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+               startActivity(myIntent)
             }
             R.id.assessment9_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "9")
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(myIntent)
             }
             R.id.assessment10_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "10")
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(myIntent)
             }
             else -> {
             }

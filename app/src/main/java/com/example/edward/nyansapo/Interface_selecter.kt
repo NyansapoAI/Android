@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -21,11 +21,11 @@ class Interface_selecter : AppCompatActivity() {
 */
     fun startStudentInterface(v: View?) {
         val myIntent = Intent(baseContext, registerStudent::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun goHome(v: View?) {
         val myIntent = Intent(baseContext, MainActivity::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 }

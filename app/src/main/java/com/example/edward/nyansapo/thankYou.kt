@@ -44,7 +44,7 @@ class thankYou : AppCompatActivity() {
     fun nextAssessment(w: View?) {
         val myIntent = Intent(baseContext, home::class.java)
         //Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun storeAssessment() {
@@ -59,10 +59,15 @@ class thankYou : AppCompatActivity() {
 
     fun updateLearning_level(assessment: Assessment?) {
 
-        val map = mapOf("LEARNING_LEVEL" to assessment?.learningLevel)
+        val map = mapOf("learningLevel" to assessment?.learningLevel)
         showProgress(true)
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
-            showProgress(false)
+            //updating student learning level
+            val map2 = mapOf("learningLevel" to assessment?.learningLevel)
+            Constants.studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+                showProgress(false)
+
+            }
 
 
         }

@@ -27,15 +27,15 @@ class HomeAdapter(private val home: home, options: FirestoreRecyclerOptions<Stud
 
             holder.binding.apply {
 
-                nameView.setText(model.getFirstname() + " " + model.getLastname())
-                ageView.setText("Age: " + model.getAge())
-                genderView.setText("Gender: " + model.getGender())
-                classView.setText("Class: " + model.getStd_class())
+                nameView.setText(model.firstname + " " + model.lastname)
+                ageView.setText("Age: " + model.age)
+                genderView.setText("Gender: " + model.gender)
+                classView.setText("Class: " + model.std_class)
 
-                //  levelView.setText(model.getLearning_level())
+                 levelView.setText(getLevelKey(model.learningLevel))
 
-                FirebaseUtils.studentsCollection.document(snapshots.getSnapshot(position).id
-                ).collection(Constants.COLLECTION_ASSESSMENTS).orderBy("TIMESTAMP", Query.Direction.DESCENDING).get().addOnSuccessListener {
+   /*             FirebaseUtils.studentsCollection.document(snapshots.getSnapshot(position).id
+                ).collection(Constants.COLLECTION_ASSESSMENTS).orderBy("timestamp", Query.Direction.DESCENDING).get().addOnSuccessListener {
 
                     if (!it.isEmpty){
                         val level = it.toObjects(Assessment::class.java).get(0).learningLevel
@@ -45,7 +45,7 @@ class HomeAdapter(private val home: home, options: FirestoreRecyclerOptions<Stud
                     }
 
                     }
-
+*/
             }
 
         }

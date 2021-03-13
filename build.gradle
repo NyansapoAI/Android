@@ -38,9 +38,16 @@ allprojects {
     repositories {
         google()
         jcenter()
+
+        //source of speech storage
         maven { url 'https://csspeechstorage.blob.core.windows.net/maven/' }
         //source of toasty library
         maven { url "https://jitpack.io" }
+
+        //source of 4-digit passcode
+        maven{
+            url "https://github.com/omadahealth/omada-nexus/raw/master/release"
+        }
 
 
     }

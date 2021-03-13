@@ -34,12 +34,12 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
-        myViewHolder.name_view.setText(students.get(i).getFirstname() +" "+ students.get(i).getLastname());
-        myViewHolder.age_view.setText("Age: "+students.get(i).getAge());
-        myViewHolder.gender_view.setText("Gender: "+students.get(i).getGender());
-        myViewHolder.level_view.setText(students.get(i).getLearning_level());
-        myViewHolder.level_view.setText(getLevelKey(students.get(i).getLearning_level()));
-        myViewHolder.class_view.setText("Class: " + students.get(i).getStd_class());
+   /*     myViewHolder.name_view.setText(students.get(i).getFirstname() +" "+ students.get(i).lastname);
+        myViewHolder.age_view.setText("Age: "+students.get(i).getAge);
+        myViewHolder.gender_view.setText("Gender: "+students.get(i).getGender);
+        myViewHolder.level_view.setText(students.get(i).getLearningLevel());
+        myViewHolder.level_view.setText(getLevelKey(students.get(i).getLearning_level));
+        myViewHolder.class_view.setText("Class: " + students.get(i).getStd_class);*/
     }
 
     @Override

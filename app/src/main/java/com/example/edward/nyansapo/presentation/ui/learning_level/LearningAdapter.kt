@@ -29,7 +29,7 @@ class LearningAdapter : ListAdapter<Student, RecyclerView.ViewHolder>(DIFF_UTIL)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-       holder.itemView.nameTxtView.text=getItem(position).getFirstname() +" "+ getItem(position).getLastname()
+       holder.itemView.nameTxtView.text=getItem(position).firstname +" "+ getItem(position).lastname
     }
 
     companion object {

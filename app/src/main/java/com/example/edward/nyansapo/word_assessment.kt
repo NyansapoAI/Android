@@ -1,6 +1,5 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -18,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.Constants.assessmentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.microsoft.cognitiveservices.speech.ResultReason
@@ -196,7 +196,7 @@ class word_assessment : AppCompatActivity() {
     fun startLetter(v: View?) {
         //mediaPlayer.release();
         val myIntent = Intent(baseContext, letter_assessment::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     inner class SpeechAsync : AsyncTask<View?, String?, String?>() {
@@ -300,7 +300,7 @@ class word_assessment : AppCompatActivity() {
     fun goToLetter() {
         val myIntent = Intent(baseContext, letter_assessment::class.java)
 
-        val map = mapOf("WORDS_WRONG " to words_wrong, "WORDS_CORRECT" to words_correct)
+        val map = mapOf("wordsWrong" to words_wrong, "wordsCorrect" to words_correct)
         showProgress(true)
         assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
@@ -309,7 +309,7 @@ class word_assessment : AppCompatActivity() {
             assessment!!.wordsWrong = words_wrong
             assessment!!.wordsCorrect = words_correct
             myIntent.putExtra("Assessment", assessment)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            startActivity(myIntent)
         }
 
     }
@@ -317,16 +317,22 @@ class word_assessment : AppCompatActivity() {
     fun goToThankYou() {
         showProgress(true)
 
-        val map = mapOf("WORDS_WRONG " to words_wrong, "WORDS_CORRECT" to words_correct, "LEARNING_LEVEL" to "WORD")
+        val map = mapOf("wordsWrong" to words_wrong, "wordsCorrect" to words_correct, "learningLevel" to "WORD")
 
         assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
-            showProgress(false)
-            val myIntent = Intent(baseContext, thankYou::class.java)
-            assessment!!.wordsWrong = words_wrong
-            assessment!!.wordsCorrect = words_correct
-            assessment!!.learningLevel = "WORD"
-            myIntent.putExtra("Assessment", assessment)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+
+            //updating student learning level
+            val map2 = mapOf("learningLevel" to "WORD")
+            Constants.studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+                showProgress(false)
+                val myIntent = Intent(baseContext, thankYou::class.java)
+                assessment!!.wordsWrong = words_wrong
+                assessment!!.wordsCorrect = words_correct
+                assessment!!.learningLevel = "WORD"
+                myIntent.putExtra("Assessment", assessment)
+                startActivity(myIntent)
+
+            }
 
         }
 

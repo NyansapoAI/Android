@@ -346,7 +346,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         contentValues.put(FIRSTNAME,student.getFirstname());
         contentValues.put(LASTNAME,student.getLastname());
         contentValues.put(AGE,student.getAge());
-        contentValues.put(LEARNING_LEVEL,student.getLearning_level());
+        contentValues.put(LEARNING_LEVEL,student.getLearningLevel());
         contentValues.put(TIMESTAMP, new Date(System.currentTimeMillis()).toString());
         contentValues.put(GENDER,student.getGender());
         contentValues.put(INSTRUCTOR_ID, student.getInstructor_id());
@@ -445,7 +445,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             Student student = new Student();
             student.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME)));
             student.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME)));
-            student.setLearning_level(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
+            student.setLearningLevel(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
             student.setGender(cursor.getString(cursor.getColumnIndex(GENDER)));
             student.setNotes(cursor.getString(cursor.getColumnIndex(NOTES)));
             student.setAge(cursor.getString(cursor.getColumnIndex(AGE)));
@@ -473,7 +473,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             Student student = new Student();
             student.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME)));
             student.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME)));
-            student.setLearning_level(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
+            student.setLearningLevel(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
             student.setGender(cursor.getString(cursor.getColumnIndex(GENDER)));
             student.setNotes(cursor.getString(cursor.getColumnIndex(NOTES)));
             student.setAge(cursor.getString(cursor.getColumnIndex(AGE)));
@@ -504,7 +504,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             student = new Student();
             student.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME)));
             student.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME)));
-            student.setLearning_level(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
+            student.setLearningLevel(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
             student.setGender(cursor.getString(cursor.getColumnIndex(GENDER)));
             student.setNotes(cursor.getString(cursor.getColumnIndex(NOTES)));
             student.setAge(cursor.getString(cursor.getColumnIndex(AGE)));
@@ -530,7 +530,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             Student student = new Student();
             student.setFirstname(cursor.getString(cursor.getColumnIndex(FIRSTNAME)));
             student.setLastname(cursor.getString(cursor.getColumnIndex(LASTNAME)));
-            student.setLearning_level(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
+            student.setLearningLevel(cursor.getString(cursor.getColumnIndex(LEARNING_LEVEL)));
             student.setGender(cursor.getString(cursor.getColumnIndex(GENDER)));
             student.setNotes(cursor.getString(cursor.getColumnIndex(NOTES)));
             student.setAge(cursor.getString(cursor.getColumnIndex(AGE)));

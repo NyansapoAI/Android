@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -71,7 +71,6 @@ class paragraph_assessment : AppCompatActivity() {
         setContentView(R.layout.activity_paragraph_assessment)
         initProgressBar()
         val intent = intent
-        val bundle = intent.extras
 
         //Toast.makeText(this, "Click on the Record Button to read or click on change to change the prompt", Toast.LENGTH_LONG).show();
         assessment = intent.getParcelableExtra("Assessment")
@@ -81,7 +80,7 @@ class paragraph_assessment : AppCompatActivity() {
         val para = getPara(ASSESSMENT_KEY)
         paragraph = para[0]
         //Toast.makeText(this, intent.getStringExtra("paragraph"), Toast.LENGTH_LONG);
-        paragraph = if (bundle.getString("paragraph").equals("0", ignoreCase = true)) {
+        paragraph = if (intent.getStringExtra("paragraph").equals("0", ignoreCase = true)) {
             para[0]
         } else {
             para[1]
@@ -112,6 +111,7 @@ class paragraph_assessment : AppCompatActivity() {
         changeButton!!.setOnClickListener(View.OnClickListener { //changeSentence();
             Toast.makeText(this@paragraph_assessment, "Can't Change Sentence", Toast.LENGTH_SHORT).show()
         })
+
         record_button = findViewById(R.id.record_button)
         record_button!!.setOnClickListener(View.OnClickListener { v -> recordStudent(v) })
         paragraphButton!!.setOnClickListener(View.OnClickListener { view -> recordStudent(view) })
@@ -146,6 +146,7 @@ class paragraph_assessment : AppCompatActivity() {
     }
 
     fun changeSentence() {
+
 
 
         Log.d(TAG, "changeSentence: ${sentences.toString()}")
@@ -273,7 +274,8 @@ class paragraph_assessment : AppCompatActivity() {
                         /*Toast.makeText(view.getContext(), SpeechRecognition.removeDuplicates(s), Toast.LENGTH_LONG).show();
                         Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
                         Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
-                        Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();*/changeSentence()
+                        Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();*/
+                        changeSentence()
                     }
                 } else {
                     error_count += SpeechRecognition.countError(error_txt)
@@ -286,7 +288,8 @@ class paragraph_assessment : AppCompatActivity() {
                     /*Toast.makeText(view.getContext(), SpeechRecognition.removeDuplicates(s), Toast.LENGTH_LONG).show();
                     Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
                     Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
-                    Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();*/changeSentence()
+                    Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();*/
+                    changeSentence()
                 }
             }
             reco!!.close()
@@ -329,7 +332,7 @@ class paragraph_assessment : AppCompatActivity() {
 
 
     fun goToStory() {
-        val map = mapOf("PARAGRAPH_WORDS_WRONG " to paragraph_words_wrong)
+        val map = mapOf("paragraphWordsWrong" to paragraph_words_wrong)
         showProgress(true)
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
@@ -338,14 +341,14 @@ class paragraph_assessment : AppCompatActivity() {
             assessment!!.paragraphWordsWrong = paragraph_words_wrong // set words wrong
             val myIntent = Intent(baseContext, story_assessment::class.java)
             myIntent.putExtra("Assessment", assessment)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            startActivity(myIntent)
 
         }
 
     }
 
     fun goToWord() {
-        val map = mapOf("PARAGRAPH_WORDS_WRONG " to paragraph_words_wrong)
+        val map = mapOf("paragraphWordsWrong" to paragraph_words_wrong)
 
         showProgress(true)
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
@@ -353,7 +356,7 @@ class paragraph_assessment : AppCompatActivity() {
             assessment!!.paragraphWordsWrong = paragraph_words_wrong
             val myIntent = Intent(baseContext, word_assessment::class.java)
             myIntent.putExtra("Assessment", assessment)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            startActivity(myIntent)
 
         }
     }

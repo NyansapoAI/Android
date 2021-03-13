@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.AsyncTask
@@ -75,7 +75,7 @@ class storyQuestions : AppCompatActivity() {
             myIntent.putExtra("Assessment", assessment)
             myIntent.putExtra("story", story_txt)
             myIntent.putExtra("question", Integer.toString(question_count))
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@storyQuestions).toBundle())
+            startActivity(myIntent)
         })
     }
 
@@ -132,7 +132,7 @@ class storyQuestions : AppCompatActivity() {
                 }
                 val myIntent = Intent(baseContext, thankYou::class.java)
                 myIntent.putExtra("Assessment", assessment)
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(myIntent)
             }
             else -> {
             }

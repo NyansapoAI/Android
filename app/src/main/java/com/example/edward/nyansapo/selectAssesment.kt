@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -19,12 +19,12 @@ class selectAssesment : AppCompatActivity() {
 
     fun newAssessment(v: View?) {
         val myIntent = Intent(baseContext, Begin_Assessment::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun selectAssessment(v: View?) {
         val myIntent = Intent(baseContext, viewAssessment::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun selectFilter(v: View?) {

@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -36,7 +36,7 @@ class settings : AppCompatActivity() {
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener { //startActivity(new Intent(getApplicationContext(), home.class));
             val myIntent = Intent(baseContext, home::class.java)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@settings).toBundle())
+            startActivity(myIntent)
         }
 
 
@@ -59,7 +59,7 @@ class settings : AppCompatActivity() {
 
             Log.d(TAG, "onNavigationItemSelected: logout success")
             val myIntent = Intent(baseContext, MainActivity::class.java)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@settings).toBundle())
+            startActivity(myIntent)
 
         }
     }

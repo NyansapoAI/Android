@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -41,7 +41,7 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
         return when (item.itemId) {
             R.id.settings -> {
                 val myIntent = Intent(baseContext, studentSettings::class.java)
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@student_assessments).toBundle())
+                startActivity(myIntent)
                 true
             }
             R.id.add_assessment -> {
@@ -70,7 +70,7 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener { //startActivity(new Intent(getApplicationContext(), home.class));
             val myIntent = Intent(baseContext, home::class.java)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@student_assessments).toBundle())
+            startActivity(myIntent)
         }
 
         // get student_activity
@@ -172,17 +172,17 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
             "assessment_3" -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "3")
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(myIntent)
             }
             "assessment_4" -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "4")
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(myIntent)
             }
             "assessment_5" -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "5")
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(myIntent)
             }
             else -> {
             }

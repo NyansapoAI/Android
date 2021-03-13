@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo;
 
-import android.app.ActivityOptions;
+
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -191,6 +191,6 @@ public class viewAssessment extends AppCompatActivity {
 
     public void newAssessment(View v){
         Intent myIntent = new Intent(getBaseContext(), Begin_Assessment.class);
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        startActivity(myIntent);
     }
 }

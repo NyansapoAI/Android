@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -152,7 +152,7 @@ class story_assessment : AppCompatActivity() {
             val temp = assessment!!.paragraphWordsWrong
 
 
-            val map = mapOf("PARAGRAPH_WORDS_WRONG " to temp + story_words_wrong)
+            val map = mapOf("paragraphWordsWrong" to temp + story_words_wrong)
 
             showProgress(true)
             Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
@@ -162,7 +162,7 @@ class story_assessment : AppCompatActivity() {
                 val myIntent = Intent(baseContext, storyQuestions::class.java)
                 myIntent.putExtra("Assessment", assessment)
                 myIntent.putExtra("question", "0")
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(myIntent)
 
 
             }
@@ -321,17 +321,24 @@ class story_assessment : AppCompatActivity() {
     fun goToThankYou() { // take to thank you page and grade as paragraph student_activity
         val temp = assessment!!.paragraphWordsWrong
 
-        val map = mapOf("LEARNING_LEVEL " to "PARAGRAPH","PARAGRAPH_WORDS_WRONG" to temp + story_words_wrong)
+        val map = mapOf("learningLevel" to "PARAGRAPH","paragraphWordsWrong" to temp + story_words_wrong)
 
         showProgress(true)
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
-            showProgress(false)
-            val myIntent = Intent(baseContext, thankYou::class.java)
-            assessment!!.learningLevel = "PARAGRAPH"
-           assessment!!.paragraphWordsWrong = temp + story_words_wrong
-            //assessment.setSTORY_WORDS_WRONG(story_words_wrong);
-            myIntent.putExtra("Assessment", assessment)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+
+
+            //updating student learning level
+            val map2 = mapOf("learningLevel" to "PARAGRAPH")
+            Constants.studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+                showProgress(false)
+                val myIntent = Intent(baseContext, thankYou::class.java)
+                assessment!!.learningLevel = "PARAGRAPH"
+                assessment!!.paragraphWordsWrong = temp + story_words_wrong
+                //assessment.setSTORY_WORDS_WRONG(story_words_wrong);
+                myIntent.putExtra("Assessment", assessment)
+                startActivity(myIntent)
+
+            }
 
 
         }

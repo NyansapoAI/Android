@@ -1,6 +1,5 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -19,17 +18,17 @@ class student_activity : AppCompatActivity() {
 
     fun newSchool(v: View?) {
         val myIntent = Intent(baseContext, registerSchool::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun beginAssessment(v: View?) {
         val myIntent = Intent(baseContext, selectAssesment::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun newStudent(v: View?) {
         val myIntent = Intent(baseContext, registerStudent::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun selectFilter(v: View?) {

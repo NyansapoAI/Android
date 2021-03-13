@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -44,7 +44,8 @@ class paragraph : AppCompatActivity() {
         //mediaPlayer.release();
         val myIntent = Intent(baseContext, paragraph_assessment::class.java)
         myIntent.putExtra("Assessment", assessment)
-       startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        myIntent.putExtra("paragraph", paragraph)
+       startActivity(myIntent)
     }
 
     fun getPara(key: String?): Array<String> {

@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -39,7 +39,7 @@ class cumulativeProgress : AppCompatActivity() {
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener {
             val myIntent = Intent(baseContext, home::class.java)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@cumulativeProgress).toBundle())
+            startActivity(myIntent)
         }
         val intent = this.intent
          missed_words = findViewById(R.id.missed_words)
@@ -156,7 +156,7 @@ class cumulativeProgress : AppCompatActivity() {
     fun sortStudents(students: List<Student>?) {
         val len = students!!.size
         for (i in 0 until len) {
-            when (students[i].getLearning_level()) {
+            when (students[i].learningLevel) {
                 "LETTER" -> {
                     list_letters!!.add(students[i])
                 }
@@ -175,11 +175,11 @@ class cumulativeProgress : AppCompatActivity() {
 
     fun gohome(v: View?) {
         val myIntent = Intent(baseContext, home::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun goSettings(v: View?) {
         val myIntent = Intent(baseContext, settings::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 }

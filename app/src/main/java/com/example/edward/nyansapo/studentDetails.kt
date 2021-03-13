@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -56,13 +56,14 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
         toolbar.setNavigationOnClickListener {
             val intent = Intent(this@studentDetails, student_assessments::class.java)
             intent.putExtra("student_activity", student)
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@studentDetails).toBundle())
+            startActivity(intent)
         }
         DataBaseHandler = dataBaseHandler(this)
         assessmentList = ArrayList()
         //assessmentList = DataBaseHandler.getAllAssessment();
         showProgress(true)
-        FirebaseUtils.assessmentsCollection().get().addOnSuccessListener {
+        FirebaseUtils.assessmentsCollection().orderBy("timestamp").get()
+                .addOnSuccessListener {
             showProgress(false)
 
             assessmentList = it.toObjects(Assessment::class.java) as ArrayList<Assessment>
@@ -95,7 +96,7 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
         current_level = findViewById(R.id.current_level)
         assessments_taken = findViewById(R.id.assessments_taken)
         assessments_taken!!.setText("0") // updated
-        student_name!!.setText(student.getFirstname() + ' ' + student.getLastname())
+        student_name!!.setText(student.firstname + ' ' + student.lastname)
 
         // code for buttons
         //settings_button = findViewById(R.id.settings_button);
@@ -200,17 +201,17 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
 
     fun gohome(v: View?) { // function to handle home button
         val myIntent = Intent(baseContext, student_assessments::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun goSettings(v: View?) { // function to handle settings button
         val myIntent = Intent(baseContext, settings::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun goAssessment(v: View?) { // function to handle new assessment button
         val myIntent = Intent(baseContext, SelectAssessment::class.java)
-           startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+           startActivity(myIntent)
     }
 
     override fun onClick(v: View) { // assign function for the onclick listener buttons

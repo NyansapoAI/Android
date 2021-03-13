@@ -33,7 +33,7 @@ class StudentAssessmentAdapter(private val studentAssessments: student_assessmen
 
             holder.binding.apply {
 
-                nameView.setText("Assessment " + Integer.toString(position + 1))
+                nameView.setText("Assessment " + Integer.toString(itemCount - position))
                 levelView.setText(getLevelKey(model.learningLevel))
 
 

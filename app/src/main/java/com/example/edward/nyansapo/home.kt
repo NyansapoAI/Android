@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -58,7 +58,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
                 true
             R.id.analytics -> {
                 val myIntent2 = Intent(baseContext, cumulativeProgress::class.java)
-                startActivity(myIntent2, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(myIntent2)
                 //Toast.makeText(this, "Attendace Selected", Toast.LENGTH_LONG).show();
                 true
             }
@@ -72,7 +72,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             }
             R.id.settings -> {
                 val myIntent1 = Intent(baseContext, settings::class.java)
-                startActivity(myIntent1, ActivityOptions.makeSceneTransitionAnimation(this@home).toBundle())
+                startActivity(myIntent1)
                 //Toast.makeText(this, "female Selected", Toast.LENGTH_LONG).show();
                 true
             }
@@ -177,7 +177,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         for (student in students!!) { // generate csv data
             data.append("""
     
-    ${student.getFirstname()},${student.getLastname()},${student.getAge()},${student.getGender()},${student.getStd_class()},${student.getLearning_level()}
+    ${student.firstname},${student.lastname},${student.age},${student.gender},${student.std_class},${student.learningLevel}
     """.trimIndent())
         }
         try {
@@ -218,18 +218,18 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
 
     fun addstudent(v: View?) {
         val myIntent = Intent(baseContext, registerStudent::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun cumulativeProgress(v: View?) {
         val myIntent = Intent(baseContext, cumulativeProgress::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun onStudentClicked() {
         //students.get(position);
         val intent = Intent(this@home, student_assessments::class.java)
-        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(intent, )
     }
 
     /// Gesture code
@@ -258,7 +258,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
 
     override fun onYesClicked() {
         val myIntent = Intent(baseContext, registerStudent::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     /////////////////////PROGRESS_BAR////////////////////////////

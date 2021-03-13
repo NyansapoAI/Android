@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -293,18 +293,23 @@ class letter_assessment : AppCompatActivity() {
     private fun goToThankYou() {
 
 
-        val map = mapOf("LETTERS_CORRECT " to letters_correct, "LETTERS_WRONG" to letters_wrong, "LEARNING_LEVEL" to "LETTER")
+        val map = mapOf("letterCorrect" to letters_correct, "lettersWrong" to letters_wrong, "learningLevel" to "LETTER")
         showProgress(true)
         Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
-            showProgress(false)
+            //saving current learning level of student
+            val map2 = mapOf("learningLevel" to "LETTER")
+            Constants.studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+                showProgress(false)
 
 
-            val myIntent = Intent(baseContext, thankYou::class.java)
-            assessment!!.letterCorrect = letters_correct
-            assessment!!.lettersWrong = letters_wrong
-            assessment!!.learningLevel = "LETTER"
-            myIntent.putExtra("Assessment", assessment)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                val myIntent = Intent(baseContext, thankYou::class.java)
+                assessment!!.letterCorrect = letters_correct
+                assessment!!.lettersWrong = letters_wrong
+                assessment!!.learningLevel = "LETTER"
+                myIntent.putExtra("Assessment", assessment)
+                startActivity(myIntent)
+            }
+
         }
 
 

@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo;
 
-import android.app.ActivityOptions;
+
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +16,6 @@ public class registerSchool extends AppCompatActivity {
 
     public void selectStudent(View v){
         Intent myIntent = new Intent(getBaseContext(), student_activity.class);
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        startActivity(myIntent);
     }
 }

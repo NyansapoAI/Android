@@ -1,6 +1,5 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -47,7 +46,7 @@ class studentSettings : AppCompatActivity() {
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener { //startActivity(new Intent(getApplicationContext(), home.class));
             val intent = Intent(this@studentSettings, student_assessments::class.java)
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@studentSettings).toBundle())
+            startActivity(intent)
         }
 
 
@@ -67,18 +66,18 @@ class studentSettings : AppCompatActivity() {
 
 
             val student = Student()
-            student.setFirstname(firstname!!.getText().toString())
-            student.setLastname(lastname!!.getText().toString())
-            student.setAge(age!!.getText().toString())
-            student.setGender(gender!!.getText().toString())
-            student.setNotes(notes!!.getText().toString())
-            student.setStd_class(std_class!!.getText().toString())
+            student.firstname=firstname!!.getText().toString()
+            student.lastname=lastname!!.getText().toString()
+            student.age=age!!.getText().toString()
+            student.gender=gender!!.getText().toString()
+            student.notes=notes!!.getText().toString()
+            student.std_class=std_class!!.getText().toString()
 
 
 
             updateStudent(student) {
                 val myIntent = Intent(baseContext, home::class.java)
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@studentSettings).toBundle())
+                startActivity(myIntent)
 
             }
         })
@@ -86,7 +85,7 @@ class studentSettings : AppCompatActivity() {
             deleteStudent {
                 //Toast.makeText(studentSettings.this, student_activity.getCloud_id(), Toast.LENGTH_LONG).show();
                 val myIntent = Intent(baseContext, home::class.java)
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@studentSettings).toBundle())
+                startActivity(myIntent)
 
             }
         })
@@ -114,12 +113,12 @@ class studentSettings : AppCompatActivity() {
     }
 
     fun populateInfo() {
-        firstname!!.setText(student!!.getFirstname())
-        lastname!!.setText(student!!.getLastname())
-        age!!.setText(student!!.getAge())
-        gender!!.setText(student!!.getGender())
-        std_class!!.setText(student!!.getStd_class())
-        notes!!.setText(student!!.getNotes())
+        firstname!!.setText(student!!.firstname)
+        lastname!!.setText(student!!.lastname)
+        age!!.setText(student!!.age)
+        gender!!.setText(student!!.gender)
+        std_class!!.setText(student!!.std_class)
+        notes!!.setText(student!!.notes)
     }
 
     /////////////////////PROGRESS_BAR////////////////////////////

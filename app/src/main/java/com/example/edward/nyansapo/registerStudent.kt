@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -41,7 +41,7 @@ class registerStudent : AppCompatActivity() {
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener { //startActivity(new Intent(getApplicationContext(), home.class));
             val myIntent = Intent(baseContext, home::class.java)
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@registerStudent).toBundle())
+            startActivity(myIntent)
         }
 
         // get intent
@@ -69,7 +69,7 @@ class registerStudent : AppCompatActivity() {
 
     fun startAssessment(v: View?) {
         val myIntent = Intent(baseContext, Begin_Assessment::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun addStudentToDatabase(v: View?) {
@@ -81,16 +81,16 @@ class registerStudent : AppCompatActivity() {
         } else {
             val student: Student
             student = Student()
-            student.setAge(age!!.text.toString()) // set age
-            student.setFirstname(firstname!!.text.toString())
-            student.setLastname(lastname!!.text.toString())
-            student.setGender(gender!!.text.toString())
-            student.setNotes(notes!!.text.toString())
-            student.setLearning_level("UNKNOWN") // SET latter
-            student.setTimestamp(Date(System.currentTimeMillis()).toString())
-            student.setInstructor_id(instructor_id)
+            student.age=age!!.text.toString()// set age
+            student.firstname=firstname!!.text.toString()
+            student.lastname=lastname!!.text.toString()
+            student.gender=gender!!.text.toString()
+            student.notes=notes!!.text.toString()
+            student.learningLevel="UNKNOWN" // SET latter
+            student.timestamp=Date(System.currentTimeMillis()).toString()
+            student.instructor_id=instructor_id
             //student_activity.setInstructor_id("5f39b701b4270100524952ed");
-            student.setStd_class(std_class!!.text.toString())
+            student.std_class=std_class!!.text.toString()
 
             //Toast.makeText(getApplicationContext(), student_activity.getInstructor_id() , Toast.LENGTH_SHORT).show();
             // send student_activity object to database
@@ -121,7 +121,7 @@ class registerStudent : AppCompatActivity() {
                val myIntent = Intent(baseContext, student_assessments::class.java)
                myIntent.putExtra("instructor_id", instructor_id)
                myIntent.putExtra("student_activity", student)
-               startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@registerStudent).toBundle())
+               startActivity(myIntent)
 
            }
 

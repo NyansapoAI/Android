@@ -152,6 +152,12 @@ dependencies {
     //pattern lock view
     compile 'com.andrognito.patternlockview:patternlockview:1.0.0'
 
+
+    //4 -digit passcode library
+    compile ('com.github.omadahealth:lollipin:2.1.0@aar') {
+        transitive = true
+    }
+
 }
 
 kapt {

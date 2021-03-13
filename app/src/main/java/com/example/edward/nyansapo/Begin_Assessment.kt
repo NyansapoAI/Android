@@ -1,6 +1,6 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -16,11 +16,11 @@ class Begin_Assessment : AppCompatActivity() {
 
     fun goHome(v: View?) {
         val myIntent = Intent(baseContext, MainActivity::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun startPreAssessment(v: View?) {
         val preIntent = Intent(baseContext, PreAssessment::class.java)
-        startActivity(preIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(preIntent)
     }
 }

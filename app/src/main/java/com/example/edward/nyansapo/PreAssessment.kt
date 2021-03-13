@@ -1,7 +1,7 @@
 package com.example.edward.nyansapo
 
 import android.Manifest
-import android.app.ActivityOptions
+
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -153,7 +153,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
 
     fun goHome(v: View?) {
         val myIntent = Intent(baseContext, MainActivity::class.java)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(myIntent)
     }
 
     fun recordStudent(v: View?) {
@@ -169,7 +169,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
                 Constants.assessmentDocumentSnapshot = it
 
                 myIntent.putExtra("Assessment", assessment) //sent next activity
-                startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(myIntent)
 
             }
 
@@ -232,7 +232,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
 
                         myIntent.putExtra("Assessment", assessment) //sent next activity
                          //Toast.makeText(this, assessment.toString() +"  "+ assessment.getSTUDENT_ID(), Toast.LENGTH_SHORT).show();
-                        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                        startActivity(myIntent)
 
                     }
 

@@ -32,20 +32,20 @@ class QuestionStory : AppCompatActivity() {
                             val myIntent = Intent(baseContext, storyQuestions::class.java)
                             myIntent.putExtra("Assessment", assessment)
                             myIntent.putExtra("question", Integer.toString(question_count))
-                            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@QuestionStory).toBundle())
+                            startActivity(myIntent)
                         }
                         run {
                             val myIntent = Intent(baseContext, storyQuestions::class.java)
                             myIntent.putExtra("Assessment", assessment)
                              myIntent.putExtra("question", Integer.toString(question_count))
-                            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@QuestionStory).toBundle())
+                            startActivity(myIntent)
                         }
                     }
                     1 -> {
                         val myIntent = Intent(baseContext, storyQuestions::class.java)
                         myIntent.putExtra("Assessment", assessment)
                          myIntent.putExtra("question", Integer.toString(question_count))
-                        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this@QuestionStory).toBundle())
+                        startActivity(myIntent)
                     }
                 }
             }
