@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_home.*
 import java.io.File
@@ -126,7 +127,9 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
                 .setLifecycleOwner(this).build()
 
 
-        adapter = HomeAdapter(this, firestoreRecyclerOptions, { onStudentClicked() })
+        adapter = HomeAdapter(this, firestoreRecyclerOptions, {
+            onStudentClicked(it)
+        })
         recyclerview.setLayoutManager(LinearLayoutManager(this))
         recyclerview.setAdapter(adapter)
 
@@ -226,10 +229,11 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         startActivity(myIntent)
     }
 
-    fun onStudentClicked() {
+    fun onStudentClicked(documentSnapshot: DocumentSnapshot) {
         //students.get(position);
         val intent = Intent(this@home, student_assessments::class.java)
-        startActivity(intent, )
+        intent.putExtra("studentId",documentSnapshot.id)
+        startActivity(intent)
     }
 
     /// Gesture code

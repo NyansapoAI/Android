@@ -8,8 +8,9 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
+import com.example.edward.nyansapo.presentation.utils.STUDENT_ID
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_register_student.*
 import java.util.*
@@ -117,8 +118,9 @@ class registerStudent : AppCompatActivity() {
             Toasty.success(this, "Success adding student").show()
 
            it.get().addOnSuccessListener {
-               Constants.studentDocumentSnapshot=it
+            studentDocumentSnapshot=it
                val myIntent = Intent(baseContext, student_assessments::class.java)
+               myIntent.putExtra(STUDENT_ID, it.id)
                myIntent.putExtra("instructor_id", instructor_id)
                myIntent.putExtra("student_activity", student)
                startActivity(myIntent)

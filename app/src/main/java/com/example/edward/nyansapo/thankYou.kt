@@ -15,7 +15,8 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.presentation.utils.Constants
+import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 
 class thankYou : AppCompatActivity() {
@@ -61,10 +62,10 @@ class thankYou : AppCompatActivity() {
 
         val map = mapOf("learningLevel" to assessment?.learningLevel)
         showProgress(true)
-        Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
+       assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             //updating student learning level
             val map2 = mapOf("learningLevel" to assessment?.learningLevel)
-            Constants.studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+            studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
 
             }
@@ -76,7 +77,7 @@ class thankYou : AppCompatActivity() {
 
     fun postAssessment(assessment: Assessment?) {
         showProgress(true)
-        Constants.assessmentDocumentSnapshot!!.reference.set(assessment!!).addOnSuccessListener {
+     assessmentDocumentSnapshot!!.reference.set(assessment!!).addOnSuccessListener {
             showProgress(false)
         }
     }

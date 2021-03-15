@@ -9,17 +9,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
+        android:id="@+id/programNameSpinner"
         android:tooltipText="Program Name" />
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
+        android:id="@+id/groupSpinner"
         android:tooltipText="Group" />
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/campSpinner"
         android:layout_margin="32dp"
         android:tooltipText="Camp" />
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -30,6 +33,7 @@
         android:backgroundTint="@android:color/darker_gray"
         android:padding="8dp"
         android:text="Create"
+        android:id="@+id/createFob"
         app:icon="@drawable/ic_add_24" />
 
 

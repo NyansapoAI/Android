@@ -17,8 +17,9 @@ import android.view.View
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.presentation.utils.Constants
-import com.example.edward.nyansapo.presentation.utils.Constants.assessmentDocumentSnapshot
+import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
+
 import com.google.firebase.firestore.SetOptions
 import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
@@ -258,7 +259,8 @@ class word_assessment : AppCompatActivity() {
                     //goToLetter();
                 } else if (word_count > 3 && error_count < 2) { // got to thank you page if error is less than 2
                     //goToThankYou();
-                } else */if (s !== "no match") changeWord()
+                } else */
+                if (s !== "no match") changeWord()
             }
             reco!!.close()
         }
@@ -323,7 +325,7 @@ class word_assessment : AppCompatActivity() {
 
             //updating student learning level
             val map2 = mapOf("learningLevel" to "WORD")
-            Constants.studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+           studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
                 val myIntent = Intent(baseContext, thankYou::class.java)
                 assessment!!.wordsWrong = words_wrong

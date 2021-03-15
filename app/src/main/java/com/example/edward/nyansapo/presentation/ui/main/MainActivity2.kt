@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.databinding.ActivityMain2Binding
 import com.example.edward.nyansapo.presentation.ui.activities.ActivitiesFragment
+import com.example.edward.nyansapo.presentation.ui.home.HomePageFragment
 import com.example.edward.nyansapo.presentation.ui.learning_level.LearningLevelFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -50,6 +51,10 @@ class MainActivity2 : AppCompatActivity() {
                 supportFragmentManager.beginTransaction().replace(R.id.container, LearningLevelFragment()).commit()
 
             }
+            R.id.action_home ->{
+                supportFragmentManager.beginTransaction().replace(R.id.container, HomePageFragment()).commit()
+
+            }
            /* R.id.action_assess ->{
                 binding.viewpager.setCurrentItem(7)
                 setTitle("Assessments")
@@ -59,10 +64,7 @@ class MainActivity2 : AppCompatActivity() {
                 setTitle("Learning Level")
             }
 
-            R.id.action_home ->{
-                binding.viewpager.setCurrentItem(9)
 
-            }
             R.id.action_patterns ->{
                 binding.viewpager.setCurrentItem(10)
                 setTitle("Data Analytics")

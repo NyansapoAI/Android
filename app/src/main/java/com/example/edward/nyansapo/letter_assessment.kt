@@ -18,7 +18,8 @@ import android.view.View
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.presentation.utils.Constants
+import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
@@ -295,10 +296,10 @@ class letter_assessment : AppCompatActivity() {
 
         val map = mapOf("letterCorrect" to letters_correct, "lettersWrong" to letters_wrong, "learningLevel" to "LETTER")
         showProgress(true)
-        Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
+        assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             //saving current learning level of student
             val map2 = mapOf("learningLevel" to "LETTER")
-            Constants.studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+            studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
 
 

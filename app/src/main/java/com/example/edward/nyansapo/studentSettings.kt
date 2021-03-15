@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.android.volley.*
 import com.example.edward.nyansapo.home
-import com.example.edward.nyansapo.presentation.utils.Constants
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import java.util.*
 
 class studentSettings : AppCompatActivity() {
@@ -37,7 +37,7 @@ class studentSettings : AppCompatActivity() {
         setContentView(R.layout.activity_student_settings)
         initProgressBar()
         val intent = intent
-        student = Constants.studentDocumentSnapshot?.toObject(Student::class.java)
+        student = studentDocumentSnapshot?.toObject(Student::class.java)
 
         // toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -96,7 +96,7 @@ class studentSettings : AppCompatActivity() {
 
     fun updateStudent(student: Student, onComplete: () -> Unit) {
         showProgress(true)
-        Constants.studentDocumentSnapshot?.reference?.set(student)?.addOnSuccessListener {
+        studentDocumentSnapshot?.reference?.set(student)?.addOnSuccessListener {
             showProgress(false)
             onComplete()
 
@@ -105,7 +105,7 @@ class studentSettings : AppCompatActivity() {
 
     fun deleteStudent(onComplete: () -> Unit) {
         showProgress(true)
-        Constants.studentDocumentSnapshot!!.reference.delete().addOnSuccessListener {
+       studentDocumentSnapshot!!.reference.delete().addOnSuccessListener {
             showProgress(false)
             onComplete()
         }

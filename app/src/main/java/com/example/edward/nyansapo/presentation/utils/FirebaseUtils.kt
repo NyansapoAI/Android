@@ -1,35 +1,83 @@
 package com.example.edward.nyansapo.presentation.utils
 
 import com.example.edward.nyansapo.Instructor
-import com.example.edward.nyansapo.presentation.utils.Constants.COLLECTION_ASSESSMENTS
+import com.example.edward.nyansapo.presentation.ui.home.Camp
+import com.example.edward.nyansapo.presentation.ui.home.Group
+import com.example.edward.nyansapo.presentation.ui.home.Program
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 
 object FirebaseUtils {
 
+    val COLLECTION_PROGRAM_NAMES = "program_names"
+    val COLLECTION_GROUPS = "groups"
+    val COLLECTION_CAMPS = "camps"
 
-    val settings = FirebaseFirestoreSettings.Builder()
-            .setTimestampsInSnapshotsEnabled(true)
-            .build();
 
     val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     val firestoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
-    init {
-        firestoreInstance.setFirestoreSettings(settings);
+
+    fun getProgramNames(onComplete: (QuerySnapshot) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).orderBy("name").get().addOnSuccessListener {
+
+            onComplete(it)
+
+        }
     }
 
-    val studentsCollection: CollectionReference
-        get() = FirebaseFirestore.getInstance().collection(Constants.COLLECTION_ROOT + "/" + instructor_id + "/" + Constants.COLLECTION_STUDENTS)
+    fun addProgram(program:Program,onComplete: (String) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).add(program).addOnSuccessListener {
 
-    fun assessmentsCollection(): CollectionReference {
-        return studentsCollection.document(Constants.studentDocumentSnapshot!!.id).collection(COLLECTION_ASSESSMENTS)
+            onComplete(it.id)
+
+        }
+    }
+
+
+    fun getGroupNames(programId: String, onComplete: (QuerySnapshot) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).orderBy("name").get().addOnSuccessListener {
+
+            onComplete(it)
+
+        }
+    }
+
+    fun addGroup(programId: String, group: Group, onComplete: ( String) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).add(group).addOnSuccessListener {
+            onComplete(it.id)
+        }
+
+
+    }
+
+    fun getCampNames(programId: String, groupId: String, onComplete: (QuerySnapshot) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).orderBy("name").get().addOnSuccessListener {
+
+            onComplete(it)
+
+        }
+    }
+
+    fun addCamp(programId: String, groupId: String, camp: Camp, onComplete: () -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).add(camp).addOnSuccessListener {
+            onComplete()
+        }
+
+    }
+
+    ////////////////////////////
+    val studentsCollection: CollectionReference
+        get() = FirebaseFirestore.getInstance().collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_STUDENTS)
+
+    fun assessmentsCollection(id: String): CollectionReference {
+        return studentsCollection.document(id).collection(COLLECTION_ASSESSMENTS)
     }
 
 
     fun instructor(onComplete: (Instructor?) -> Unit) {
 
-        firestoreInstance.collection(Constants.COLLECTION_ROOT).document(instructor_id).get().addOnSuccessListener {
+        firestoreInstance.collection(COLLECTION_ROOT).document(instructor_id).get().addOnSuccessListener {
             onComplete(it.toObject(Instructor::class.java))
 
         }
@@ -44,18 +92,18 @@ object FirebaseUtils {
             return firebaseAuth.currentUser != null
         }
     private val currentUserDocRef: DocumentReference
-        get() = firestoreInstance.collection(Constants.COLLECTION_ROOT).document(firebaseAuth.currentUser!!.uid)
+        get() = firestoreInstance.collection(COLLECTION_ROOT).document(firebaseAuth.currentUser!!.uid)
 
 
     fun getCurrentUser(onComplete: (DocumentSnapshot?) -> Unit) {
-        firestoreInstance.collection(Constants.COLLECTION_ROOT).document(firebaseAuth.currentUser!!.uid).get()
+        firestoreInstance.collection(COLLECTION_ROOT).document(firebaseAuth.currentUser!!.uid).get()
                 .addOnSuccessListener {
                     onComplete(it)
                 }
     }
 
     fun isInstructorSetUp(onComplete: (Boolean?) -> Unit) {
-        firestoreInstance.collection(Constants.COLLECTION_ROOT).document(firebaseAuth.currentUser!!.uid).get()
+        firestoreInstance.collection(COLLECTION_ROOT).document(firebaseAuth.currentUser!!.uid).get()
                 .addOnSuccessListener {
                     if (it.exists()) {
                         onComplete(true)
@@ -68,7 +116,7 @@ object FirebaseUtils {
     }
 
     fun saveInstructor(instructor: Instructor, onComplete: () -> Unit) {
-        firestoreInstance.collection(Constants.COLLECTION_ROOT).document(firebaseAuth.currentUser!!.uid).set(instructor).addOnSuccessListener {
+        firestoreInstance.collection(COLLECTION_ROOT).document(firebaseAuth.currentUser!!.uid).set(instructor).addOnSuccessListener {
             onComplete()
         }
     }

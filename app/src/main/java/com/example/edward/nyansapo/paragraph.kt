@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.presentation.utils.Constants
+import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 
 class paragraph : AppCompatActivity() {
     var mediaPlayer: MediaPlayer? = null
@@ -23,14 +23,14 @@ class paragraph : AppCompatActivity() {
         setContentView(R.layout.activity_paragraph)
         //mediaPlayer = MediaPlayer.create(getBaseContext(), R.raw.select);
         //mediaPlayer.start();
-        val intent = this.intent
+        assessment = this.intent.getParcelableExtra("Assessment")
 
 
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         paragraph1 = findViewById(R.id.paragraph1)
         paragraph2 = findViewById(R.id.paragraph2)
         assessment_content = Assessment_Content()
-        assessment =Constants.assessmentDocumentSnapshot!!.toObject(Assessment::class.java)!!
+   //     assessment = assessmentDocumentSnapshot!!.toObject(Assessment::class.java)!!
         ASSESSMENT_KEY = assessment.assessmentKey
         val para = getPara(ASSESSMENT_KEY)
         paragraph1!!.setText(para[0])

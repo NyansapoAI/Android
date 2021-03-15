@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.edward.nyansapo.databinding.AssessmentRowBinding
-import com.example.edward.nyansapo.presentation.utils.Constants
+import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -58,7 +58,7 @@ class StudentAssessmentAdapter(private val studentAssessments: student_assessmen
             if (position == RecyclerView.NO_POSITION) {
                 return@OnClickListener
             }
-            Constants.assessmentDocumentSnapshot = snapshots.getSnapshot(position)
+           assessmentDocumentSnapshot = snapshots.getSnapshot(position)
             onAssessmentClick(getItem(position))
         })
     }

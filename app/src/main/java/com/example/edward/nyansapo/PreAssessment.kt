@@ -23,8 +23,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
+import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
@@ -45,6 +45,8 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
 
     }
 
+
+    lateinit var studentId:String
     // button ui
     var next_button: Button? = null
     var record_button: Button? = null
@@ -87,6 +89,9 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pre_assessment)
         initProgressBar()
+
+
+        studentId=intent.getStringExtra("studentId")
         val bundle = intent.extras
         ASSESSMENT_KEY = bundle.getString("ASSESSMENT_KEY")
         val intent = this.intent
@@ -162,11 +167,11 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         assessment.assessmentKey = ASSESSMENT_KEY // assign proper key
 
         showProgress(true)
-        FirebaseUtils.assessmentsCollection().add(assessment).addOnSuccessListener {
+        FirebaseUtils.assessmentsCollection(studentId).add(assessment).addOnSuccessListener {
 
             it.get().addOnSuccessListener {
                 showProgress(false)
-                Constants.assessmentDocumentSnapshot = it
+               assessmentDocumentSnapshot = it
 
                 myIntent.putExtra("Assessment", assessment) //sent next activity
                 startActivity(myIntent)
@@ -224,14 +229,14 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
 
 
                 showProgress(true)
-                FirebaseUtils.assessmentsCollection().add(assessment).addOnSuccessListener {
+                FirebaseUtils.assessmentsCollection(studentId).add(assessment).addOnSuccessListener {
 
                     it.get().addOnSuccessListener {
                         showProgress(false)
-                        Constants.assessmentDocumentSnapshot = it
+                     assessmentDocumentSnapshot = it
 
                         myIntent.putExtra("Assessment", assessment) //sent next activity
-                         //Toast.makeText(this, assessment.toString() +"  "+ assessment.getSTUDENT_ID(), Toast.LENGTH_SHORT).show();
+                          //Toast.makeText(this, assessment.toString() +"  "+ assessment.getSTUDENT_ID(), Toast.LENGTH_SHORT).show();
                         startActivity(myIntent)
 
                     }

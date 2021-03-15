@@ -11,8 +11,9 @@ import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
+import com.example.edward.nyansapo.presentation.utils.STUDENT_ID
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.jjoe64.graphview.DefaultLabelFormatter
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
@@ -21,6 +22,8 @@ import kotlinx.android.synthetic.main.activity_home.*
 import java.util.*
 
 class studentDetails : AppCompatActivity(), View.OnClickListener {
+
+    lateinit var studentId:String
     // declare ui elements
     var graphView: GraphView? = null
     var student_name: TextView? = null
@@ -43,8 +46,8 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_details)
         initProgressBar()
-        val intent = intent
-        student = Constants.studentDocumentSnapshot!!.toObject(Student::class.java)!!
+        studentId=intent.getStringExtra(STUDENT_ID)
+        student = studentDocumentSnapshot!!.toObject(Student::class.java)!!
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
 
 
@@ -62,7 +65,7 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
         assessmentList = ArrayList()
         //assessmentList = DataBaseHandler.getAllAssessment();
         showProgress(true)
-        FirebaseUtils.assessmentsCollection().orderBy("timestamp").get()
+        FirebaseUtils.assessmentsCollection(studentId).orderBy("timestamp").get()
                 .addOnSuccessListener {
             showProgress(false)
 

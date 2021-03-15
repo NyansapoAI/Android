@@ -11,7 +11,8 @@ import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.edward.nyansapo.presentation.utils.Constants
+import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import kotlinx.android.synthetic.main.activity_home.*
 import java.util.*
 
@@ -44,8 +45,8 @@ class assessment_detail : AppCompatActivity() {
 
         // get student_activity parcelable object
         val intent = intent
-        student = Constants.studentDocumentSnapshot!!.toObject(Student::class.java)!!
-        assessment = Constants.assessmentDocumentSnapshot!!.toObject(Assessment::class.java)!!
+        student = studentDocumentSnapshot!!.toObject(Student::class.java)!!
+        assessment = assessmentDocumentSnapshot!!.toObject(Assessment::class.java)!!
 
         // set assessment info into ui
         literacy_level!!.setText(assessment.learningLevel)
@@ -88,7 +89,7 @@ class assessment_detail : AppCompatActivity() {
         })
         delete_button!!.setOnClickListener {
             showProgress(true)
-            Constants.assessmentDocumentSnapshot!!.reference.delete().addOnSuccessListener {
+           assessmentDocumentSnapshot!!.reference.delete().addOnSuccessListener {
                 showProgress(false)
                 val intent = Intent(this@assessment_detail, student_assessments::class.java)
                 startActivity(intent)

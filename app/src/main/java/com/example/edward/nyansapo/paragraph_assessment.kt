@@ -18,7 +18,7 @@ import android.view.View
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.presentation.utils.Constants
+import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.microsoft.cognitiveservices.speech.*
 import java.io.IOException
@@ -334,7 +334,7 @@ class paragraph_assessment : AppCompatActivity() {
     fun goToStory() {
         val map = mapOf("paragraphWordsWrong" to paragraph_words_wrong)
         showProgress(true)
-        Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
+        assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
 
 
@@ -351,7 +351,7 @@ class paragraph_assessment : AppCompatActivity() {
         val map = mapOf("paragraphWordsWrong" to paragraph_words_wrong)
 
         showProgress(true)
-        Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
+        assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
             assessment!!.paragraphWordsWrong = paragraph_words_wrong
             val myIntent = Intent(baseContext, word_assessment::class.java)

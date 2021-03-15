@@ -8,7 +8,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.edward.nyansapo.PreAssessment
-import com.example.edward.nyansapo.presentation.utils.Constants
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 
 class SelectAssessment : AppCompatActivity(), View.OnClickListener {
     var button3: Button? = null
@@ -24,7 +24,7 @@ class SelectAssessment : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_assessment)
         val intent = intent
-        student = Constants.studentDocumentSnapshot!!.toObject(Student::class.java)
+        student = studentDocumentSnapshot!!.toObject(Student::class.java)
 
         // toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)

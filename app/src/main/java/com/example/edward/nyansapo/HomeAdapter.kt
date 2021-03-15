@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.edward.nyansapo.databinding.StudentRowBinding
-import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -15,7 +15,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import es.dmoral.toasty.Toasty
 
-class HomeAdapter(private val home: home, options: FirestoreRecyclerOptions<Student?>,  val onStudentClick: ()->Unit) : FirestoreRecyclerAdapter<Student, HomeAdapter.ViewHolder>(options) {
+class HomeAdapter(private val home: home, options: FirestoreRecyclerOptions<Student?>,  val onStudentClick: (documentSnapshot:DocumentSnapshot)->Unit) : FirestoreRecyclerAdapter<Student, HomeAdapter.ViewHolder>(options) {
     private val context: Context? = home
     private lateinit var currentSnapshot: DocumentSnapshot
     private val parentData: Student? = null
@@ -59,8 +59,8 @@ class HomeAdapter(private val home: home, options: FirestoreRecyclerOptions<Stud
             if (position == RecyclerView.NO_POSITION) {
                return@setOnClickListener
             }
-            Constants.studentDocumentSnapshot=snapshots.getSnapshot(position)
-            onStudentClick()
+            studentDocumentSnapshot=snapshots.getSnapshot(position)
+            onStudentClick(snapshots.getSnapshot(position))
         }
     }
 

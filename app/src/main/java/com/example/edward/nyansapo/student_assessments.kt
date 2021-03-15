@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_home.*
 import java.util.*
 
 class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDialog.AddDialogListener {
-
+lateinit var studentId:String
     lateinit var adapter: StudentAssessmentAdapter
     var arrayList: ArrayList<*>? = null
     var arrayAdapter: ArrayAdapter<*>? = null
@@ -50,6 +50,7 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
             }
             R.id.analytics -> {
                 val intent = Intent(this@student_assessments, studentDetails::class.java)
+                intent.putExtra("studentId",studentId)
                  startActivity(intent)
                 true
             }
@@ -62,6 +63,10 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
         setContentView(R.layout.activity_student_assessments)
 
         initProgressBar()
+        // get student_activity
+        val intent = intent
+        student = intent.getParcelableExtra("student_activity")
+      studentId = intent.getStringExtra("studentId")
 
         // toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -73,10 +78,7 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
             startActivity(myIntent)
         }
 
-        // get student_activity
-        val intent = intent
-        student = intent.getParcelableExtra("student_activity")
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         btAdd = findViewById(R.id.bt_add)
 
 
@@ -85,7 +87,7 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
         btAdd!!.setOnClickListener(View.OnClickListener { addAssessment() })
         assessments = ArrayList()
         showProgress(true)
-        FirebaseUtils.assessmentsCollection().get().addOnSuccessListener {
+        FirebaseUtils.assessmentsCollection(studentId).get().addOnSuccessListener {
             showProgress(false)
             if (it.isEmpty) {
                 openDialog()
@@ -111,7 +113,7 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
     }
 
     private fun initRecyclerViewAdapter() {
-        val query: Query = FirebaseUtils.assessmentsCollection().orderBy("timestamp",Query.Direction.DESCENDING)
+        val query: Query = FirebaseUtils.assessmentsCollection(studentId).orderBy("timestamp",Query.Direction.DESCENDING)
         val firestoreRecyclerOptions = FirestoreRecyclerOptions.Builder<Assessment>().setQuery(query, Assessment::class.java)
                 .setLifecycleOwner(this).build()
 
@@ -171,16 +173,20 @@ class student_assessments : AppCompatActivity(), AssessmentModalListener, AddDia
         when (text) {
             "assessment_3" -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("studentId", studentId)
                 myIntent.putExtra("ASSESSMENT_KEY", "3")
                 startActivity(myIntent)
             }
             "assessment_4" -> {
+
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("studentId", studentId)
                 myIntent.putExtra("ASSESSMENT_KEY", "4")
                 startActivity(myIntent)
             }
             "assessment_5" -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("studentId", studentId)
                 myIntent.putExtra("ASSESSMENT_KEY", "5")
                 startActivity(myIntent)
             }

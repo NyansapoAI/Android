@@ -18,6 +18,7 @@
 
         <Spinner
             android:layout_width="wrap_content"
+            android:id="@+id/typeSpinner"
             android:layout_height="match_parent"
             android:tooltipText="Type" />
 
@@ -32,7 +33,14 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
+            android:id="@+id/programNameEdtTxt"
             android:layout_height="wrap_content" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:id="@+id/programNameSpinner"
+            android:visibility="gone"
+            android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -44,7 +52,14 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
+            android:id="@+id/groupEdtTxt"
+            android:inputType="number"
             android:layout_height="wrap_content" />
+        <Spinner
+            android:layout_width="match_parent"
+            android:id="@+id/groupSpinner"
+            android:visibility="gone"
+            android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -56,6 +71,8 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
+            android:id="@+id/campEdtTxt"
+            android:inputType="number"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -64,6 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Create"
+        android:id="@+id/createBtn"
         android:textAllCaps="false" />
 
 </LinearLayout>

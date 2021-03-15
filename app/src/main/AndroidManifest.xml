@@ -16,9 +16,10 @@
         android:roundIcon="@drawable/small_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".presentation.ui.attendance.AttendanceActivity"></activity>
         <activity
-            android:theme="@style/AppTheme.FullScreen"
-            android:name=".presentation.ui.pattern.PatternActivity"></activity>
+            android:name=".presentation.ui.pattern.PatternActivity"
+            android:theme="@style/AppTheme.FullScreen" />
         <activity android:name=".presentation.ui.pattern.SetPatternActivity" />
         <activity android:name=".presentation.ui.main.MainActivity2" />
         <activity android:name=".presentation.ui.student.IndividualStudentPageActivity" />

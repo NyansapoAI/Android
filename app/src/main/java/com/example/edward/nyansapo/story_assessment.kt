@@ -18,7 +18,8 @@ import android.view.View
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.presentation.utils.Constants
+import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
@@ -155,7 +156,7 @@ class story_assessment : AppCompatActivity() {
             val map = mapOf("paragraphWordsWrong" to temp + story_words_wrong)
 
             showProgress(true)
-            Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
+           assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
 
                 assessment!!.paragraphWordsWrong = temp + story_words_wrong
@@ -324,12 +325,12 @@ class story_assessment : AppCompatActivity() {
         val map = mapOf("learningLevel" to "PARAGRAPH","paragraphWordsWrong" to temp + story_words_wrong)
 
         showProgress(true)
-        Constants.assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
+       assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
 
 
             //updating student learning level
             val map2 = mapOf("learningLevel" to "PARAGRAPH")
-            Constants.studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+           studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
                 val myIntent = Intent(baseContext, thankYou::class.java)
                 assessment!!.learningLevel = "PARAGRAPH"
