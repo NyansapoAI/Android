@@ -13,20 +13,33 @@ object FirebaseUtils {
     val COLLECTION_GROUPS = "groups"
     val COLLECTION_CAMPS = "camps"
 
+    val ORDER_BY="number"
+
 
     val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     val firestoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
 
-    fun getProgramNames(onComplete: (QuerySnapshot) -> Unit) {
-        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).orderBy("name").get().addOnSuccessListener {
+    fun getProgramNamesContinuously(onComplete: (QuerySnapshot) -> Unit): ListenerRegistration {
+        return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).orderBy(ORDER_BY).addSnapshotListener { query, e ->
 
-            onComplete(it)
-
+            onComplete(query!!)
         }
+
+
     }
 
-    fun addProgram(program:Program,onComplete: (String) -> Unit) {
+    fun getProgramNamesOnce(onComplete: (QuerySnapshot) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).orderBy(ORDER_BY).get().addOnSuccessListener {
+
+
+            onComplete(it)
+        }
+
+
+    }
+
+    fun addProgram(program: Program, onComplete: (String) -> Unit) {
         firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).add(program).addOnSuccessListener {
 
             onComplete(it.id)
@@ -35,15 +48,26 @@ object FirebaseUtils {
     }
 
 
-    fun getGroupNames(programId: String, onComplete: (QuerySnapshot) -> Unit) {
-        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).orderBy("name").get().addOnSuccessListener {
-
-            onComplete(it)
+    fun getGroupNamesContinously(programId: String, onComplete: (QuerySnapshot) -> Unit): ListenerRegistration {
+        return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).orderBy(ORDER_BY).addSnapshotListener { query, e ->
+            onComplete(query!!)
 
         }
+
+
     }
 
-    fun addGroup(programId: String, group: Group, onComplete: ( String) -> Unit) {
+    fun getGroupNamesOnce(programId: String, onComplete: (QuerySnapshot) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).orderBy(ORDER_BY).get().addOnSuccessListener {
+
+            onComplete(it!!)
+
+        }
+
+
+    }
+
+    fun addGroup(programId: String, group: Group, onComplete: (String) -> Unit) {
         firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).add(group).addOnSuccessListener {
             onComplete(it.id)
         }
@@ -51,12 +75,23 @@ object FirebaseUtils {
 
     }
 
-    fun getCampNames(programId: String, groupId: String, onComplete: (QuerySnapshot) -> Unit) {
-        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).orderBy("name").get().addOnSuccessListener {
+    fun getCampNamesContinously(programId: String, groupId: String, onComplete: (QuerySnapshot) -> Unit): ListenerRegistration {
+        return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).orderBy(ORDER_BY).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            onComplete(querySnapshot!!)
+
+        }
+
+
+    }
+
+    fun getCampNamesOnce(programId: String, groupId: String, onComplete: (QuerySnapshot) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).orderBy(ORDER_BY).get().addOnSuccessListener {
 
             onComplete(it)
 
         }
+
+
     }
 
     fun addCamp(programId: String, groupId: String, camp: Camp, onComplete: () -> Unit) {

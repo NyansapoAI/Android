@@ -36,8 +36,8 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@mipmap/flowchart_p_w"
-            tools:src="@mipmap/flowchart_p_w" />
+            android:src="@mipmap/word_level"
+            tools:src="@mipmap/word_level" />
 
         <TextView
             android:layout_width="wrap_content"

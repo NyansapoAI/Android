@@ -1,7 +1,9 @@
 package com.example.edward.nyansapo.presentation.ui.home
 
-data class Program(val name:String){
+data class Program(override val number: String):Organisation {
 
-    constructor():this("")
+    constructor() : this("")
+
+    override var name: String? = null
 }
 

@@ -47,11 +47,13 @@ class MainActivity2 : AppCompatActivity() {
 
             }
             R.id.action_grouping -> {
+                Log.d(TAG, "grouping clicked: ")
 
                 supportFragmentManager.beginTransaction().replace(R.id.container, LearningLevelFragment()).commit()
 
             }
-            R.id.action_home ->{
+            R.id.action_home -> {
+                Log.d(TAG, "home clicked: ")
                 supportFragmentManager.beginTransaction().replace(R.id.container, HomePageFragment()).commit()
 
             }

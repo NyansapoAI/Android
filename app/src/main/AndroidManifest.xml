@@ -16,7 +16,8 @@
         android:roundIcon="@drawable/small_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".presentation.ui.attendance.AttendanceActivity"></activity>
+        <activity android:name=".presentation.ui.home.CreateNewActivity"></activity>
+        <activity android:name=".presentation.ui.attendance.AttendanceActivity" />
         <activity
             android:name=".presentation.ui.pattern.PatternActivity"
             android:theme="@style/AppTheme.FullScreen" />
@@ -30,14 +31,11 @@
         <activity android:name=".presentation.ui.individual_activities.IndividualActivitiesActivity" />
         <activity android:name=".presentation.ui.activities.ActivitiesActivity" />
         <activity android:name=".presentation.ui.login.LoginActivity">
-
-            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            -->
         </activity>
         <activity android:name=".studentSettings" />
         <activity android:name=".MainActivity" />
@@ -56,11 +54,14 @@
         <activity android:name=".student_activity" />
         <activity android:name=".selectSchool" />
         <activity android:name=".index2">
-            <intent-filter>
+
+            <!--
+                <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            -->
         </activity>
         <activity android:name=".TeacherLogin" />
         <activity android:name=".Interface_selecter" />
