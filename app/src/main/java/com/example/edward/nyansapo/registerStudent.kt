@@ -1,6 +1,7 @@
 package com.example.edward.nyansapo
 
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.example.edward.nyansapo.presentation.utils.STUDENT_ID
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
@@ -114,16 +116,29 @@ class registerStudent : AppCompatActivity() {
     fun postStudent(student: Student) {
 
 
-        FirebaseUtils.studentsCollection.add(student).addOnSuccessListener {
+        val sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+
+        val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
+        val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
+        val campId = sharedPreferences.getString(Constants.KEY_CAMP_ID, null)
+        val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
+
+        if (campPos == -1) {
+            Toasty.error(this, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+           onBackPressed()
+        }
+
+
+        FirebaseUtils.getCollectionStudentFromGroup(programId,groupId).add(student).addOnSuccessListener {
             Toasty.success(this, "Success adding student").show()
 
-           it.get().addOnSuccessListener {
-            studentDocumentSnapshot=it
-               val myIntent = Intent(baseContext, student_assessments::class.java)
-               myIntent.putExtra(STUDENT_ID, it.id)
-               myIntent.putExtra("instructor_id", instructor_id)
-               myIntent.putExtra("student_activity", student)
-               startActivity(myIntent)
+            it.get().addOnSuccessListener {
+                studentDocumentSnapshot = it
+                val myIntent = Intent(baseContext, student_assessments::class.java)
+                myIntent.putExtra(STUDENT_ID, it.id)
+                myIntent.putExtra("instructor_id", instructor_id)
+                myIntent.putExtra("student_activity", student)
+                startActivity(myIntent)
 
            }
 

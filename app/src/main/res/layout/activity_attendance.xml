@@ -1,34 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".presentation.ui.attendance.AttendanceActivity">
-    <TextView
+    >
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_below="@id/toolbar"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
-        android:id="@+id/dateTxtView"
-        android:layout_gravity="start|top"
+        android:id="@+id/dateBtn"
+        app:strokeWidth="2dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        app:strokeColor="@android:color/holo_blue_dark"
         tools:text="March 21,2021"
-        android:layout_height="wrap_content"/>
+        android:drawableEnd="@drawable/ic_arrow_down" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         tools:listitem="@layout/item_attendance"
-        android:layout_below="@id/dateTxtView"
+        android:layout_below="@id/dateBtn"
         android:id="@+id/recyclerview"
+        android:layout_above="@+id/submitBtn"
         android:layout_height="match_parent"/>
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+
+    <Button
         android:layout_width="wrap_content"
-        android:id="@+id/fob"
+        android:id="@+id/submitBtn"
         android:text="Submit"
-        android:layout_margin="32dp"
-        android:backgroundTint="@android:color/darker_gray"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_dark"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        android:textColor="@android:color/white"
         android:padding="16dp"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_height="wrap_content"/>
+        android:textStyle="bold" />
 
 
 

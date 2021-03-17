@@ -27,7 +27,32 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
 
         binding = FragmentLearningLevelBinding.bind(view)
         setUpToolbar()
-        setUpViewPager()
+        //   setUpViewPager()
+        setUpTabLayout()
+    }
+
+    private fun setUpTabLayout() {
+        binding.tabs.addTab(binding.tabs.newTab().setText("Beginner"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Letter"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Word"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Paragraph"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Story"))
+
+
+        tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val position = tab?.position
+                Log.d(TAG, "onTabSelected: $position")
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
+
+
     }
 
     private fun setUpToolbar() {
@@ -40,12 +65,6 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
                     addstudent()
                 }
             }
-
-
-
-
-
-
 
 
             true

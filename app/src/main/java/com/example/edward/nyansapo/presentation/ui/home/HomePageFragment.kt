@@ -2,31 +2,33 @@ package com.example.edward.nyansapo.presentation.ui.home
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.databinding.FragmentHomePageBinding
+import com.example.edward.nyansapo.presentation.ui.attendance.AttendanceFragment
+import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
-import com.google.android.gms.dynamic.IFragmentWrapper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.SetOptions
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.fragment_home_page.*
 
 
 class HomePageFragment : Fragment(R.layout.fragment_home_page) {
-
+    lateinit var sharedPreferences: SharedPreferences
 
     val TYPE_PROGRAM = 0
     val TYPE_GROUP = 1
@@ -46,11 +48,15 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        binding = FragmentHomePageBinding.bind(view)
         Log.d(TAG, "onViewCreated: ")
         initProgressBar()
-        binding = FragmentHomePageBinding.bind(view)
+        sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE)
         setOnClickListeners()
         setItemClickListener()
+
+        Log.d(TAG, "onViewCreated: ${campSpinner.selectedItemPosition}")
     }
 
 
@@ -89,13 +95,9 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
 
 
 
-
-
-
-
-
                 binding.programNameSpinner.setAdapter(adapter)
-
+                //set default value of program
+                setDefaultProgram()
 
                 startFetchingSpecificGroup()
             }
@@ -140,7 +142,11 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
         binding.programNameSpinner.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
                 if (++programCheck > 1) {
+                    Log.d(TAG, "onItemSelected: program spinner")
                     startFetchingSpecificGroup()
+
+                    //saving programId to be accessed in other screens
+                    updateProgramSharedPref()
 
                 }
 
@@ -152,8 +158,30 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
         })
         binding.groupSpinner.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                Log.d(TAG, "onItemSelected:  group spinner")
                 if (++groupCheck > 1) {
                     startFetchingSpecificCamp()
+
+                    //saving groupId to be accessed in other screens
+                    updateGroupSharedPref()
+
+
+                }
+
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {
+
+            }
+        })
+        binding.campSpinner.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+
+                Log.d(TAG, "onItemSelected: camp spinner current pos: ${campSpinner.selectedItemPosition}")
+                if (++groupCheck > 1) {
+                    //saving campId to be accessed in other screens
+                    updateCampSharedPref()
+
 
                 }
 
@@ -164,6 +192,30 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
             }
         })
 
+
+    }
+
+    private fun updateProgramSharedPref() {
+        Log.d(TAG, "updateProgramSharedPref: updating program shared pref")
+        val programID = programNames.documents[binding.programNameSpinner.selectedItemPosition].id
+        val programPos = binding.programNameSpinner.selectedItemPosition
+        sharedPreferences.edit().putString(Constants.KEY_PROGRAM_ID, programID).putInt(Constants.PROGRAM_POS, programPos).apply()
+
+    }
+
+    private fun updateGroupSharedPref() {
+        Log.d(TAG, "updateGroupSharedPref: updating group")
+        val groupId = groupNames.documents[binding.groupSpinner.selectedItemPosition].id
+        val groupPos = binding.groupSpinner.selectedItemPosition
+        sharedPreferences.edit().putString(Constants.KEY_GROUP_ID, groupId).putInt(Constants.GROUP_POS, groupPos).apply()
+
+    }
+
+    private fun updateCampSharedPref() {
+        Log.d(TAG, "updateCampSharedPref: updating camp")
+        val campId = campNames.documents[binding.campSpinner.selectedItemPosition].id
+        val campPos = binding.campSpinner.selectedItemPosition
+        sharedPreferences.edit().putString(Constants.KEY_CAMP_ID, campId).putInt(Constants.CAMP_POS, campPos).apply()
 
     }
 
@@ -183,6 +235,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
                 editItem(TYPE_CAMP, documentReference, camp!!)
             }
             binding.campSpinner.setAdapter(adapter)
+            setDefaultCamp()
 
 
         }
@@ -209,6 +262,8 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
                 editItem(TYPE_GROUP, documentReference, group!!)
             }
             binding.groupSpinner.setAdapter(adapter)
+            setDefaultGroup()
+
             if (!groups.isEmpty) {
                 startFetchingSpecificCamp()
             }
@@ -218,6 +273,16 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
     }
 
     private fun setOnClickListeners() {
+
+
+        binding.attendanceBtn.setOnClickListener {
+            attendanceBtnClicked()
+        }
+
+
+
+
+
         binding.createFob.setOnClickListener {
             //go to create new page
             Log.d(TAG, "setOnClickListeners: ")
@@ -225,6 +290,84 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
             val intent = Intent(requireContext(), CreateNewActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun attendanceBtnClicked() {
+        val attendanceFragment = AttendanceFragment()
+
+        val bundle = getInfoBundle()
+        if (bundle == null) {
+            return
+        }
+
+        attendanceFragment.arguments = bundle
+
+        requireActivity()
+                .supportFragmentManager
+                .beginTransaction().replace(R.id.container, attendanceFragment)
+                .addToBackStack(null).commit()
+    }
+
+    private fun getInfoBundle(): Bundle? {
+        binding.apply {
+            if (binding.programNameSpinner.selectedItemPosition == AdapterView.INVALID_POSITION) {
+                showToast("Please First Create A Program")
+                return null
+            }
+            if (binding.groupSpinner.selectedItemPosition == AdapterView.INVALID_POSITION) {
+                showToast("Please First Create A Program")
+                return null
+            }
+            if (binding.campSpinner.selectedItemPosition == AdapterView.INVALID_POSITION) {
+                showToast("Please First Create A Program")
+                return null
+            }
+
+        }
+
+
+        val programID = programNames.documents[binding.programNameSpinner.selectedItemPosition].id
+        val groupID = groupNames.documents[binding.groupSpinner.selectedItemPosition].id
+        val campID = campNames.documents[binding.campSpinner.selectedItemPosition].id
+
+        val bundle = bundleOf(Constants.KEY_PROGRAM_ID to programID, Constants.KEY_GROUP_ID to groupID, Constants.KEY_CAMP_ID to campID)
+        return bundle
+    }
+
+    fun setDefaultProgram() {
+        Log.d(TAG, "setDefaultProgram: ")
+        val programPos = sharedPreferences.getInt(Constants.PROGRAM_POS, AdapterView.INVALID_POSITION)
+
+        if (programPos == AdapterView.INVALID_POSITION || programPos >= programNames.size()) {
+            return
+        }
+
+        binding.programNameSpinner.setSelection(programPos)
+
+    }
+
+    fun setDefaultGroup() {
+        Log.d(TAG, "setDefaultGroup: ")
+        val groupPos = sharedPreferences.getInt(Constants.GROUP_POS, AdapterView.INVALID_POSITION)
+
+        if (groupPos == AdapterView.INVALID_POSITION || groupPos >= groupNames.size()) {
+            return
+        }
+
+        binding.groupSpinner.setSelection(groupPos)
+
+    }
+
+    fun setDefaultCamp() {
+        Log.d(TAG, "setDefaultCamp: ")
+        val campPos = sharedPreferences.getInt(Constants.CAMP_POS, AdapterView.INVALID_POSITION)
+
+        if (campPos == AdapterView.INVALID_POSITION || campPos >= campNames.size()) {
+            return
+        }
+
+        binding.campSpinner.setSelection(campPos)
+
     }
 
 
