@@ -4,8 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context=".presentation.ui.student.StudentInfoPageActivity">
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
 
     <LinearLayout
@@ -35,23 +38,24 @@
             android:src="@mipmap/exclamation_image" />
 
     </LinearLayout>
-    
-    
+
+
     <com.jjoe64.graphview.GraphView
+        android:id="@+id/graphview"
         android:layout_width="match_parent"
-        android:layout_height="300dp"/>
+        android:layout_height="300dp" />
 
-
-    <Button
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Assessment 4" />
+        android:gravity="center"
+        android:text="AssessmentResults"
+        android:textAppearance="@android:style/TextAppearance.Large" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Assessment 5" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/assessment_row" />
 
 </LinearLayout>

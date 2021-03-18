@@ -20,13 +20,8 @@ class AttendanceAdapter(options: FirestoreRecyclerOptions<StudentAttendance?>, v
 
         holder.binding.apply {
 
-
-            holder.binding.apply {
-
-                nameTxtView.setText(model.name)
-                attendanceCheckbox.isChecked = model.present
-
-            }
+            nameTxtView.setText(model.name)
+            attendanceCheckbox.isChecked = model.present
 
         }
     }

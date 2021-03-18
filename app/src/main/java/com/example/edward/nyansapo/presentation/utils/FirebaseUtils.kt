@@ -1,11 +1,17 @@
 package com.example.edward.nyansapo.presentation.utils
 
+import android.content.Context
 import android.util.Log
+import androidx.annotation.DrawableRes
 import com.example.edward.nyansapo.Instructor
+import com.example.edward.nyansapo.R
+import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.presentation.ui.attendance.CurrentDate
+import com.example.edward.nyansapo.presentation.ui.attendance.StudentAttendance
 import com.example.edward.nyansapo.presentation.ui.home.Camp
 import com.example.edward.nyansapo.presentation.ui.home.Group
 import com.example.edward.nyansapo.presentation.ui.home.Program
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import java.text.SimpleDateFormat
@@ -205,17 +211,69 @@ object FirebaseUtils {
 
     }
 
-    fun getCollectionStudentFromGroup(programId: String, groupId: String): CollectionReference {
+    fun getCollectionStudentFromGroup_ReturnCollection(programId: String, groupId: String): CollectionReference {
         return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_STUDENTS)
     }
 
-    fun getCollectionStudentFromCamp(programId: String, groupId: String, campId: String): CollectionReference {
+    fun getCollectionStudentFromGroup_ReturnSnapshot(programId: String, groupId: String, onComplete: (QuerySnapshot) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_STUDENTS).get().addOnSuccessListener {
+            onComplete(it)
+        }
+    }
+
+    fun getCollectionStudentFromCamp_ReturnCollection(programId: String, groupId: String, campId: String): CollectionReference {
         return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_STUDENTS)
     }
 
-    fun getCollectionStudentFromCamp_attendance(programId: String, groupId: String, campId: String,date:String): CollectionReference {
-        return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_ATTENDANCE).document(date).collection(COLLECTION_STUDENTS)
+    fun getCollectionStudentFromCamp_ReturnSnapshot(programId: String, groupId: String, campId: String, onComplete: (QuerySnapshot) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_STUDENTS).get().addOnSuccessListener {
+            onComplete(it)
+        }
     }
 
 
+    fun getCollectionStudentFromCamp_attendance_ReturnCollection(programId: String, groupId: String, campId: String, date: String): CollectionReference {
+        return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_ATTENDANCE).document(date).collection(COLLECTION_STUDENTS)
+    }
+
+    fun addStudentsToAttendance(programId: String, groupId: String, campId: String, studentId: String, date: String, studentAttendance: StudentAttendance, onComplete: () -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_ATTENDANCE).document(date).collection(COLLECTION_STUDENTS).document(studentId).set(studentAttendance).addOnSuccessListener {
+            onComplete()
+        }
+    }
+
+    fun getCollectionStudentFromCamp_attendance_ReturnSnapshot(programId: String, groupId: String, campId: String, date: String, onComplete: (QuerySnapshot) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_ATTENDANCE).document(date).collection(COLLECTION_STUDENTS).get().addOnSuccessListener {
+            onComplete(it)
+        }
+
+
+    }
+
+    fun addStudentsToCamp(programId: String, groupId: String, campId: String, student: Student, onComplete: (DocumentReference) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_STUDENTS).add(student).addOnSuccessListener {
+            onComplete(it)
+        }
+    }
+
+
+    fun getAssessmentsFromStudent(programId: String, groupId: String, campId: String, studentId: String, onComplete: (QuerySnapshot) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_STUDENTS).document(studentId).collection(COLLECTION_ASSESSMENTS).get().addOnSuccessListener {
+            onComplete(it)
+        }
+
+
+    }
+
+    fun getAssessmentsFromStudent_Collection(programId: String, groupId: String, campId: String, studentId: String): CollectionReference {
+        return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_STUDENTS).document(studentId).collection(COLLECTION_ASSESSMENTS)
+
+
+    }
+
+
+    fun showAlertDialog(context: Context, @DrawableRes icon: Int, title: String, message: String, onYes: () -> Unit, onNo: () -> Unit) {
+        MaterialAlertDialogBuilder(context).setBackground(context.getDrawable(R.drawable.button_first)).setIcon(icon).setTitle(title).setMessage(message).setNegativeButton("no") { dialog, which -> onNo() }.setPositiveButton("yes") { dialog, which -> onYes() }.show()
+
+    }
 }

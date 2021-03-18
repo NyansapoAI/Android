@@ -1,5 +1,6 @@
 package com.example.edward.nyansapo
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +17,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import es.dmoral.toasty.Toasty
 import java.text.DateFormat
 
-class StudentAssessmentAdapter(private val studentAssessments: student_assessments, options: FirestoreRecyclerOptions<Assessment?>, val onAssessmentClick: (Assessment) -> Unit) : FirestoreRecyclerAdapter<Assessment, StudentAssessmentAdapter.ViewHolder>(options) {
+class StudentAssessmentAdapter(private val studentAssessments: Activity, options: FirestoreRecyclerOptions<Assessment?>, val onAssessmentClick: (Assessment) -> Unit) : FirestoreRecyclerAdapter<Assessment, StudentAssessmentAdapter.ViewHolder>(options) {
 
     companion object {
             private  const val TAG="StudentAssessmentAdapte"
@@ -69,7 +70,6 @@ class StudentAssessmentAdapter(private val studentAssessments: student_assessmen
 
     private fun deleteData(position: Int) {
         currentSnapshot = snapshots.getSnapshot(position)
-        studentAssessments.showProgress(true)
 
         currentSnapshot.reference.delete().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -78,8 +78,7 @@ class StudentAssessmentAdapter(private val studentAssessments: student_assessmen
                 val error = task.exception!!.message
                 Toasty.error(context!!, "Error: $error", Toast.LENGTH_SHORT).show()
             }
-            studentAssessments.showProgress(false)
-        }
+         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

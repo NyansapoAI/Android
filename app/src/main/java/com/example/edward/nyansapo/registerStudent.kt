@@ -129,7 +129,7 @@ class registerStudent : AppCompatActivity() {
         }
 
 
-        FirebaseUtils.getCollectionStudentFromGroup(programId,groupId).add(student).addOnSuccessListener {
+        FirebaseUtils.addStudentsToCamp(programId, groupId, campId, student) {
             Toasty.success(this, "Success adding student").show()
 
             it.get().addOnSuccessListener {
@@ -139,14 +139,8 @@ class registerStudent : AppCompatActivity() {
                 myIntent.putExtra("instructor_id", instructor_id)
                 myIntent.putExtra("student_activity", student)
                 startActivity(myIntent)
-
-           }
-
-
-        }.addOnFailureListener {
-            Toast.makeText(this@registerStudent, it.toString(), Toast.LENGTH_LONG).show()
+            }
 
         }
-
 
     }}

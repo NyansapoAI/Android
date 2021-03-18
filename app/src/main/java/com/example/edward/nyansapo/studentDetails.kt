@@ -80,20 +80,7 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setUpGraph() {
-        //Toast.makeText(this,Integer.toString(assessmentList.size()), Toast.LENGTH_LONG ).show();
 
-        //Assessment assessment =  assessmentList.get(0);
-        /*
-            Toast.makeText(this,assessment.getLETTERS_WRONG(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this,assessment.getLETTERS_CORRECT(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this,assessment.getWORDS_WRONG(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this,assessment.getWORDS_CORRECT(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this,assessment.getPARAGRAPH_WORDS_WRONG(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this,assessment.getSTORY_ANS_Q1(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this,assessment.getSTORY_ANS_Q2(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this,assessment.getLEARNING_LEVEL(), Toast.LENGTH_SHORT).show();*/
-
-        // assign ui elements
         student_name = findViewById(R.id.student_name)
         initial_level = findViewById(R.id.initial_level)
         current_level = findViewById(R.id.current_level)

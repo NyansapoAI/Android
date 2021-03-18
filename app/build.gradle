@@ -157,6 +157,8 @@ dependencies {
     compile ('com.github.omadahealth:lollipin:2.1.0@aar') {
         transitive = true
     }
+    //persistant searchview
+    compile 'com.github.arimorty:floatingsearchview:2.1.1'
 
 }
 
