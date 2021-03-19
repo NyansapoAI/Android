@@ -66,40 +66,48 @@ class SelectAssessment : AppCompatActivity(), View.OnClickListener {
             R.id.assessment3_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
                 myIntent.putExtra("ASSESSMENT_KEY", "3")
-                 startActivity(myIntent)
+                myIntent.putExtra("studentId", student!!.id)
+                startActivity(myIntent)
             }
             R.id.assessment4_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("studentId", student!!.id)
                 myIntent.putExtra("ASSESSMENT_KEY", "4")
-                  startActivity(myIntent)
+                startActivity(myIntent)
             }
             R.id.assessment5_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("studentId", student!!.id)
                 myIntent.putExtra("ASSESSMENT_KEY", "5")
-                 startActivity(myIntent)
+                startActivity(myIntent)
             }
             R.id.assessment6_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("studentId", student!!.id)
                 myIntent.putExtra("ASSESSMENT_KEY", "6")
-                  startActivity(myIntent)
+                startActivity(myIntent)
             }
             R.id.assessment7_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("studentId", student!!.id)
                 myIntent.putExtra("ASSESSMENT_KEY", "7")
                 startActivity(myIntent)
             }
             R.id.assessment8_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("studentId", student!!.id)
                 myIntent.putExtra("ASSESSMENT_KEY", "8")
-               startActivity(myIntent)
+                startActivity(myIntent)
             }
             R.id.assessment9_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("studentId", student!!.id)
                 myIntent.putExtra("ASSESSMENT_KEY", "9")
                 startActivity(myIntent)
             }
             R.id.assessment10_button -> {
                 val myIntent = Intent(baseContext, PreAssessment::class.java)
+                myIntent.putExtra("studentId", student!!.id)
                 myIntent.putExtra("ASSESSMENT_KEY", "10")
                 startActivity(myIntent)
             }

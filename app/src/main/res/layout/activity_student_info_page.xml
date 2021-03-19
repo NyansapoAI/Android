@@ -38,24 +38,35 @@
             android:src="@mipmap/exclamation_image" />
 
     </LinearLayout>
-
-
-    <com.jjoe64.graphview.GraphView
-        android:id="@+id/graphview"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphview"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="AssessmentResults"
-        android:textAppearance="@android:style/TextAppearance.Large" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="AssessmentResults"
+                android:textAppearance="@android:style/TextAppearance.Large" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/assessment_row" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/assessment_row_normal" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
 
 </LinearLayout>

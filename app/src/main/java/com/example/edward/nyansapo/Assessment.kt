@@ -15,15 +15,15 @@ data class Assessment(
         var wordsCorrect: String = "",
         var wordsWrong: String = "",
         var paragraphWordsWrong: String = "",
+        var storyWordsWrong: String = "",
 
-        //public String STORY_WORDS_WRONG = "";
         var storyAnswerQ1: String = "",
         var storyAnswerQ2: String = "",
-        var learningLevel: String = "",
+        var learningLevel: String = "UNKNOWN",
         @ServerTimestamp
         val timestamp: Date? = null,
         var LOCAL_ID: String = "",
         var CLOUD_ID: String = ""
 ) : Parcelable {
-    constructor() : this("", "", "", "", "", "", "", "", "", "", null, "", "")
+    constructor() : this("", "", "", "", "", "", "", "", "", "", "", null, "", "")
 }

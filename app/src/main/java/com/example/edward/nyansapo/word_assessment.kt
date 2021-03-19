@@ -87,8 +87,8 @@ class word_assessment : AppCompatActivity() {
 
         // progressbar
         progressBar = findViewById(R.id.progressBar2)
-        progressBar!!.setMax(15000)
-        progressBar!!.setProgress(0)
+        progressBar!!.max = 15000
+        progressBar!!.progress = 0
 
         // intialize
         error_count = 0
@@ -96,7 +96,7 @@ class word_assessment : AppCompatActivity() {
         words_tried = 0
 
         // assign first word
-        assessment_card!!.setText(word[0].trim { it <= ' ' })
+        assessment_card!!.text = word[0].trim { it <= ' ' }
 
         // on click listeners
         assessment_card!!.setOnClickListener(View.OnClickListener { v -> recordStudent(v) })
@@ -111,7 +111,7 @@ class word_assessment : AppCompatActivity() {
     fun recordStudent(v: View?) {
         if (!transcriptStarted) {
             drawable = assessment_card!!.background
-            val newDrawable = drawable!!.getConstantState().newDrawable().mutate()
+            val newDrawable = drawable!!.constantState.newDrawable().mutate()
             //read_button.setBackgroundColor(Color.BLUE);
             val lightblue = Color.parseColor("#82b6ff") //light blue
             //int lightblue = Color.parseColor("#8B4513");
@@ -214,9 +214,9 @@ class word_assessment : AppCompatActivity() {
         override fun onPreExecute() {
             super.onPreExecute()
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion)
-            config!!.setEndpointId(endpoint)
+            config!!.endpointId = endpoint
             assessment_card = findViewById(R.id.assessment_card)
-            expected_txt = assessment_card!!.getText().toString()
+            expected_txt = assessment_card!!.text.toString()
             //assessment_card.setEnabled(false);
             //record_button.setEnabled(false);
         }
@@ -325,7 +325,7 @@ class word_assessment : AppCompatActivity() {
 
             //updating student learning level
             val map2 = mapOf("learningLevel" to "WORD")
-           studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+            studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
                 val myIntent = Intent(baseContext, thankYou::class.java)
                 assessment!!.wordsWrong = words_wrong

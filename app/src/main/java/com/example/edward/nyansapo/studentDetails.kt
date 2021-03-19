@@ -65,7 +65,8 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
         assessmentList = ArrayList()
         //assessmentList = DataBaseHandler.getAllAssessment();
         showProgress(true)
-        FirebaseUtils.assessmentsCollection(studentId).orderBy("timestamp").get()
+
+       /* FirebaseUtils.assessmentsCollection(studentId).orderBy("timestamp").get()
                 .addOnSuccessListener {
             showProgress(false)
 
@@ -75,7 +76,7 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
             setUpGraph()
 
 
-        }
+        }*/
 
     }
 

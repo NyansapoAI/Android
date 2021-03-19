@@ -23,12 +23,14 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer
+import es.dmoral.toasty.Toasty
 import java.io.IOException
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ScheduledThreadPoolExecutor
@@ -162,16 +164,30 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
     }
 
     fun recordStudent(v: View?) {
+
+        val sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE)
+
+        val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
+        val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
+        val campId = sharedPreferences.getString(Constants.KEY_CAMP_ID, null)
+        val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
+
+        if (campPos == -1) {
+            Toasty.error(this, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            finish()
+        }
+
+
         val myIntent = Intent(baseContext, paragraph::class.java)
         val assessment = Assessment() // create new assessment object
         assessment.assessmentKey = ASSESSMENT_KEY // assign proper key
 
         showProgress(true)
-        FirebaseUtils.assessmentsCollection(studentId).add(assessment).addOnSuccessListener {
+        FirebaseUtils.addAssessmentForStudent(programId, groupId, campId, studentId, assessment) {
 
             it.get().addOnSuccessListener {
                 showProgress(false)
-               assessmentDocumentSnapshot = it
+                assessmentDocumentSnapshot = it
 
                 myIntent.putExtra("Assessment", assessment) //sent next activity
                 startActivity(myIntent)
@@ -216,6 +232,23 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {
+
+
+        val sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE)
+
+        val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
+        val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
+        val campId = sharedPreferences.getString(Constants.KEY_CAMP_ID, null)
+        val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
+
+        if (campPos == -1) {
+            Toasty.error(this, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            finish()
+        }
+
+
+
+
         when (v.id) {
             R.id.read_button ->                 //arrow_img.setVisibility(View.INVISIBLE);
                 Func(v)
@@ -229,14 +262,14 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
 
 
                 showProgress(true)
-                FirebaseUtils.assessmentsCollection(studentId).add(assessment).addOnSuccessListener {
+                FirebaseUtils.addAssessmentForStudent(programId, groupId, campId, studentId, assessment) {
 
                     it.get().addOnSuccessListener {
                         showProgress(false)
-                     assessmentDocumentSnapshot = it
+                        assessmentDocumentSnapshot = it
 
                         myIntent.putExtra("Assessment", assessment) //sent next activity
-                          //Toast.makeText(this, assessment.toString() +"  "+ assessment.getSTUDENT_ID(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, assessment.toString() +"  "+ assessment.getSTUDENT_ID(), Toast.LENGTH_SHORT).show();
                         startActivity(myIntent)
 
                     }
@@ -244,7 +277,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
                 }
 
 
-                   }
+            }
             else -> throw IllegalStateException("Unexpected value")
         }
     }

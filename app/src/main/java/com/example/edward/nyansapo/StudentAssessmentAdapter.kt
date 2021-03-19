@@ -2,20 +2,17 @@ package com.example.edward.nyansapo
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.edward.nyansapo.databinding.AssessmentRowBinding
+import com.example.edward.nyansapo.databinding.AssessmentRowNormalBinding
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.firestore.DocumentSnapshot
 import es.dmoral.toasty.Toasty
-import java.text.DateFormat
 
 class StudentAssessmentAdapter(private val studentAssessments: Activity, options: FirestoreRecyclerOptions<Assessment?>, val onAssessmentClick: (Assessment) -> Unit) : FirestoreRecyclerAdapter<Assessment, StudentAssessmentAdapter.ViewHolder>(options) {
 
@@ -24,32 +21,17 @@ class StudentAssessmentAdapter(private val studentAssessments: Activity, options
         }
 
     private val context: Context? = studentAssessments
-    private lateinit var currentSnapshot: DocumentSnapshot
-    private val parentData: Student? = null
     override fun onBindViewHolder(holder: ViewHolder, position: Int, model: Assessment) {
 
 
         holder.binding.apply {
+            setOnClickListeners(holder, position)
+            assessmentBtn.setText("Assessment " + Integer.toString(itemCount - position))
 
-
-            holder.binding.apply {
-
-                nameView.setText("Assessment " + Integer.toString(itemCount - position))
-                levelView.setText(getLevelKey(model.learningLevel))
-
-
-                try {
-                    val date=DateFormat.getDateTimeInstance().format(model.timestamp)
-                    timestampView.setText(date)
-
-                }catch (e:Exception){
-                    Log.e(TAG, "onBindViewHolder: ${e.message}",e )
-                }
-
-            }
 
         }
-        setOnClickListeners(holder, position)
+
+
     }
 
     private fun setOnClickListeners(holder: ViewHolder, position: Int) {
@@ -69,7 +51,7 @@ class StudentAssessmentAdapter(private val studentAssessments: Activity, options
     }
 
     private fun deleteData(position: Int) {
-        currentSnapshot = snapshots.getSnapshot(position)
+        val currentSnapshot = snapshots.getSnapshot(position)
 
         currentSnapshot.reference.delete().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -78,17 +60,19 @@ class StudentAssessmentAdapter(private val studentAssessments: Activity, options
                 val error = task.exception!!.message
                 Toasty.error(context!!, "Error: $error", Toast.LENGTH_SHORT).show()
             }
-         }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.assessment_row, parent, false)
-        val binding: AssessmentRowBinding = AssessmentRowBinding.bind(view)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.assessment_row_normal, parent, false)
+        val binding: AssessmentRowNormalBinding = AssessmentRowNormalBinding.bind(view)
 
         return ViewHolder(binding)
     }
 
-    class ViewHolder(val binding: AssessmentRowBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: AssessmentRowNormalBinding) : RecyclerView.ViewHolder(binding.root) {
+
+
 
     }
 

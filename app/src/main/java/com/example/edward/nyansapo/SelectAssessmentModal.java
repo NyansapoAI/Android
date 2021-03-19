@@ -2,13 +2,15 @@ package com.example.edward.nyansapo;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class SelectAssessmentModal extends BottomSheetDialogFragment {
 
@@ -62,9 +64,10 @@ public class SelectAssessmentModal extends BottomSheetDialogFragment {
         super.onAttach(context);
         try {
             mListener = (AssessmentModalListener) context;
-        }catch (ClassCastException e){
-            throw new ClassCastException(context.toString()+ " must implement AssessmentModalListener");
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement AssessmentModalListener");
         }
+
 
     }
 }

@@ -31,7 +31,7 @@ class TabScreenLearningFragment : Fragment(R.layout.fragment_tab_screen_learning
     private fun setUpRecyclerView() {
 
 
-        val adapter = LearningAdapter()
+   /*     val adapter = LearningAdapter()
         adapter.submitList(getStudents())    // populate students ArrayList
 
 
@@ -39,7 +39,7 @@ class TabScreenLearningFragment : Fragment(R.layout.fragment_tab_screen_learning
             setAdapter(adapter)
             setLayoutManager(LinearLayoutManager(requireContext()))
 
-        }
+        }*/
 
     }
 
@@ -52,8 +52,7 @@ class TabScreenLearningFragment : Fragment(R.layout.fragment_tab_screen_learning
     fun addstudent() {
 
         val databaseHander = dataBaseHandler(requireContext())
-        val instructor = databaseHander.instructor
-     //   val instructor_id = instructor.getCloud_id()
+
         val instructor_id = "123"
 
         val myIntent = Intent(requireContext(), registerStudent::class.java)
@@ -64,8 +63,6 @@ class TabScreenLearningFragment : Fragment(R.layout.fragment_tab_screen_learning
 
     fun getStudents():List<Student> {
         val databaseHander = dataBaseHandler(requireContext())
-        val instructor = databaseHander.instructor
-      //  var instructor_id = instructor.getCloud_id()
 
         var instructor_id = "123"
 

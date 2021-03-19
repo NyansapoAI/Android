@@ -99,9 +99,9 @@ class cumulativeProgress : AppCompatActivity() {
     }
 
     private fun getStudents(onComplete:(List<Student>)->Unit) {
-        FirebaseUtils.studentsCollection.get().addOnSuccessListener {
+      /*  FirebaseUtils.studentsCollection.get().addOnSuccessListener {
             onComplete(it.toObjects(Student::class.java))
-        }
+        }*/
     }
 
     fun setMissedWords() {

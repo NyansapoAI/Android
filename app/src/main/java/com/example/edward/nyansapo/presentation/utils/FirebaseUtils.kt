@@ -3,6 +3,7 @@ package com.example.edward.nyansapo.presentation.utils
 import android.content.Context
 import android.util.Log
 import androidx.annotation.DrawableRes
+import com.example.edward.nyansapo.Assessment
 import com.example.edward.nyansapo.Instructor
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
@@ -116,13 +117,14 @@ object FirebaseUtils {
     }
 
     ////////////////////////////
-    val studentsCollection: CollectionReference
+   /* val studentsCollection: CollectionReference
         get() = FirebaseFirestore.getInstance().collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_STUDENTS)
-
-    fun assessmentsCollection(id: String): CollectionReference {
+*/
+  /*  fun assessmentsCollection(id: String): CollectionReference {
+        ..
         return studentsCollection.document(id).collection(COLLECTION_ASSESSMENTS)
     }
-
+*/
 
     fun instructor(onComplete: (Instructor?) -> Unit) {
 
@@ -267,6 +269,14 @@ object FirebaseUtils {
 
     fun getAssessmentsFromStudent_Collection(programId: String, groupId: String, campId: String, studentId: String): CollectionReference {
         return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_STUDENTS).document(studentId).collection(COLLECTION_ASSESSMENTS)
+
+
+    }
+
+    fun addAssessmentForStudent(programId: String, groupId: String, campId: String, studentId: String, assessment: Assessment, onComplete: (DocumentReference) -> Unit) {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_STUDENTS).document(studentId).collection(COLLECTION_ASSESSMENTS).add(assessment).addOnSuccessListener {
+            onComplete(it)
+        }
 
 
     }

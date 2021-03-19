@@ -342,7 +342,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         String uuid = UUID.randomUUID().toString();
         ContentValues contentValues = new ContentValues();
         contentValues.put(LOCAL_ID, uuid );
-        contentValues.put(CLOUD_ID, student.getCloud_id());
+//        contentValues.put(CLOUD_ID, student.getCloud_id());
         contentValues.put(FIRSTNAME,student.getFirstname());
         contentValues.put(LASTNAME,student.getLastname());
         contentValues.put(AGE,student.getAge());
@@ -449,8 +449,8 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             student.setGender(cursor.getString(cursor.getColumnIndex(GENDER)));
             student.setNotes(cursor.getString(cursor.getColumnIndex(NOTES)));
             student.setAge(cursor.getString(cursor.getColumnIndex(AGE)));
-            student.setTimestamp(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
-            student.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
+         //   student.setTimestamp(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
+      //      student.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
             student.setStd_class(cursor.getString(cursor.getColumnIndex(STD_CLASS)));
             arrayList.add(student);
             cursor.moveToNext();
@@ -477,8 +477,8 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             student.setGender(cursor.getString(cursor.getColumnIndex(GENDER)));
             student.setNotes(cursor.getString(cursor.getColumnIndex(NOTES)));
             student.setAge(cursor.getString(cursor.getColumnIndex(AGE)));
-            student.setTimestamp(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
-            student.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
+         //   student.setTimestamp(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
+            //student.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
             student.setStd_class(cursor.getString(cursor.getColumnIndex(STD_CLASS)));
             arrayList.add(student);
             cursor.moveToNext();
@@ -508,8 +508,8 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             student.setGender(cursor.getString(cursor.getColumnIndex(GENDER)));
             student.setNotes(cursor.getString(cursor.getColumnIndex(NOTES)));
             student.setAge(cursor.getString(cursor.getColumnIndex(AGE)));
-            student.setTimestamp(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
-            student.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
+          //  student.setTimestamp(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
+       //     student.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
             student.setStd_class(cursor.getString(cursor.getColumnIndex(STD_CLASS)));
             arrayList.add(student);
             cursor.moveToNext();
@@ -534,10 +534,10 @@ public class dataBaseHandler extends SQLiteOpenHelper {
             student.setGender(cursor.getString(cursor.getColumnIndex(GENDER)));
             student.setNotes(cursor.getString(cursor.getColumnIndex(NOTES)));
             student.setAge(cursor.getString(cursor.getColumnIndex(AGE)));
-            student.setTimestamp(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
-            student.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
+          //  student.setTimestamp(cursor.getString(cursor.getColumnIndex(TIMESTAMP)));
+        //    student.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
             student.setStd_class(cursor.getString(cursor.getColumnIndex(STD_CLASS)));
-            student.setCloud_id(cursor.getString(cursor.getColumnIndex(CLOUD_ID)));
+          //  student.setCloud_id(cursor.getString(cursor.getColumnIndex(CLOUD_ID)));
             arrayList.add(student);
             cursor.moveToNext();
         }
@@ -602,6 +602,7 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         return arrayList;
     }
 
+/*
     public Boolean addTeacher(Instructor instructor) {
         //get WriteAble Database
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
@@ -619,8 +620,9 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         sqLiteDatabase.insert(INSTRUCTOR_TABLE, null,contentValues);
         return true;
     }
+*/
 
-    public Instructor getInstructor(){
+/*    public Instructor getInstructor(){
 
         Instructor instructor = new Instructor();
 
@@ -661,10 +663,10 @@ public class dataBaseHandler extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         try  {
-            /* retrieve the data */
+            *//* retrieve the data *//*
             cursor = sqLiteDatabase.rawQuery("select * from "+ INSTRUCTOR_TABLE +" where "+ CLOUD_ID + "='" + instructor_id +"'", null); // get instructor by id
         } catch (SQLException e) {
-            /* handle the exception properly */
+            *//* handle the exception properly *//*
             Log.i("MyActivity",e.toString());
         }
         //cursor = sqLiteDatabase.rawQuery("select * from "+ INSTRUCTOR_TABLE +" where "+ EMAIL + "='" + toString +"'", null); // get instructor by email
@@ -692,10 +694,10 @@ public class dataBaseHandler extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         try  {
-            /* retrieve the data */
+            *//* retrieve the data *//*
             cursor = sqLiteDatabase.rawQuery("select * from "+ INSTRUCTOR_TABLE +" where "+ EMAIL + "='" + toString +"'", null); // get instructor by email
         } catch (SQLException e) {
-            /* handle the exception properly */
+            *//* handle the exception properly *//*
             Log.i("MyActivity",e.toString());
         }
         //cursor = sqLiteDatabase.rawQuery("select * from "+ INSTRUCTOR_TABLE +" where "+ EMAIL + "='" + toString +"'", null); // get instructor by email
@@ -710,5 +712,5 @@ public class dataBaseHandler extends SQLiteOpenHelper {
         instructor.setLocal_id(cursor.getString(cursor.getColumnIndex(LOCAL_ID)));
 
         return instructor;
-    }
+    }*/
 }

@@ -17,6 +17,7 @@ import com.example.edward.nyansapo.databinding.ActivityIndividualStudentPageBind
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.google.common.reflect.Reflection.getPackageName
+import es.dmoral.toasty.Toasty
 
 class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_student_page) {
 
@@ -40,6 +41,10 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
     private fun setAssessmentInfoToUi() {
 //first determine which level we are in
         when (assessment.learningLevel) {
+            "UNKNOWN" -> {
+                Toasty.info(requireContext(),"You assessment is unknown You might have started the assessment but didnt complete",Toasty.LENGTH_LONG).show()
+            }
+            "BEGINNER" -> setDataForBeginnerLevel()
             "LETTER" -> setDataForLetterLevel()
             "WORD" -> setDataForWordLevel()
             "STORY" -> setDataForStoryLevel()
@@ -49,32 +54,85 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
         }
     }
 
-    private fun setDataForParagraphLevel() {
-        Log.d(TAG, "setDataForParagraphLevel: ")
-        binding.learningLevelImageView.setImageResource(R.mipmap.paragraph_level)
+    private fun setDataForBeginnerLevel() {
+        Log.d(TAG, "setDataForBeginnerLevel: ")
+        binding.learningLevelImageView.setImageResource(R.mipmap.beginner_level)
 
+        binding.storyLinearLayout.visibility = View.GONE
 
-        binding.letterLinearLayout.visibility = View.GONE
-        binding.wordLinearLayout.visibility = View.GONE
+        startSettingLetters()
+        startSettingWords()
         startSettingParagraphs()
 
     }
 
-    private fun setDataForStoryLevel() {
-        Log.d(TAG, "setDataForStoryrLevel: ")
-        binding.learningLevelImageView.setImageResource(R.mipmap.story_level)
-
+    private fun setDataForParagraphLevel() {
+        Log.d(TAG, "setDataForParagraphLevel: ")
+        binding.learningLevelImageView.setImageResource(R.mipmap.paragraph_level)
 
         binding.letterLinearLayout.visibility = View.GONE
+        binding.wordLinearLayout.visibility = View.GONE
 
         startSettingParagraphs()
+        startSettingStory()
+
+
+    }
+
+    private fun startSettingQuestions() {
+        val questions = getQuestions(assessment.assessmentKey)
+
+        binding.q1TxtView.text = "Q1. ${questions[0]} ${assessment.storyAnswerQ1}"
+        binding.q2TxtView.text = "Q2. ${questions[1]} ${assessment.storyAnswerQ2}"
+    }
+
+    private fun startSettingStory() {
+        Log.d(TAG, "startSettingStory: ")
+        val wholeStory = getStory(assessment.assessmentKey)
+
+
+        val wordtoSpan: Spannable = SpannableString(wholeStory)
+
+
+
+        Log.d(TAG, "startSettingStory: ${assessment.storyWordsWrong}")
+
+        assessment.storyWordsWrong.split(",", ignoreCase = true).forEach { string ->
+
+            if (!string.isBlank()) {
+
+                underLineThisWord(string.trim(), wholeStory, wordtoSpan)
+
+            }
+        }
+
+        binding.storyTxtView.text = wordtoSpan
+
+
+
+        startSettingQuestions()
+
+    }
+
+    private fun setDataForStoryLevel() {
+        Log.d(TAG, "setDataForStoryLevel: ")
+        binding.learningLevelImageView.setImageResource(R.mipmap.story_level)
+
+        binding.letterLinearLayout.visibility = View.GONE
+        binding.wordLinearLayout.visibility = View.GONE
+
+        startSettingParagraphs()
+        startSettingStory()
+
 
     }
 
     private fun setDataForWordLevel() {
         Log.d(TAG, "setDataForWordLevel: ")
         binding.learningLevelImageView.setImageResource(R.mipmap.word_level)
+
         binding.letterLinearLayout.visibility = View.GONE
+        binding.storyLinearLayout.visibility = View.GONE
 
         startSettingWords()
         startSettingParagraphs()
@@ -117,7 +175,7 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
     }
 
     private fun underLineThisWord(string: String, wholeParagraph: String, wordsToSpan: Spannable) {
-        Log.d(TAG, "underLineThisWord: started underlining words in paragraph")
+        Log.d(TAG, "underLineThisWord: started underlining words in paragraph/story")
         wholeParagraph.indexOf(string, ignoreCase = true).apply {
             val endOfString = this + string.length
             wordsToSpan.setSpan(ForegroundColorSpan(Color.RED), this, endOfString, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -257,6 +315,66 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
                 Assessment_Content.getP10()
             }
             else -> Assessment_Content.getP3()
+        }
+    }
+
+    fun getStory(key: String?): String {
+        return when (key) {
+            "3" -> {
+                Assessment_Content.getS3()
+            }
+            "4" -> {
+                Assessment_Content.getS4()
+            }
+            "5" -> {
+                Assessment_Content.getS5()
+            }
+            "6" -> {
+                Assessment_Content.getS6()
+            }
+            "7" -> {
+                Assessment_Content.getS7()
+            }
+            "8" -> {
+                Assessment_Content.getS8()
+            }
+            "9" -> {
+                Assessment_Content.getS9()
+            }
+            "10" -> {
+                Assessment_Content.getS10()
+            }
+            else -> Assessment_Content.getS3()
+        }
+    }
+
+    fun getQuestions(key: String?): Array<String> {
+        return when (key) {
+            "3" -> {
+                Assessment_Content.getQ3()
+            }
+            "4" -> {
+                Assessment_Content.getQ4()
+            }
+            "5" -> {
+                Assessment_Content.getQ5()
+            }
+            "6" -> {
+                Assessment_Content.getQ6()
+            }
+            "7" -> {
+                Assessment_Content.getQ7()
+            }
+            "8" -> {
+                Assessment_Content.getQ8()
+            }
+            "9" -> {
+                Assessment_Content.getQ9()
+            }
+            "10" -> {
+                Assessment_Content.getQ10()
+            }
+            else -> Assessment_Content.getQ3()
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.edward.nyansapo.presentation.ui.student
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -23,6 +24,9 @@ import kotlinx.android.synthetic.main.activity_home.*
 import java.util.*
 
 class StudentInfoPageFragment : Fragment(R.layout.activity_student_info_page) {
+
+             private  val TAG="StudentInfoPageFragment"
+
     lateinit var binding: ActivityStudentInfoPageBinding
     lateinit var adapter: StudentAssessmentAdapter
     lateinit var student: Student
@@ -174,9 +178,13 @@ class StudentInfoPageFragment : Fragment(R.layout.activity_student_info_page) {
     }
 
     fun onAssmentClicked(assessment: Assessment) {
-         val intent = Intent(requireContext(), assessment_detail::class.java)
-        intent.putExtra("assessment", assessment)
-        startActivity(intent)
+        Log.d(TAG, "onAssmentClicked: ")
+
+        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container, IndividualStudentPageFragment()).addToBackStack(null).commit()
+
+        /*  val intent = Intent(requireContext(), assessment_detail::class.java)
+          intent.putExtra("assessment", assessment)
+          startActivity(intent)*/
     }
 
     private fun checkIfDatabaseIsEmpty() {

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
+<androidx.coordinatorlayout.widget.CoordinatorLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <com.arlib.floatingsearchview.FloatingSearchView
         android:id="@+id/mSearchView"
         android:layout_width="match_parent"
@@ -11,10 +12,21 @@
         app:floatingSearch_close_search_on_keyboard_dismiss="false"
         app:floatingSearch_dimBackground="false"
         app:floatingSearch_dismissOnOutsideTouch="true"
-        app:floatingSearch_leftActionMode="showHamburger"
+        android:outlineAmbientShadowColor="@android:color/holo_blue_dark"
+        android:outlineSpotShadowColor="@android:color/holo_blue_dark"
+        app:floatingSearch_leftActionMode="showSearch"
+        app:floatingSearch_searchHint="Search Students"
         app:floatingSearch_menu="@menu/overflow_menu"
-        app:floatingSearch_searchHint="Search..."
+        app:floatingSearch_suggestionsListAnimDuration="250"
         app:floatingSearch_showSearchKey="true"
-        app:floatingSearch_suggestionsListAnimDuration="250"/>
+        app:floatingSearch_viewSuggestionItemTextColor="@color/black" />
 
-</LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="32dp"
+        android:src="@drawable/ic_add_24" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

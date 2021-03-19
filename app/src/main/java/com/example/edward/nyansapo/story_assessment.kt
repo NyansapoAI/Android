@@ -31,6 +31,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
 class story_assessment : AppCompatActivity() {
+
+    private val TAG = "story_assessment"
+
     var mediaPlayer: MediaPlayer? = null
     var record_student: Button? = null
     var next_button: Button? = null
@@ -149,17 +152,18 @@ class story_assessment : AppCompatActivity() {
             sentence_count += 1 // increment sentence count
             story_view!!.text = sentences[sentence_count].trim { it <= ' ' }
         } else {
+            Log.d(TAG, "nextParagraph: ")
             //assessment.setSTORY_WORDS_WRONG(story_words_wrong); // set story wrong words
-            val temp = assessment!!.paragraphWordsWrong
+            val temp = assessment!!.storyWordsWrong
 
 
-            val map = mapOf("paragraphWordsWrong" to temp + story_words_wrong)
+            val map = mapOf("storyWordsWrong" to temp + story_words_wrong)
 
             showProgress(true)
            assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
 
-                assessment!!.paragraphWordsWrong = temp + story_words_wrong
+               assessment!!.storyWordsWrong = temp + story_words_wrong
                 val myIntent = Intent(baseContext, storyQuestions::class.java)
                 myIntent.putExtra("Assessment", assessment)
                 myIntent.putExtra("question", "0")
@@ -320,9 +324,9 @@ class story_assessment : AppCompatActivity() {
 
 
     fun goToThankYou() { // take to thank you page and grade as paragraph student_activity
-        val temp = assessment!!.paragraphWordsWrong
+        val temp = assessment!!.storyWordsWrong
 
-        val map = mapOf("learningLevel" to "PARAGRAPH","paragraphWordsWrong" to temp + story_words_wrong)
+        val map = mapOf("learningLevel" to "PARAGRAPH", "storyWordsWrong" to temp + story_words_wrong)
 
         showProgress(true)
        assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
@@ -333,8 +337,8 @@ class story_assessment : AppCompatActivity() {
            studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
                 val myIntent = Intent(baseContext, thankYou::class.java)
-                assessment!!.learningLevel = "PARAGRAPH"
-                assessment!!.paragraphWordsWrong = temp + story_words_wrong
+               assessment!!.learningLevel = "PARAGRAPH"
+               assessment!!.storyWordsWrong = temp + story_words_wrong
                 //assessment.setSTORY_WORDS_WRONG(story_words_wrong);
                 myIntent.putExtra("Assessment", assessment)
                 startActivity(myIntent)

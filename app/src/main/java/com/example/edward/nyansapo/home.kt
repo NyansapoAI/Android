@@ -106,7 +106,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         bt_add.setOnClickListener(View.OnClickListener { v -> addstudent(v) })
         initProgressBar()
         showProgress(true)
-        FirebaseUtils.studentsCollection.get().addOnSuccessListener {
+   /*     FirebaseUtils.studentsCollection.get().addOnSuccessListener {
             showProgress(false)
 
             if (it.isEmpty){
@@ -114,7 +114,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             }
 
 
-        }
+        }*/
 
         initRecyclerViewAdapter()
         setSwipeListenerForItems()
@@ -122,7 +122,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
     }
 
     private fun initRecyclerViewAdapter() {
-        val query: Query = FirebaseUtils.studentsCollection
+       /* val query: Query = FirebaseUtils.studentsCollection
         val firestoreRecyclerOptions = FirestoreRecyclerOptions.Builder<Student>().setQuery(query, Student::class.java)
                 .setLifecycleOwner(this).build()
 
@@ -131,7 +131,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             onStudentClicked(it)
         })
         recyclerview.setLayoutManager(LinearLayoutManager(this))
-        recyclerview.setAdapter(adapter)
+        recyclerview.setAdapter(adapter)*/
 
     }
 

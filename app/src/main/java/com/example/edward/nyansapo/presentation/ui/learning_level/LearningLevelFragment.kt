@@ -9,9 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.edward.nyansapo.Learning_Level
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.FragmentLearningLevelBinding
+import com.example.edward.nyansapo.presentation.ui.student.StudentInfoPageFragment
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.example.edward.nyansapo.registerStudent
@@ -37,6 +39,8 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
         binding = FragmentLearningLevelBinding.bind(view)
         setUpToolbar()
         setUpTabLayout()
+        setOnClickListeners()
+
 
 
 
@@ -48,7 +52,15 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
 
     }
 
-    private fun initRecyclerViewAdapter() {
+    private fun setOnClickListeners() {
+       binding.fob.setOnClickListener {
+           addstudent()
+       }
+    }
+
+
+    private fun initRecyclerViewAdapter(learningLevel: String = Learning_Level.UNKNOWN.name) {
+        Log.d(TAG, "initRecyclerViewAdapter: ")
         val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
 
         val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
@@ -56,22 +68,30 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
         val campId = sharedPreferences.getString(Constants.KEY_CAMP_ID, null)
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
+        Log.d(TAG, "initRecyclerViewAdapter: programid $programId  groupid $groupId campid $campId}")
+
         if (campPos == -1) {
             Toasty.error(requireContext(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
             requireActivity().supportFragmentManager.popBackStackImmediate()
         }
 
 
-        val query: Query = FirebaseUtils.getCollectionStudentFromCamp_ReturnCollection(programId, groupId, campId)
+        val query: Query = FirebaseUtils.getCollectionStudentFromCamp_ReturnCollection(programId, groupId, campId).whereEqualTo("learningLevel", learningLevel)
+
+
         val firestoreRecyclerOptions = FirestoreRecyclerOptions.Builder<Student>().setQuery(query, Student::class.java)
-                .setLifecycleOwner(this).build()
+                .setLifecycleOwner(viewLifecycleOwner).build()
 
 
         adapter = LearningLevelAdapter(this, firestoreRecyclerOptions, {
             onStudentClicked(it)
         })
-        recyclerview.setLayoutManager(LinearLayoutManager(requireContext()))
-        recyclerview.setAdapter(adapter)
+
+
+        binding.recyclerview.setLayoutManager(LinearLayoutManager(requireContext()))
+        binding.recyclerview.setAdapter(adapter)
+        Log.d(TAG, "initRecyclerViewAdapter: adapter set up")
+
 
     }
 
@@ -89,16 +109,21 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
         }
 
         FirebaseUtils.getCollectionStudentFromCamp_ReturnSnapshot(programId, groupId, campId) {
+
             if (it.isEmpty) {
+                Log.d(TAG, "checkIfTheDatabaseIsEmpty: database is empty")
                 MaterialAlertDialogBuilder(requireContext()).setBackground(requireActivity().getDrawable(R.drawable.button_first)).setIcon(R.drawable.ic_add_24).setTitle("Add").setMessage("Do You want To add Student ").setNegativeButton("no") { dialog, which ->
                 }.setPositiveButton("yes") { dialog, which -> addstudent() }.show()
 
+            } else {
+                Log.d(TAG, "checkIfTheDatabaseIsEmpty: database has ${it.size()} students")
             }
         }
     }
 
     private fun onStudentClicked(it: DocumentSnapshot) {
         Log.d(TAG, "onStudentClicked: student Has been clicked")
+        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container, StudentInfoPageFragment()).addToBackStack(null).commit()
     }
 
 
@@ -115,6 +140,7 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
     }
 
     private fun setUpTabLayout() {
+        binding.tabs.addTab(binding.tabs.newTab().setText("UNKNOWN"))
         binding.tabs.addTab(binding.tabs.newTab().setText("Beginner"))
         binding.tabs.addTab(binding.tabs.newTab().setText("Letter"))
         binding.tabs.addTab(binding.tabs.newTab().setText("Word"))
@@ -126,6 +152,7 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val position = tab?.position
                 Log.d(TAG, "onTabSelected: $position")
+                thisTabPositionHasBeenSelected(position!!)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -134,6 +161,31 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
+
+
+    }
+
+    private fun thisTabPositionHasBeenSelected(position: Int) {
+        when (position) {
+            0 -> {
+                initRecyclerViewAdapter(Learning_Level.UNKNOWN.name)
+            }
+            1 -> {
+                initRecyclerViewAdapter(Learning_Level.BEGINNER.name)
+            }
+            2 -> {
+                initRecyclerViewAdapter(Learning_Level.LETTER.name)
+            }
+            3 -> {
+                initRecyclerViewAdapter(Learning_Level.WORD.name)
+            }
+            4 -> {
+                initRecyclerViewAdapter(Learning_Level.PARAGRAPH.name)
+            }
+            5 -> {
+                initRecyclerViewAdapter(Learning_Level.STORY.name)
+            }
+        }
 
 
     }

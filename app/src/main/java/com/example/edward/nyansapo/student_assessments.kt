@@ -87,14 +87,14 @@ lateinit var studentId:String
         btAdd!!.setOnClickListener(View.OnClickListener { addAssessment() })
         assessments = ArrayList()
         showProgress(true)
-        FirebaseUtils.assessmentsCollection(studentId).get().addOnSuccessListener {
+/*        FirebaseUtils.assessmentsCollection(studentId).get().addOnSuccessListener {
             showProgress(false)
             if (it.isEmpty) {
                 openDialog()
             }
 
 
-        }
+        }*/
         initRecyclerViewAdapter()
         setSwipeListenerForItems()
 
@@ -113,7 +113,7 @@ lateinit var studentId:String
     }
 
     private fun initRecyclerViewAdapter() {
-        val query: Query = FirebaseUtils.assessmentsCollection(studentId).orderBy("timestamp",Query.Direction.DESCENDING)
+   /*     val query: Query = FirebaseUtils.assessmentsCollection(studentId).orderBy("timestamp",Query.Direction.DESCENDING)
         val firestoreRecyclerOptions = FirestoreRecyclerOptions.Builder<Assessment>().setQuery(query, Assessment::class.java)
                 .setLifecycleOwner(this).build()
 
@@ -121,7 +121,7 @@ lateinit var studentId:String
         adapter = StudentAssessmentAdapter(this, firestoreRecyclerOptions, {
             onAssmentClicked(it) })
         recyclerview.setLayoutManager(LinearLayoutManager(this))
-        recyclerview.setAdapter(adapter)
+        recyclerview.setAdapter(adapter)*/
 
     }
 
@@ -146,15 +146,7 @@ lateinit var studentId:String
     }
 
     private fun addAssessment() {
-        /*
-        Intent intent = new Intent(student_assessments.this, SelectAssessment.class);
-        intent.putExtra("instructor_id", instructor_id);
-        intent.putExtra("student_id",student_activity.getLocal_id());
-        intent.putExtra("student_activity", student_activity);
-        //intent.putExtra("assessment", assessments.get(position));
-        startActivity(intent);
 
-         */
         val selectAssessmentModal = SelectAssessmentModal()
         selectAssessmentModal.show(supportFragmentManager, "Select Assessment Modal")
     }

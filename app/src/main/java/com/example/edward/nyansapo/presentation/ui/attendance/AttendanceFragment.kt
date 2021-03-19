@@ -10,7 +10,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.ActivityAttendanceBinding
@@ -69,6 +71,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
 
                     if (!databaseIsEmpty) {
                         initRecyclerViewAdapter(date)
+                        setSwipeListenerForItems()
                         startFetchingStudentFromCampAndPlaceThem_InAttendanceThatIsIfTheAttendanceIsEmpty(date, querySnapshot)
 
                     }
@@ -158,13 +161,18 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
     }
 
     private fun submitBtnClicked() {
-        binding.submitBtn.isVisible = false
+        if (this::adapter.isInitialized) {
+            binding.submitBtn.isVisible = false
 
-        //set edit item to visible
-        binding.toolbar.root.menu.findItem(R.id.editItem).isVisible = true
+            //set edit item to visible
+            binding.toolbar.root.menu.findItem(R.id.editItem).isVisible = true
 
+            weWantToChangeIfTheCheckBoxIsEnabledOrDisabledInTheRecylerView(false)
 
-        weWantToChangeIfTheCheckBoxIsEnabledOrDisabledInTheRecylerView(false)
+        } else {
+            Log.d(TAG, "submitBtnClicked: adapter not initialized maybe becos database is empty")
+            Toasty.info(requireContext(), "No Data In Database").show()
+        }
 
     }
 
@@ -172,9 +180,10 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
         if (adapter != null) {
             Log.d(TAG, "weWantToChangeIfTheCheckBoxIsEnabledOrDisabledInTheRecylerView: started updading checkboxes")
             for (position in 0 until binding.recyclerview.adapter!!.itemCount) {
+                Log.d(TAG, "weWantToChangeIfTheCheckBoxIsEnabledOrDisabledInTheRecylerView: $position updated")
                 val binding = ItemAttendanceBinding.bind(binding.recyclerview.getChildAt(position))
                 binding.attendanceCheckbox.isEnabled = enabled
-                adapter.notifyItemChanged(position)
+                adapter.notifyDataSetChanged()
 
 
             }
@@ -213,7 +222,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
             if (it.isEmpty) {
                 Log.d(TAG, "checkIfWeHaveAnyStudentInTheGroup: not student in database")
                 Toasty.info(requireContext(), "No Student In the Database").show()
-                MaterialAlertDialogBuilder(requireContext()!!).setBackground(requireActivity().getDrawable(R.drawable.button_first)).setIcon(R.drawable.ic_add_24).setTitle("Add Student").setMessage("Do you want to add student? ").setNegativeButton("no") { dialog, which -> }.setPositiveButton("yes") { dialog, which -> goToAddStudent() }.show()
+                MaterialAlertDialogBuilder(requireContext()!!).setBackground(requireActivity().getDrawable(R.drawable.button_first)).setIcon(R.drawable.ic_add_24).setTitle("Add Student").setMessage("Database is Empty,Do you want to add student? ").setNegativeButton("no") { dialog, which -> }.setPositiveButton("yes") { dialog, which -> goToAddStudent() }.show()
 
             }
 
@@ -271,6 +280,24 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
         recyclerview.setLayoutManager(LinearLayoutManager(requireContext()))
         recyclerview.setAdapter(adapter)
 
+    }
+
+    private fun setSwipeListenerForItems() {
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                deleteFromDatabase(viewHolder.bindingAdapterPosition)
+            }
+        }).attachToRecyclerView(recyclerview)
+    }
+
+    private fun deleteFromDatabase(position: Int) {
+        adapter.snapshots.getSnapshot(position).reference.delete().addOnSuccessListener {
+            Log.d(TAG, "deleteFromDatabase: success deleting attendance")
+        }
     }
 
     private fun onCheckBoxClicked(documentSnapshot: DocumentSnapshot, ischecked: Boolean) {

@@ -1,6 +1,7 @@
 package com.example.edward.nyansapo.presentation.ui.learning_level
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -8,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.ItemStudentBinding
-import com.example.edward.nyansapo.databinding.StudentRowBinding
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -17,11 +17,19 @@ import com.google.firebase.firestore.DocumentSnapshot
 import es.dmoral.toasty.Toasty
 
 class LearningLevelAdapter(fragment: LearningLevelFragment, options: FirestoreRecyclerOptions<Student?>, val onStudentClick: (documentSnapshot: DocumentSnapshot) -> Unit) : FirestoreRecyclerAdapter<Student, LearningLevelAdapter.ViewHolder>(options) {
+
+    private val TAG = "LearningLevelAdapter"
+
+
     private val context: Context? = fragment.requireContext()
     override fun onBindViewHolder(holder: ViewHolder, position: Int, model: Student) {
 
 
         holder.binding.apply {
+
+            Log.d(TAG, "onBindViewHolder: " + model.firstname + " " + model.lastname)
+
+            setOnClickListeners(holder, position)
 
             nameTxtView.setText(model.firstname + " " + model.lastname)
 
@@ -61,7 +69,7 @@ class LearningLevelAdapter(fragment: LearningLevelFragment, options: FirestoreRe
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.student_row, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_student, parent, false)
         val binding: ItemStudentBinding = ItemStudentBinding.bind(view)
 
         return ViewHolder(binding)
@@ -69,10 +77,10 @@ class LearningLevelAdapter(fragment: LearningLevelFragment, options: FirestoreRe
 
     inner class ViewHolder(val binding: ItemStudentBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            setOnClickListeners(this, bindingAdapterPosition)
-        }
-
+        /*    init {
+                setOnClickListeners(this, bindingAdapterPosition)
+            }
+    */
     }
 
 

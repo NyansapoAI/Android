@@ -4,6 +4,7 @@ package com.example.edward.nyansapo
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -18,6 +19,9 @@ import kotlinx.android.synthetic.main.activity_register_student.*
 import java.util.*
 
 class registerStudent : AppCompatActivity() {
+
+             private  val TAG="registerStudent"
+
     // Initialize variables
     var firstname: EditText? = null
     var lastname: EditText? = null
@@ -89,8 +93,6 @@ class registerStudent : AppCompatActivity() {
             student.lastname=lastname!!.text.toString()
             student.gender=gender!!.text.toString()
             student.notes=notes!!.text.toString()
-            student.learningLevel="UNKNOWN" // SET latter
-            student.timestamp=Date(System.currentTimeMillis()).toString()
             student.instructor_id=instructor_id
             //student_activity.setInstructor_id("5f39b701b4270100524952ed");
             student.std_class=std_class!!.text.toString()
@@ -132,8 +134,13 @@ class registerStudent : AppCompatActivity() {
         FirebaseUtils.addStudentsToCamp(programId, groupId, campId, student) {
             Toasty.success(this, "Success adding student").show()
 
+
             it.get().addOnSuccessListener {
+                progressBar?.dismissDialog()
+
                 studentDocumentSnapshot = it
+
+                Log.d(TAG, "postStudent: ${it.toObject(Student::class.java)!!.id}")
                 val myIntent = Intent(baseContext, student_assessments::class.java)
                 myIntent.putExtra(STUDENT_ID, it.id)
                 myIntent.putExtra("instructor_id", instructor_id)

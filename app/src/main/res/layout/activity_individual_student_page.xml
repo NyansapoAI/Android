@@ -279,13 +279,44 @@
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textColor="@android:color/holo_green_dark"
                 tools:text="One morning, the cow went to the lion. She
-wanted him to help her. The lion roared at them.
-The cow and her calf ran away. They found a
-man outside his house. The man loved the
-animals. He made a cow shed for them. The cow
-never went back to the forest.
+
 " />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/storyLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Story"
+                android:textAppearance="@android:style/TextAppearance.Large" />
+
+            <TextView
+                android:id="@+id/storyTxtView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textColor="@android:color/holo_green_dark"
+                tools:text="One morning, the cow went to the lion. She" />
+
+            <TextView
+                android:id="@+id/q1TxtView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="what did the forest have?" />
+
+            <TextView
+                android:id="@+id/q2TxtView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="what did the forest have?" />
         </LinearLayout>
 
     </LinearLayout>

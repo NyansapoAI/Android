@@ -1,22 +1,25 @@
 package com.example.edward.nyansapo.presentation.ui.assessment
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import android.view.View
+import android.widget.Filter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.arlib.floatingsearchview.FloatingSearchView
 import com.arlib.floatingsearchview.FloatingSearchView.*
-import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter.OnBindSuggestionCallback
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.FragmentAssessmentBinding
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
+import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
+import com.example.edward.nyansapo.registerStudent
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import es.dmoral.toasty.Toasty
@@ -31,46 +34,79 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
 
     val FIND_SUGGESTION_SIMULATED_DELAY: Long = 250
     lateinit var mSearchView: FloatingSearchView
+    lateinit var mainQuerySnapshot: QuerySnapshot
+    val filteredQuerySnapshot: ArrayList<DocumentSnapshot> = ArrayList()
 
 
     private var mIsDarkSearchTheme = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding = FragmentAssessmentBinding.bind(view)
+
         mSearchView = view.findViewById(R.id.mSearchView) as FloatingSearchView
 
-
         setupDrawer()
-        setupSearchBar()
+        setOnClickListeners()
+
+        fetchAllStudentFirst {
+
+            mainQuerySnapshot = it
+            setupSearchBar()
+        }
+    }
+
+    private fun setOnClickListeners() {
+        binding.fob.setOnClickListener {
+            addStudent()
+        }
+    }
+
+    private fun addStudent() {
+        val intent = Intent(requireContext(), registerStudent::class.java)
+        startActivity(intent)
+    }
+
+    private fun fetchAllStudentFirst(onComplete: (QuerySnapshot) -> Unit) {
+        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+
+        val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
+        val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
+        val campId = sharedPreferences.getString(Constants.KEY_CAMP_ID, null)
+        val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
+
+        if (campPos == -1) {
+            Toasty.error(requireActivity(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            requireActivity().supportFragmentManager.popBackStackImmediate()
+        }
+
+
+        FirebaseUtils.getCollectionStudentFromCamp_ReturnSnapshot(programId, groupId, campId) {
+            onComplete(it)
+        }
     }
 
     private fun setupSearchBar() {
         mSearchView.setOnQueryChangeListener { oldQuery, newQuery ->
-            if (oldQuery != "" && newQuery == "") {
-                mSearchView.clearSuggestions()
-            } else {
 
-                //this shows the top left circular progress
-                //you can call it where ever you want, but
-                //it makes sense to do it when loading something in
-                //the background.
+            if (!newQuery.isBlank()) {
                 mSearchView.showProgress()
+                getStudentsAccordingToQuery(newQuery) {
 
-                //simulates a query call to a data source
-                //with a new query.
-                getSuggestions(5) {
 
-                    //this will swap the data and
-                    //render the collapse/expand animations as necessary
-                    mSearchView.swapSuggestions(it.toObjects(Student::class.java))
+                    val results = filteredQuerySnapshot.map {
+                        it.toObject(Student::class.java)
+                    }
 
-                    //let the users know that the background
-                    //process has completed
+
+                    mSearchView.swapSuggestions(results)
                     mSearchView.hideProgress()
                 }
+
             }
         }
+
 
 
 
@@ -78,33 +114,33 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
             override fun onSuggestionClicked(searchSuggestion: SearchSuggestion) {
                 val student = searchSuggestion as Student
 
+                onStudentClicked(student)
+
                 Log.d(TAG, "onSuggestionClicked()")
 
             }
 
             override fun onSearchAction(query: String) {
                 Log.d(TAG, "onSearchAction: ")
+                //when keyboard search key is pressed
             }
         })
         mSearchView.setOnFocusChangeListener(object : OnFocusChangeListener {
             override fun onFocus() {
-
-                //show suggestions when search bar gains focus (typically history suggestions)
+                mSearchView.showProgress()
                 getSuggestions(3) {
                     mSearchView.swapSuggestions(it.toObjects(Student::class.java))
-                    Log.d(TAG, "onFocus()")
+
+                    mSearchView.hideProgress()
+
                 }
 
             }
 
             override fun onFocusCleared() {
 
-                //set the title of the bar so that when focus is returned a new query begins
-                mSearchView.setSearchBarTitle("search bar title")
+                //  mSearchView.setSearchBarTitle("search bar title")
 
-                //you can also set setSearchText(...) to make keep the query there when not focused and when focus returns
-                //mSearchView.setSearchText(searchSuggestion.getBody());
-                Log.d(TAG, "onFocusCleared()")
             }
         })
 
@@ -133,28 +169,18 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
             }
         })
 
-        //use this listener to listen to menu clicks when app:floatingSearch_leftAction="showHome"
         mSearchView.setOnHomeActionClickListener(OnHomeActionClickListener { Log.d(TAG, "onHomeClicked()") })
 
-        /*
-         * Here you have access to the left icon and the text of a given suggestion
-         * item after as it is bound to the suggestion list. You can utilize this
-         * callback to change some properties of the left icon and the text. For example, you
-         * can load the left icon images using your favorite image loading library, or change text color.
-         *
-         *
-         * Important:
-         * Keep in mind that the suggestion list is a RecyclerView, so views are reused for different
-         * items in the list.
-         */mSearchView.setOnBindSuggestionCallback(OnBindSuggestionCallback { suggestionView, leftIcon, textView, item, itemPosition ->
-            val student = item as Student
-            val textColor = if (mIsDarkSearchTheme) "#ffffff" else "#000000"
-            val textLight = if (mIsDarkSearchTheme) "#bfbfbf" else "#787878"
 
-            /*   leftIcon.setImageDrawable(ResourcesCompat.getDrawable(resources,
+        /* mSearchView.setOnBindSuggestionCallback(OnBindSuggestionCallback { suggestionView, leftIcon, textView, item, itemPosition ->
+             val student = item as Student
+             val textColor = if (mIsDarkSearchTheme) "#ffffff" else "#000000"
+             val textLight = if (mIsDarkSearchTheme) "#bfbfbf" else "#787878"
+
+             *//*   leftIcon.setImageDrawable(ResourcesCompat.getDrawable(resources,
                        R.drawable.ic_history_black_24dp, null))
                Util.setIconColor(leftIcon, Color.parseColor(textColor))
-               leftIcon.alpha = .36f*/
+               leftIcon.alpha = .36f*//*
 
             leftIcon.alpha = 0.0f
             leftIcon.setImageDrawable(null)
@@ -164,7 +190,56 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
                     .replaceFirst(mSearchView.getQuery(),
                             "<font color=\"" + textLight + "\">" + mSearchView.getQuery() + "</font>")
             textView.text = Html.fromHtml(text)
-        })
+        })*/
+    }
+
+    private fun onStudentClicked(student: Student) {
+        Log.d(TAG, "onStudentClicked: Student id ${student.id}")
+        var currentSnapshot: DocumentSnapshot = mainQuerySnapshot.documents[0]
+        for (snapshot in mainQuerySnapshot) {
+            if (snapshot.id.equals(student.id)) {
+                currentSnapshot = snapshot
+            }
+
+        }
+
+        studentDocumentSnapshot = currentSnapshot
+
+        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container, BeginAssessmentFragment()).addToBackStack(null).commit()
+
+
+    }
+
+    private fun getStudentsAccordingToQuery(newQuery: String, onComplete: () -> Unit) {
+
+
+        object : Filter() {
+            override fun performFiltering(p0: CharSequence?): FilterResults {
+                filteredQuerySnapshot.clear()
+                val filterResults = FilterResults()
+                for (snapshot in mainQuerySnapshot) {
+                    val studentFullName = snapshot.toObject(Student::class.java).firstname + " " + snapshot.toObject(Student::class.java).lastname
+                    if (studentFullName.contains(newQuery, ignoreCase = true)) {
+
+                        filteredQuerySnapshot.add(snapshot)
+                    }
+
+                }
+
+
+                filterResults.values = filteredQuerySnapshot
+
+
+                return filterResults
+
+            }
+
+            override fun publishResults(p0: CharSequence?, p1: FilterResults?) {
+                onComplete()
+            }
+        }.filter(newQuery)
+
+
     }
 
 
