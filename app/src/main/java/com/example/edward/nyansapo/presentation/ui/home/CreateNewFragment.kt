@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.databinding.FragmentCreateNewPageBinding
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
@@ -19,9 +19,10 @@ import com.google.firebase.firestore.QuerySnapshot
 import es.dmoral.toasty.Toasty
 import java.util.*
 
-class CreateNewActivity : AppCompatActivity() {
+class CreateNewFragment : Fragment(R.layout.fragment_create_new_page) {
 
-    private val TAG = "CreateNewActivity"
+
+    private val TAG = "CreateNewFragment"
 
     var programCheck = 0
 
@@ -30,17 +31,17 @@ class CreateNewActivity : AppCompatActivity() {
     lateinit var campNames: QuerySnapshot
 
     lateinit var binding: FragmentCreateNewPageBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = FragmentCreateNewPageBinding.inflate(layoutInflater)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentCreateNewPageBinding.bind(view)
         initProgressBar()
-        setContentView(binding.root)
         setUpTypeSpinner()
         setItemClickListener()
         setOnClickListeners()
 
-    }
 
+    }
 
     private fun setOnClickListeners() {
 
@@ -50,7 +51,8 @@ class CreateNewActivity : AppCompatActivity() {
 
     private fun setUpTypeSpinner() {
         val spinnerValue = arrayOf("Program", "Group", "Camp")
-        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.item_spinner_normal, spinnerValue)
+        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(requireContext(), R.layout.item_spinner_normal, spinnerValue)
+        arrayAdapter.setDropDownViewResource(R.layout.item_spinner_normal_dropdown)
         binding.typeSpinner.adapter = arrayAdapter
 
     }
@@ -99,7 +101,8 @@ class CreateNewActivity : AppCompatActivity() {
             val spinnerValue = groups.map {
                 "Group: ${it.toObject(Group::class.java).number}"
             }
-            val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.item_spinner_normal, spinnerValue)
+            val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(requireContext(), R.layout.item_spinner_normal, spinnerValue)
+            arrayAdapter.setDropDownViewResource(R.layout.item_spinner_normal_dropdown)
             binding.groupSpinner.adapter = arrayAdapter
 
 
@@ -138,7 +141,7 @@ class CreateNewActivity : AppCompatActivity() {
 
 
             if (programs.isEmpty) {
-                Toasty.error(this, "you must first create a program before you proceed").show()
+                Toasty.error(requireContext(), "you must first create a program before you proceed").show()
 
                 return@getProgramNamesOnce
             }
@@ -147,7 +150,9 @@ class CreateNewActivity : AppCompatActivity() {
             val spinnerValue = programs.map {
                 "Program: ${it.toObject(Program::class.java).number}"
             }
-            val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.item_spinner_normal, spinnerValue)
+            val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(requireContext(), R.layout.item_spinner_normal, spinnerValue)
+            arrayAdapter.setDropDownViewResource(R.layout.item_spinner_normal_dropdown)
+
             binding.programNameSpinner.adapter = arrayAdapter
 
             if (!programs.isEmpty) {
@@ -165,14 +170,16 @@ class CreateNewActivity : AppCompatActivity() {
         FirebaseUtils.getGroupNamesOnce(programID) { groups ->
 
             if (groups.isEmpty) {
-                Toasty.error(this, "you must first create a program before you proceed").show()
+                Toasty.error(requireContext(), "you must first create a program before you proceed").show()
             }
             groupNames = groups
 
             val spinnerValue = groups.map {
                 "Group: ${it.toObject(Group::class.java).number}"
             }
-            val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.item_spinner_normal, spinnerValue)
+            val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(requireContext(), R.layout.item_spinner_normal, spinnerValue)
+            arrayAdapter.setDropDownViewResource(R.layout.item_spinner_normal_dropdown)
+
             binding.groupSpinner.adapter = arrayAdapter
 
 
@@ -197,7 +204,9 @@ class CreateNewActivity : AppCompatActivity() {
             val spinnerValue = programs.map {
                 "Program: ${it.toObject(Program::class.java).number}"
             }
-            val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.item_spinner_normal, spinnerValue)
+            val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(requireContext(), R.layout.item_spinner_normal, spinnerValue)
+            arrayAdapter.setDropDownViewResource(R.layout.item_spinner_normal_dropdown)
+
             binding.programNameSpinner.adapter = arrayAdapter
 
         }
@@ -238,7 +247,7 @@ class CreateNewActivity : AppCompatActivity() {
 
 
         } else {
-            Toasty.error(this, "Please enter Number of groups or Camps To create").show()
+            Toasty.error(requireContext(), "Please enter Number of groups or Camps To create").show()
 
         }
     }
@@ -288,7 +297,7 @@ class CreateNewActivity : AppCompatActivity() {
         val programName = binding.programNameEdtTxt.editableText.toString().trim()
         if (TextUtils.isEmpty(programName)) {
             Log.d(TAG, "create_Program_Group_Camp: please enter program name")
-            Toasty.error(this, "Please enter Program Name ").show()
+            Toasty.error(requireContext(), "Please enter Program Name ").show()
         } else {
             startProgramCreation(programName)
         }
@@ -313,7 +322,7 @@ class CreateNewActivity : AppCompatActivity() {
 
             }
         } else {
-            Toasty.error(this, "please enter group number or camp number").show()
+            Toasty.error(requireContext(), "please enter group number or camp number").show()
         }
 
 
@@ -333,7 +342,7 @@ class CreateNewActivity : AppCompatActivity() {
 
 
         } else {
-            Toasty.error(this, "Please enter Number of Camps To create").show()
+            Toasty.error(requireContext(), "Please enter Number of Camps To create").show()
 
         }
 
@@ -385,7 +394,7 @@ class CreateNewActivity : AppCompatActivity() {
 
 
     private fun showToast(message: String) {
-        Toasty.error(this, message).show()
+        Toasty.error(requireContext(), message).show()
 
     }
 
@@ -406,7 +415,7 @@ class CreateNewActivity : AppCompatActivity() {
 
     private fun initProgressBar() {
 
-        dialog = setProgressDialog(this, "Loading..")
+        dialog = setProgressDialog(requireContext(), "Loading..")
         dialog.setCancelable(false)
         dialog.setCanceledOnTouchOutside(false)
     }

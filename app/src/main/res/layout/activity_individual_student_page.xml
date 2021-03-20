@@ -12,6 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -64,17 +67,18 @@
 
                 <TextView
                     android:id="@+id/letter_0"
+                    android:tag="letter_0"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
                     android:minWidth="50dp"
-                    android:text="kite"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    android:text="kite" />
 
                 <TextView
                     android:id="@+id/letter_1"
+                    android:tag="letter_1"
 
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -83,11 +87,11 @@
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
                     android:minWidth="50dp"
-                    android:text="toy"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    android:text="toy" />
 
                 <TextView
                     android:id="@+id/letter_2"
+                    android:tag="letter_2"
 
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -96,8 +100,7 @@
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
                     android:minWidth="50dp"
-                    android:text="river"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    android:text="river" />
 
 
             </LinearLayout>
@@ -111,17 +114,18 @@
                 <TextView
                     android:id="@+id/letter_3"
                     android:layout_width="0dp"
+                    android:tag="letter_3"
 
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
                     android:minWidth="50dp"
-                    android:text="kite"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    android:text="kite" />
 
                 <TextView
                     android:id="@+id/letter_4"
+                    android:tag="letter_4"
 
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -130,11 +134,11 @@
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
                     android:minWidth="50dp"
-                    android:text="toy"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    android:text="toy" />
 
                 <TextView
                     android:id="@+id/letter_5"
+                    android:tag="letter_5"
 
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -143,8 +147,7 @@
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
                     android:minWidth="50dp"
-                    android:text="river"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    android:text="river" />
 
 
             </LinearLayout>
@@ -173,19 +176,18 @@
 
                 <TextView
                     android:id="@+id/word_0"
+                    android:tag="word_0"
                     android:layout_width="0dp"
-
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
                     android:minWidth="50dp"
-                    android:text="kite"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    tools:text="kite" />
 
                 <TextView
                     android:id="@+id/word_1"
-
+                    android:tag="word_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -193,11 +195,11 @@
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
                     android:minWidth="50dp"
-                    android:text="toy"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    tools:text="toy" />
 
                 <TextView
                     android:id="@+id/word_2"
+                    android:tag="word_2"
 
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -206,8 +208,7 @@
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
                     android:minWidth="50dp"
-                    android:text="river"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    tools:text="river" />
 
             </LinearLayout>
 
@@ -219,17 +220,18 @@
 
                 <TextView
                     android:id="@+id/word_3"
+                    android:tag="word_3"
 
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
-                    android:text="school"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    tools:text="school" />
 
                 <TextView
                     android:id="@+id/word_4"
+                    android:tag="word_4"
 
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -238,20 +240,18 @@
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
 
-                    android:text="cube"
-                    tools:textColor="@android:color/holo_green_dark" />
+                    tools:text="cube" />
 
                 <TextView
                     android:id="@+id/word_5"
                     android:layout_width="0dp"
+                    android:background="@drawable/bg_correct_word"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1"
-
-                    android:background="@drawable/bg_wrong_word"
+                    android:tag="word_5"
                     android:gravity="center"
-                    android:text="mother"
-                    tools:textColor="@android:color/holo_red_dark" />
+                    tools:text="mother" />
 
 
             </LinearLayout>
@@ -277,7 +277,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textAppearance="@android:style/TextAppearance.Large"
-                android:textColor="@android:color/holo_green_dark"
+                android:textColor="@android:color/black"
                 tools:text="One morning, the cow went to the lion. She
 
 " />
@@ -303,7 +303,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textAppearance="@android:style/TextAppearance.Large"
-                android:textColor="@android:color/holo_green_dark"
+                android:textColor="@android:color/black"
                 tools:text="One morning, the cow went to the lion. She" />
 
             <TextView

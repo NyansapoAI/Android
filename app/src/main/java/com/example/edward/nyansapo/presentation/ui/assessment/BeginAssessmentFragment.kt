@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import com.example.edward.nyansapo.Assessment
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.SelectAssessment
+import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.ActivityBeginAssessementBinding
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.jjoe64.graphview.DefaultLabelFormatter
+import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import es.dmoral.toasty.Toasty
@@ -32,9 +34,17 @@ class BeginAssessmentFragment : Fragment(R.layout.activity_begin_assessement) {
         super.onViewCreated(view, savedInstanceState)
         binding = ActivityBeginAssessementBinding.bind(view)
         studentId = studentDocumentSnapshot!!.id
+
+        setUpToolbar()
         setOnClickListeners()
         checkIfDatabaseIsEmpty()
 
+    }
+
+    private fun setUpToolbar() {
+        binding.toolbar.root.inflateMenu(R.menu.overflow_menu)
+        val fullname = "${studentDocumentSnapshot!!.toObject(Student::class.java)!!.firstname}  ${studentDocumentSnapshot!!.toObject(Student::class.java)!!.lastname}"
+        binding.toolbar.root.title = fullname
     }
 
     private fun setOnClickListeners() {
@@ -83,51 +93,48 @@ class BeginAssessmentFragment : Fragment(R.layout.activity_begin_assessement) {
     }
 
 
+
     private fun setUpGraph() {
-        Log.d(TAG, "setUpGraph: ${assessmentList.size}")
-        assessmentList.forEach{
-            Log.d(TAG, "setUpGraph: $it")
-        }
-        
 
 
+        // set onclick listeners
         if (assessmentList!!.size > 0) {
+            Log.d(TAG, "setUpGraph: ")
             //Toast.makeText(this, assessmentList.get(assessmentList.size()-1).getLEARNING_LEVEL(),Toast.LENGTH_LONG).show();
+            val graphView = binding.root.findViewById<View>(R.id.graphview) as GraphView
             val series = LineGraphSeries<DataPoint>()
             val num = assessmentList!!.size
             var i = 0
             while (i < num && i < 5) {
+                Log.d(TAG, "setUpGraph: $i")
                 series.appendData(DataPoint((i + 1).toDouble(), getLevelIndex(assessmentList!!.get(i).learningLevel).toDouble()), true, 5)
                 i++
             }
             series.setAnimated(true)
-
-            binding.graphview.apply {
-                addSeries(series)
-                title = "Literacy Level Vs. Time of Current Assessments"
-                viewport.isXAxisBoundsManual = true
-                viewport.setMinX(1.0)
-                viewport.setMaxX(5.0)
-                viewport.isYAxisBoundsManual = true
-                viewport.setMinY(0.0)
-                viewport.setMaxY(4.0)
-                gridLabelRenderer.labelFormatter = object : DefaultLabelFormatter() {
-                    override fun formatLabel(value: Double, isValueX: Boolean): String {
-                        return if (!isValueX) {
-                            when (value.toInt()) {
-                                0 -> "L"
-                                1 -> "W"
-                                2 -> "P"
-                                3 -> "S"
-                                4 -> "A"
-                                else -> "U"
-                            }
-                        } else super.formatLabel(value, isValueX)
-                    }
+            graphView!!.addSeries(series)
+            graphView!!.title = "Literacy Level Vs. Time of Current Assessments"
+            graphView!!.viewport.isXAxisBoundsManual = true
+            graphView!!.viewport.setMinX(1.0)
+            graphView!!.viewport.setMaxX(5.0)
+            graphView!!.viewport.isYAxisBoundsManual = true
+            graphView!!.viewport.setMinY(0.0)
+            graphView!!.viewport.setMaxY(4.0)
+            graphView!!.gridLabelRenderer.labelFormatter = object : DefaultLabelFormatter() {
+                override fun formatLabel(value: Double, isValueX: Boolean): String {
+                    return if (!isValueX) {
+                        when (value.toInt()) {
+                            0 -> "L"
+                            1 -> "W"
+                            2 -> "P"
+                            3 -> "S"
+                            4 -> "A"
+                            else -> "U"
+                        }
+                    } else super.formatLabel(value, isValueX)
                 }
             }
-
         } else {
+            val graphView = binding.root.findViewById<View>(R.id.graphview) as GraphView
 
             val series = LineGraphSeries(arrayOf<DataPoint>(
                     DataPoint(0.toDouble(), 0.toDouble()),
@@ -136,35 +143,33 @@ class BeginAssessmentFragment : Fragment(R.layout.activity_begin_assessement) {
                     DataPoint(3.toDouble(), 0.toDouble()),
                     DataPoint(4.toDouble(), 0.toDouble())))
             series.setAnimated(true) // set animation
-            binding.graphview.apply {
-                addSeries(series)
-                title = "No Assessment has been recorded"
-                viewport.isXAxisBoundsManual = true
-                viewport.setMinX(1.0)
-                viewport.setMaxX(5.0)
-                viewport.isYAxisBoundsManual = true
-                viewport.setMinY(0.0)
-                viewport.setMaxY(4.0)
-                gridLabelRenderer.labelFormatter = object : DefaultLabelFormatter() {
-                    override fun formatLabel(value: Double, isValueX: Boolean): String {
-                        return if (!isValueX) {
-                            when (value.toInt()) {
-                                0 -> "L"
-                                1 -> "W"
-                                2 -> "P"
-                                3 -> "S"
-                                4 -> "A"
-                                else -> "U"
-                            }
-                        } else super.formatLabel(value, isValueX)
-                    }
+            graphView!!.addSeries(series)
+            graphView!!.title = "No Assessment has been recorded"
+            graphView!!.viewport.isXAxisBoundsManual = true
+            graphView!!.viewport.setMinX(1.0)
+            graphView!!.viewport.setMaxX(5.0)
+            graphView!!.viewport.isYAxisBoundsManual = true
+            graphView!!.viewport.setMinY(0.0)
+            graphView!!.viewport.setMaxY(4.0)
+            graphView!!.gridLabelRenderer.labelFormatter = object : DefaultLabelFormatter() {
+                override fun formatLabel(value: Double, isValueX: Boolean): String {
+                    return if (!isValueX) {
+                        when (value.toInt()) {
+                            0 -> "L"
+                            1 -> "W"
+                            2 -> "P"
+                            3 -> "S"
+                            4 -> "A"
+                            else -> "U"
+                        }
+                    } else super.formatLabel(value, isValueX)
                 }
-
-
             }
+
 
         }
     }
+
 
     fun getLevelIndex(level: String?): Int {
         return when (level) {

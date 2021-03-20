@@ -1,7 +1,6 @@
 package com.example.edward.nyansapo
 
 import android.Manifest
-
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -10,7 +9,6 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
-import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.AsyncTask
 import android.os.Bundle
@@ -31,10 +29,7 @@ import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer
 import es.dmoral.toasty.Toasty
-import java.io.IOException
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.ScheduledThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 
 class PreAssessment : AppCompatActivity(), View.OnClickListener {
 
@@ -62,8 +57,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
     var button_toggle: Int? = null
 
     //
-    var mediaRecorder: MediaRecorder? = null
-    var mediaPlayer: MediaPlayer? = null
+
 
     // Permission
     val REQUEST_PERSMISSION_CODE = 1000
@@ -206,12 +200,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         Log.d(TAG, "Func: started recording")
 
 
-        startRecording()
-        val exec = ScheduledThreadPoolExecutor(1)
-        exec.scheduleAtFixedRate({ // code to execute repeatedly
-            val num = amplitudeEMA
-            progressBar!!.progress = num.toInt()
-        }, 0, 100, TimeUnit.MILLISECONDS)
+
         if (!transcriptStarted) {
             drawable = read_button!!.background
             val newDrawable = drawable!!.getConstantState().newDrawable().mutate()
@@ -282,40 +271,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    fun startRecording() {
-        mediaRecorder = MediaRecorder()
-        mediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-        mediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        mediaRecorder!!.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB)
-        //this.mediaRecorder.setOutputFile(this.file.getAbsolutePath());
-        mediaRecorder!!.setOutputFile(filename)
-        try {
-            mediaRecorder!!.prepare()
-        } catch (e: IOException) {
-            Log.e("Prepare", "prepare() failed")
-        }
-        mediaStarted = try {
-            mediaRecorder!!.start()
-            true
-        } catch (ex: Exception) {
-            //Toast.makeText(PreAssessment.this, "No feedback", Toast.LENGTH_LONG).show();
-            false
-        }
-        //Toast.makeText(PreAssessment.this, "Started Recording", Toast.LENGTH_SHORT).show();
-    }
 
-    fun soundDb(ampl: Double): Double {
-        return 20 * Math.log10(amplitudeEMA / ampl)
-    }
-
-    val amplitude: Double
-        get() = if (mediaRecorder != null) mediaRecorder!!.maxAmplitude.toDouble() else 0.toDouble()
-    val amplitudeEMA: Double
-        get() {
-            val amp = amplitude
-            mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA
-            return mEMA
-        }
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(this, arrayOf(
@@ -368,8 +324,6 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
             read_button!!.background = drawable
             read_button!!.setTextColor(Color.BLACK)
             if (mediaStarted) {
-                mediaRecorder!!.stop()
-                mediaRecorder!!.release()
                 progressBar!!.progress = 0
                 mediaStarted = false
             }

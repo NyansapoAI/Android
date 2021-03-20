@@ -8,8 +8,6 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
-import android.media.MediaPlayer
-import android.media.MediaRecorder
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -25,13 +23,12 @@ import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer
-import java.io.IOException
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.ScheduledThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 
 class letter_assessment : AppCompatActivity() {
-    var mediaPlayer: MediaPlayer? = null
+
+    private val TAG = "letter_assessment"
+
     var letters: String? = null
     lateinit var letter: Array<String>
 
@@ -56,7 +53,6 @@ class letter_assessment : AppCompatActivity() {
     var change_button: Button? = null
 
     // media
-    var mediaRecorder: MediaRecorder? = null
     var filename = "/dev/null"
 
     // progress bar
@@ -109,6 +105,7 @@ class letter_assessment : AppCompatActivity() {
     }
 
     fun changeLetter() {
+        Log.d(TAG, "changeLetter: changing letter")
         if (letters_tried > 4) {
             goToThankYou()
         } else if (letter_count < letter.size - 1) {
@@ -120,40 +117,7 @@ class letter_assessment : AppCompatActivity() {
         }
     }
 
-    fun startRecording() {
-        mediaRecorder = MediaRecorder()
-        mediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-        mediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        mediaRecorder!!.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB)
-        //this.mediaRecorder.setOutputFile(this.file.getAbsolutePath());
-        mediaRecorder!!.setOutputFile(filename)
-        try {
-            mediaRecorder!!.prepare()
-        } catch (e: IOException) {
-            Log.e("Prepare", "prepare() failed")
-        }
-        mediaStarted = try {
-            mediaRecorder!!.start()
-            true
-        } catch (ex: Exception) {
-            //Toast.makeText(PreAssessment.this, "No feedback", Toast.LENGTH_LONG).show();
-            false
-        }
-        //Toast.makeText(PreAssessment.this, "Started Recording", Toast.LENGTH_SHORT).show();
-    }
 
-    fun soundDb(ampl: Double): Double {
-        return 20 * Math.log10(amplitudeEMA / ampl)
-    }
-
-    val amplitude: Double
-        get() = if (mediaRecorder != null) mediaRecorder!!.maxAmplitude.toDouble() else 0.toDouble()
-    val amplitudeEMA: Double
-        get() {
-            val amp = amplitude
-            mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA
-            return mEMA
-        }
 
     fun changeLetter1() {
         if (letter_count < letter.size - 1) {
@@ -186,12 +150,7 @@ class letter_assessment : AppCompatActivity() {
         }
         //SpeechAsync speechAsync = new SpeechAsync();
         //speechAsync.execute(v);
-        startRecording()
-        val exec = ScheduledThreadPoolExecutor(1)
-        exec.scheduleAtFixedRate({ // code to execute repeatedly
-            val num = amplitudeEMA
-            progressBar!!.progress = num.toInt()
-        }, 0, 100, TimeUnit.MILLISECONDS)
+
     }
 
     inner class SpeechAsync : AsyncTask<View?, String?, String?>() {
@@ -221,40 +180,34 @@ class letter_assessment : AppCompatActivity() {
             reco!!.close()
         }
 
-        override fun onPostExecute(s: String?) {
-            super.onPostExecute(s)
+        override fun onPostExecute(textFromServer: String?) {
+            super.onPostExecute(textFromServer)
             assessment_card!!.background = drawable
             assessment_card!!.setTextColor(Color.BLACK)
             if (mediaStarted) {
-                mediaRecorder!!.stop()
-                mediaRecorder!!.release()
-                progressBar!!.progress = 0
                 mediaStarted = false
             }
             transcriptStarted = false
 
-            //progressBar.setBackgroundColor(2);
-            if (s.equals("canceled", ignoreCase = true)) {
+            Log.d(TAG, "onPostExecute: text from server original: $textFromServer")
+            if (textFromServer.equals("canceled", ignoreCase = true)) {
                 Toast.makeText(this@letter_assessment, "Internet Connection Failed", Toast.LENGTH_LONG).show()
-            } else if (s.equals("no match", ignoreCase = true)) {
-                Toast.makeText(this@letter_assessment, "Try Again", Toast.LENGTH_LONG).show()
+            } else if (textFromServer.equals("no match", ignoreCase = true)) {
+                Toast.makeText(this@letter_assessment, "Try Again Please", Toast.LENGTH_LONG).show()
             } else {
-                val error_txt = SpeechRecognition.compareTranscript(expected_txt, s)
-                if (SpeechRecognition.countError(error_txt) == 0) {
-                    letters_correct += expected_txt!!.trim { it <= ' ' } + ","
+                val textFromServerFormatted = textFromServer!!.replace(".", "")
+                if (expected_txt.equals(textFromServerFormatted)) {
+                    Log.d(TAG, "onPostExecute: letter is correct expected text: $expected_txt found: $textFromServerFormatted")
+                    letters_correct += expected_txt!!.trim() + ","
+                    Log.d(TAG, "onPostExecute: letters_correct: $letters_correct")
                 } else {
-                    letters_wrong += error_txt.trim { it <= ' ' } + ","
+                    Log.d(TAG, "onPostExecute: letter is wrong expected text: $expected_txt found: $textFromServerFormatted")
+
+                    letters_wrong += expected_txt!!.trim() + ","
+                    Log.d(TAG, "onPostExecute: letters_wrong :$letters_wrong")
+                    error_count += 1
                 }
-                error_count += SpeechRecognition.countError(error_txt)
-                //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
-                //Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
-                //Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
-                //Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();
-                /*if (error_count > 2) { // if error less than 3 move to story level
-                    //goToThankYou();
-                } else if (letter_count > 3 && error_count < 2) { // got to thank you page if error is less than 2
-                    //goToThankYou();
-                } else */if (s !== "no match") changeLetter()
+                changeLetter()
             }
             reco!!.close()
         }
@@ -277,7 +230,7 @@ class letter_assessment : AppCompatActivity() {
                 }
                 assert(result != null)
                 if (result!!.reason == ResultReason.RecognizedSpeech) {
-                    return result.text
+                    return result.text.toLowerCase().trim()
                 } else if (result.reason == ResultReason.NoMatch) {
                     return "no match"
                 } else if (result.reason == ResultReason.Canceled) {

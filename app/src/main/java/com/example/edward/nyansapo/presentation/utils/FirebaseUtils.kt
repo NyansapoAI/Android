@@ -3,15 +3,14 @@ package com.example.edward.nyansapo.presentation.utils
 import android.content.Context
 import android.util.Log
 import androidx.annotation.DrawableRes
-import com.example.edward.nyansapo.Assessment
-import com.example.edward.nyansapo.Instructor
+import com.example.edward.nyansapo.*
 import com.example.edward.nyansapo.R
-import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.presentation.ui.attendance.CurrentDate
 import com.example.edward.nyansapo.presentation.ui.attendance.StudentAttendance
 import com.example.edward.nyansapo.presentation.ui.home.Camp
 import com.example.edward.nyansapo.presentation.ui.home.Group
 import com.example.edward.nyansapo.presentation.ui.home.Program
+import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
@@ -260,11 +259,29 @@ object FirebaseUtils {
 
 
     fun getAssessmentsFromStudent(programId: String, groupId: String, campId: String, studentId: String, onComplete: (QuerySnapshot) -> Unit) {
-        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_STUDENTS).document(studentId).collection(COLLECTION_ASSESSMENTS).get().addOnSuccessListener {
+        firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_STUDENTS).document(studentId).collection(COLLECTION_ASSESSMENTS).orderBy("timestamp").get().addOnSuccessListener {
+            //deleting assessments that dont have a learning level
+            deleteAllUnknownAssessments(it)
+
+
             onComplete(it)
         }
+    }
 
+    fun getAssessmentsFromStudent_Task(programId: String, groupId: String, campId: String, studentId: String): Task<QuerySnapshot> {
+        return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_STUDENTS).document(studentId).collection(COLLECTION_ASSESSMENTS).orderBy("timestamp").get()
 
+    }
+
+    private fun deleteAllUnknownAssessments(snapshots: QuerySnapshot) {
+        for (snapshot in snapshots) {
+            val assessment = snapshot.toObject(Assessment::class.java)
+            if (assessment.learningLevel.equals(Learning_Level.UNKNOWN.name) || assessment.learningLevel.trim().isBlank()) {
+                snapshot.reference.delete().addOnSuccessListener {
+                    Log.d(TAG, "deleteAllUnknownAssessments: ")
+                }
+            }
+        }
     }
 
     fun getAssessmentsFromStudent_Collection(programId: String, groupId: String, campId: String, studentId: String): CollectionReference {

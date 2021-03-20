@@ -2,7 +2,6 @@ package com.example.edward.nyansapo.presentation.ui.home
 
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import com.example.edward.nyansapo.databinding.ItemSpinnerBinding
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.protobuf.ListValue
 
 
 class SpinnerAdapter(context: Context?,   items: QuerySnapshot,   listValue: List<String>,val deleteItem:(DocumentReference)->Unit,val editItem:(DocumentReference,DocumentSnapshot)->Unit) : BaseAdapter() {
@@ -37,16 +35,24 @@ class SpinnerAdapter(context: Context?,   items: QuerySnapshot,   listValue: Lis
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
-        val view=convertView?:inflator!!.inflate(R.layout.item_spinner, null)
+        val view = convertView ?: inflator!!.inflate(R.layout.item_spinner, null)
 
         val binding = ItemSpinnerBinding.bind(view)
         binding.deleteImageview.setOnClickListener { deleteItem(listRefences.documents[position].reference) }
-        binding.editImageView.setOnClickListener { editItem(listRefences.documents[position].reference,listRefences.documents[position]) }
+        binding.editImageView.setOnClickListener { editItem(listRefences.documents[position].reference, listRefences.documents[position]) }
         binding.nameTxtView.text = listValues.get(position)
         return view
     }
 
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val view = convertView ?: inflator!!.inflate(R.layout.item_spinner_dropdown, null)
 
+        val binding = ItemSpinnerBinding.bind(view)
+        binding.deleteImageview.setOnClickListener { deleteItem(listRefences.documents[position].reference) }
+        binding.editImageView.setOnClickListener { editItem(listRefences.documents[position].reference, listRefences.documents[position]) }
+        binding.nameTxtView.text = listValues.get(position)
+        return view
+    }
 
 
 }

@@ -8,8 +8,6 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
-import android.media.MediaPlayer
-import android.media.MediaRecorder
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -21,10 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.microsoft.cognitiveservices.speech.*
-import java.io.IOException
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.ScheduledThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 
 class paragraph_assessment : AppCompatActivity() {
 
@@ -36,8 +31,6 @@ class paragraph_assessment : AppCompatActivity() {
         private const val EMA_FILTER = 0.6
     }
 
-
-    var mediaPlayer: MediaPlayer? = null
     var paragraphButton: Button? = null
     var changeButton: Button? = null
     var record_button: Button? = null
@@ -57,7 +50,6 @@ class paragraph_assessment : AppCompatActivity() {
 
 
     // media
-    var mediaRecorder: MediaRecorder? = null
     var filename = "/dev/null"
 
     // progress bar
@@ -137,12 +129,7 @@ class paragraph_assessment : AppCompatActivity() {
             speechAsync.execute(v)
             transcriptStarted = true
         }
-        startRecording()
-        val exec = ScheduledThreadPoolExecutor(1)
-        exec.scheduleAtFixedRate({ // code to execute repeatedly
-            val num = amplitudeEMA
-            progressBar!!.progress = num.toInt()
-        }, 0, 100, TimeUnit.MILLISECONDS)
+
     }
 
     fun changeSentence() {
@@ -165,40 +152,7 @@ class paragraph_assessment : AppCompatActivity() {
         }
     }
 
-    fun startRecording() {
-        mediaRecorder = MediaRecorder()
-        mediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-        mediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        mediaRecorder!!.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB)
-        //this.mediaRecorder.setOutputFile(this.file.getAbsolutePath());
-        mediaRecorder!!.setOutputFile(filename)
-        try {
-            mediaRecorder!!.prepare()
-        } catch (e: IOException) {
-            Log.e("Prepare", "prepare() failed")
-        }
-        mediaStarted = try {
-            mediaRecorder!!.start()
-            true
-        } catch (ex: Exception) {
-            //Toast.makeText(PreAssessment.this, "No feedback", Toast.LENGTH_LONG).show();
-            false
-        }
-        //Toast.makeText(PreAssessment.this, "Started Recording", Toast.LENGTH_SHORT).show();
-    }
 
-    fun soundDb(ampl: Double): Double {
-        return 20 * Math.log10(amplitudeEMA / ampl)
-    }
-
-    val amplitude: Double
-        get() = if (mediaRecorder != null) mediaRecorder!!.maxAmplitude.toDouble() else 0.toDouble()
-    val amplitudeEMA: Double
-        get() {
-            val amp = amplitude
-            mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA
-            return mEMA
-        }
 
     inner class SpeechAsync : AsyncTask<View?, String?, String?>() {
         // Replace below with your own subscription key
@@ -210,13 +164,13 @@ class paragraph_assessment : AppCompatActivity() {
         var config: SpeechConfig? = null
         var reco: SpeechRecognizer? = null
         var view: View? = null
-        var expected_txt: String? = null
+        lateinit var expected_txt: String
         override fun onPreExecute() {
             super.onPreExecute()
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion)
             config!!.setEndpointId(endpoint)
             paragraphButton = findViewById(R.id.paragraph1)
-            expected_txt = paragraphButton!!.getText().toString()
+            expected_txt = paragraphButton!!.getText().toString().toLowerCase()'['
             //paragraphButton.setEnabled(false);
             //record_button.setEnabled(false);
         }
@@ -227,68 +181,79 @@ class paragraph_assessment : AppCompatActivity() {
             reco!!.close()
         }
 
-        override fun onPostExecute(s: String?) {
-            super.onPostExecute(s)
+        override fun onPostExecute(textFromServer: String?) {
+            super.onPostExecute(textFromServer)
             paragraphButton!!.background = drawable
             paragraphButton!!.setTextColor(Color.BLACK)
             if (mediaStarted) {
-                mediaRecorder!!.stop()
-                mediaRecorder!!.release()
-                progressBar!!.progress = 0
                 mediaStarted = false
             }
             transcriptStarted = false
-            if (s.equals("canceled", ignoreCase = true)) {
+            if (textFromServer.equals("canceled", ignoreCase = true)) {
                 Toast.makeText(this@paragraph_assessment, "Internet Connection Failed", Toast.LENGTH_LONG).show()
-            } else if (s.equals("no match", ignoreCase = true)) {
+            } else if (textFromServer.equals("no match", ignoreCase = true)) {
                 Toast.makeText(this@paragraph_assessment, "Try Again", Toast.LENGTH_LONG).show()
             } else {
-                //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
-                //s = SpeechRecognition.removeDuplicates(s);
-                val error_txt = SpeechRecognition.compareTranscript(expected_txt, s)
-                /*if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
-                    //words_correct += ","+expected_txt.trim();
-                    paragraph_words_wrong +=  error_txt.trim()+",";
-                }*/
+                /////////////////////////////////////////
 
-                //error_count += SpeechRecognition.countError(error_txt);
-                //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
-                //Toast.makeText(view.getContext(), SpeechRecognition.removeDuplicates(s), Toast.LENGTH_LONG).show();
-                //Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
-                //Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
-                //Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();
-                /*if (error_count > 4) { // if error less than 3 move to story level
-                    //goToWord();
-                } */if (SpeechRecognition.countError(error_txt) > 2 || s!!.split(" ".toRegex()).toTypedArray().size < 2) {
+                var textFromServerFormatted = textFromServer?.replace(".", "")!!
+                Log.d(TAG, "onPostExecute:removed dot : $textFromServerFormatted")
+
+                var listOfTxtFromServer = textFromServerFormatted.split(" ").map {
+                    it.trim()
+                }!!
+                Log.d(TAG, "onPostExecute: split: $listOfTxtFromServer")
+
+                val expectedTextList = expected_txt!!.split(" ").map {
+                    it.trim()
+                }!!
+                val expectedTextListDummy = expected_txt.split(" ").filter {
+                    !it.isBlank()
+                }.map {
+                    it.trim()
+                }!!
+                (expectedTextListDummy as ArrayList).removeAll(listOfTxtFromServer)
+                val countErrorFromSentence = expectedTextListDummy.size
+                Log.d(TAG, "onPostExecute: expectedTextListDummy $expectedTextListDummy")
+                Log.d(TAG, "onPostExecute: number of words got wrong: $countErrorFromSentence")
+
+                var error_txt: String = ""
+                expectedTextListDummy.forEach {
+                    error_txt += it + ","
+
+                }
+
+                /////////////////////////////////////////
+
+                Log.d(TAG, "onPostExecute: expected text: $expected_txt : text from server: $textFromServer : transcribed fake text: $error_txt")
+
+                if (countErrorFromSentence > 2 || listOfTxtFromServer.size < 2) {
+                    Log.d(TAG, "onPostExecute: count error sentence: $countErrorFromSentence and list of text from server ${listOfTxtFromServer.size}")
                     if (tries < 1) {
                         tries++ // incremnent tries
                         Toast.makeText(view!!.context, "Try Again!", Toast.LENGTH_LONG).show()
                     } else {
-                        error_count += SpeechRecognition.countError(error_txt)
-                        if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
+                        error_count += countErrorFromSentence
+                        if (countErrorFromSentence != 0) { // if no erro
                             //words_correct += ","+expected_txt.trim();
-                            paragraph_words_wrong += error_txt.trim { it <= ' ' } + ","
+                            paragraph_words_wrong += error_txt.trim()
+                            Log.d(TAG, "onPostExecute: paragraph_words_wrong: $paragraph_words_wrong")
                         }
 
-                        //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
-                        /*Toast.makeText(view.getContext(), SpeechRecognition.removeDuplicates(s), Toast.LENGTH_LONG).show();
-                        Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
-                        Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
-                        Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();*/
+
                         changeSentence()
                     }
                 } else {
-                    error_count += SpeechRecognition.countError(error_txt)
-                    if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
-                        //words_correct += ","+expected_txt.trim();
-                        paragraph_words_wrong += error_txt.trim { it <= ' ' } + ","
-                    }
+                    error_count += countErrorFromSentence
+                    Log.d(TAG, "onPostExecute: error_count: $error_count : countErrorFromSentence: $countErrorFromSentence")
 
-                    //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
-                    /*Toast.makeText(view.getContext(), SpeechRecognition.removeDuplicates(s), Toast.LENGTH_LONG).show();
-                    Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
-                    Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
-                    Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();*/
+                    if (countErrorFromSentence != 0) { // if no erro
+                        //words_correct += ","+expected_txt.trim();
+                        paragraph_words_wrong += error_txt.trim()
+                        Log.d(TAG, "onPostExecute: paragraph_words_wrong: $paragraph_words_wrong")
+                    }
+                    Log.d(TAG, "onPostExecute: paragraph_words_wrong: $paragraph_words_wrong")
+
                     changeSentence()
                 }
             }
@@ -317,7 +282,7 @@ class paragraph_assessment : AppCompatActivity() {
                     val property = properties.getProperty(PropertyId.SpeechServiceResponse_JsonResult)
 
                     //Toast.makeText(paragraph_assessment.this, property, Toast.LENGTH_LONG).show();
-                    return result.text
+                    return result.text.toLowerCase()
                 } else if (result.reason == ResultReason.NoMatch) {
                     return "no match"
                 } else if (result.reason == ResultReason.Canceled) {

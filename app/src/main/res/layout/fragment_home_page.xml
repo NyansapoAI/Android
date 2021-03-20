@@ -1,51 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="32dp"
-        android:textStyle="bold"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:textColor="@android:color/white"
-        android:background="@android:color/holo_blue_dark"
-        android:id="@+id/attendanceBtn"
-        android:text="ATTENDANCE" />
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="32dp"
-        android:id="@+id/programNameSpinner"
-        android:tooltipText="Program Name" />
+            android:textStyle="bold"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_blue_dark"
+            android:id="@+id/attendanceBtn"
+            android:text="ATTENDANCE" />
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="32dp"
-        android:id="@+id/groupSpinner"
-        android:tooltipText="Group" />
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:id="@+id/programNameSpinner"
+            android:tooltipText="Program Name" />
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/campSpinner"
-        android:layout_margin="32dp"
-        android:tooltipText="Camp" />
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_margin="32dp"
-        android:backgroundTint="@android:color/darker_gray"
-        android:padding="8dp"
-        android:text="Create"
-        android:id="@+id/createFob"
-        app:icon="@drawable/ic_add_24" />
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:id="@+id/groupSpinner"
+            android:tooltipText="Group" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/campSpinner"
+            android:layout_margin="32dp"
+            android:tooltipText="Camp" />
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="32dp"
+            android:backgroundTint="@android:color/black"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:text="Create"
+            android:id="@+id/createFob"
+            app:icon="@drawable/ic_add_24" />
 
 
-</LinearLayout>
+    </LinearLayout>
+
+
+</ScrollView>

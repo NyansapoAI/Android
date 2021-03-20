@@ -121,7 +121,9 @@ class cumulativeProgress : AppCompatActivity() {
         //Toast.makeText(this, words_list.toString(), Toast.LENGTH_LONG).show();
         for (word in words_list) {
            var word_ = word.toLowerCase()
-            val count = if (my_dict.containsKey(word_)) my_dict[word_]!! else 0
+            val count = if (my_dict.containsKey(word_))
+                my_dict[word_]!!
+            else 0
             my_dict[word_] = count + 1
         }
 

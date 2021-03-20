@@ -8,8 +8,6 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
-import android.media.MediaPlayer
-import android.media.MediaRecorder
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -25,17 +23,13 @@ import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer
-import java.io.IOException
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.ScheduledThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 
 class story_assessment : AppCompatActivity() {
 
     private val TAG = "story_assessment"
 
-    var mediaPlayer: MediaPlayer? = null
-    var record_student: Button? = null
+     var record_student: Button? = null
     var next_button: Button? = null
     var story_view: Button? = null
     var back_button: Button? = null
@@ -56,8 +50,6 @@ class story_assessment : AppCompatActivity() {
     var tries = 0
 
     // media
-    var mediaRecorder: MediaRecorder? = null
-    var filename = "/dev/null"
 
     // progress bar
     var progressBar2: ProgressBar? = null
@@ -126,12 +118,7 @@ class story_assessment : AppCompatActivity() {
             speechAsync.execute(v)
             transcriptStarted = true
         }
-        startRecording()
-        val exec = ScheduledThreadPoolExecutor(1)
-        exec.scheduleAtFixedRate({ // code to execute repeatedly
-            val num = amplitudeEMA
-            progressBar2!!.progress = num.toInt()
-        }, 0, 100, TimeUnit.MILLISECONDS)
+
     }
 
     fun backParagraph(v: View?) {
@@ -175,41 +162,6 @@ class story_assessment : AppCompatActivity() {
         }
     }
 
-    fun startRecording() {
-        mediaRecorder = MediaRecorder()
-        mediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-        mediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        mediaRecorder!!.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB)
-        //this.mediaRecorder.setOutputFile(this.file.getAbsolutePath());
-        mediaRecorder!!.setOutputFile(filename)
-        try {
-            mediaRecorder!!.prepare()
-        } catch (e: IOException) {
-            Log.e("Prepare", "prepare() failed")
-        }
-        mediaStarted = try {
-            mediaRecorder!!.start()
-            true
-        } catch (ex: Exception) {
-            //Toast.makeText(PreAssessment.this, "No feedback", Toast.LENGTH_LONG).show();
-            false
-        }
-
-        //Toast.makeText(PreAssessment.this, "Started Recording", Toast.LENGTH_SHORT).show();
-    }
-
-    fun soundDb(ampl: Double): Double {
-        return 20 * Math.log10(amplitudeEMA / ampl)
-    }
-
-    val amplitude: Double
-        get() = if (mediaRecorder != null) mediaRecorder!!.maxAmplitude.toDouble() else 0.toDouble()
-    val amplitudeEMA: Double
-        get() {
-            val amp = amplitude
-            mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA
-            return mEMA
-        }
 
     private inner class SpeechAsync : AsyncTask<View?, String?, String?>() {
         // Replace below with your own subscription key
@@ -244,9 +196,7 @@ class story_assessment : AppCompatActivity() {
 
             //story_view.setEnabled(true);
             if (mediaStarted) {
-                mediaRecorder!!.stop()
-                mediaRecorder!!.release()
-                progressBar2!!.progress = 0
+
                 mediaStarted = false
             }
             transcriptStarted = false

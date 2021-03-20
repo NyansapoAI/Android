@@ -16,7 +16,6 @@ import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.ActivityIndividualStudentPageBinding
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
-import com.google.common.reflect.Reflection.getPackageName
 import es.dmoral.toasty.Toasty
 
 class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_student_page) {
@@ -33,8 +32,17 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
         binding = ActivityIndividualStudentPageBinding.bind(view)
         student = studentDocumentSnapshot!!.toObject(Student::class.java)!!
         assessment = assessmentDocumentSnapshot!!.toObject(Assessment::class.java)!!
+        setupToolBar()
 
         setAssessmentInfoToUi()
+
+    }
+
+    private fun setupToolBar() {
+        //setting up name of students
+
+        val fullname = "${studentDocumentSnapshot!!.toObject(Student::class.java)!!.firstname}  ${studentDocumentSnapshot!!.toObject(Student::class.java)!!.lastname}"
+        binding.toolbar.root.title = fullname
 
     }
 
@@ -42,7 +50,7 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
 //first determine which level we are in
         when (assessment.learningLevel) {
             "UNKNOWN" -> {
-                Toasty.info(requireContext(),"You assessment is unknown You might have started the assessment but didnt complete",Toasty.LENGTH_LONG).show()
+                Toasty.info(requireContext(), "You assessment is unknown You might have started the assessment but didnt complete", Toasty.LENGTH_LONG).show()
             }
             "BEGINNER" -> setDataForBeginnerLevel()
             "LETTER" -> setDataForLetterLevel()
@@ -144,6 +152,8 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
         Log.d(TAG, "setDataForLetterLevel: ")
         binding.learningLevelImageView.setImageResource(R.mipmap.letter_level)
 
+        binding.storyLinearLayout.visibility = View.GONE
+
         startSettingLetters()
         startSettingWords()
         startSettingParagraphs()
@@ -159,13 +169,13 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
 
 
 
-        Log.d(TAG, "startSettingParagraphs: ${assessment.paragraphWordsWrong}")
+        Log.d(TAG, "startSettingParagraphs: paragraph words wrong ${assessment.paragraphWordsWrong}")
 
         assessment.paragraphWordsWrong.split(",", ignoreCase = true).forEach { string ->
 
             if (!string.isBlank()) {
 
-                underLineThisWord(string.trim(), wholeParagraph, wordtoSpan)
+                underLineThisWord(string.trim().toLowerCase(), wholeParagraph.toLowerCase(), wordtoSpan)
 
             }
         }
@@ -183,10 +193,8 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
     }
 
     private fun startSettingWords() {
-        Log.d(TAG, "startSettingWords: ")
-        val words = assessment.wordsWrong + assessment.wordsCorrect
-
-        Log.d(TAG, "startSettingWords: $words")
+        Log.d(TAG, "startSettingWords words wrong: ${assessment.wordsWrong}")
+        Log.d(TAG, "startSettingWords words correct: ${assessment.wordsCorrect}")
 
 
         var lastIndex: Int = 0
@@ -196,29 +204,32 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
         assessment.wordsWrong.split(",", ignoreCase = true).filter {
             !it.isBlank()
         }.forEachIndexed { index, string ->
-
-            val resID = resources.getIdentifier("word_$index",
-                    "id", getPackageName(IndividualStudentPageFragment::class.java))
+            Log.d(TAG, "startSettingWords: index: $index word: $string")
 
 
-            val textView: TextView = binding.root.findViewById(resID)
+            val textView: TextView = binding.root.findViewWithTag<TextView>("word_$index")
+
             textView.setBackgroundResource(R.drawable.bg_wrong_word)
             textView.text = string.trim()
 
             lastIndex = index
 
+            Log.d(TAG, "startSettingWords: last index $lastIndex")
         }
 
 
         assessment.wordsCorrect.split(",", ignoreCase = true).filter {
             !it.isBlank()
         }.forEachIndexed { index, string ->
+            Log.d(TAG, "startSettingWords: index: $index word: $string")
 
-            val resID = resources.getIdentifier("word_${lastIndex + 1 + index}",
-                    "id", getPackageName(IndividualStudentPageFragment::class.java))
+            val pos = lastIndex + 1 + index
+            if (pos == 6) {
+                Log.d(TAG, "startSettingWords: returning")
+                return@forEachIndexed
+            }
+            val textView: TextView = binding.root.findViewWithTag<TextView>("word_${pos}")
 
-
-            val textView: TextView = binding.root.findViewById(resID)
             textView.setBackgroundResource(R.drawable.bg_correct_word)
 
             textView.text = string.trim()
@@ -230,9 +241,10 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
     private fun startSettingLetters() {
         Log.d(TAG, "startSettingLetters: ")
 
-        val letters = assessment.lettersWrong + assessment.letterCorrect
 
-        Log.d(TAG, "startSettingLetters: $letters")
+
+        Log.d(TAG, "startSettingLetters letter wrong: ${assessment.lettersWrong}")
+        Log.d(TAG, "startSettingLetters letter correct: ${assessment.letterCorrect}")
 
 
         var lastIndex: Int = 0
@@ -241,11 +253,8 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
             !it.isBlank()
         }.forEachIndexed { index, string ->
 
-            val resID = resources.getIdentifier("letter_$index",
-                    "id", getPackageName(IndividualStudentPageFragment::class.java))
 
-
-            val textView: TextView = binding.root.findViewById(resID)
+            val textView: TextView = binding.root.findViewWithTag<TextView>("letter_$index")
             textView.setBackgroundResource(R.drawable.bg_wrong_word)
             textView.text = string.trim()
             lastIndex = index
@@ -256,11 +265,12 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
             !it.isBlank()
         }.forEachIndexed { index, string ->
 
-            val resID = resources.getIdentifier("letter_${lastIndex + 1 + index}",
-                    "id", getPackageName(IndividualStudentPageFragment::class.java))
+            val pos = lastIndex + 1 + index
+            if (pos == 6) {
+                return@forEachIndexed
+            }
+            val textView: TextView = binding.root.findViewWithTag<TextView>("letter_${pos}")
 
-
-            val textView: TextView = binding.root.findViewById(resID)
             textView.setBackgroundResource(R.drawable.bg_correct_word)
 
             textView.text = string.trim()

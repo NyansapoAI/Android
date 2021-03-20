@@ -3,7 +3,6 @@ package com.example.edward.nyansapo.presentation.ui.home
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -287,8 +286,10 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
             //go to create new page
             Log.d(TAG, "setOnClickListeners: ")
 
-            val intent = Intent(requireContext(), CreateNewActivity::class.java)
-            startActivity(intent)
+
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container, CreateNewFragment()).addToBackStack(null).commit()
+
+
         }
     }
 

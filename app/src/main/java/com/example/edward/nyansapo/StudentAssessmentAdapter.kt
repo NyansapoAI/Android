@@ -2,8 +2,8 @@ package com.example.edward.nyansapo
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +26,7 @@ class StudentAssessmentAdapter(private val studentAssessments: Activity, options
 
         holder.binding.apply {
             setOnClickListeners(holder, position)
-            assessmentBtn.setText("Assessment " + Integer.toString(itemCount - position))
+            assessmentBtn.setText("Assessment " + Integer.toString(itemCount - position) + " :${model.learningLevel}")
 
 
         }
@@ -37,13 +37,14 @@ class StudentAssessmentAdapter(private val studentAssessments: Activity, options
     private fun setOnClickListeners(holder: ViewHolder, position: Int) {
 
 
-        holder.itemView.setOnClickListener(View.OnClickListener {
+        holder.binding.assessmentBtn.setOnClickListener {
+            Log.d(TAG, "setOnClickListeners: ")
             if (position == RecyclerView.NO_POSITION) {
-                return@OnClickListener
+                return@setOnClickListener
             }
-           assessmentDocumentSnapshot = snapshots.getSnapshot(position)
+            assessmentDocumentSnapshot = snapshots.getSnapshot(position)
             onAssessmentClick(getItem(position))
-        })
+        }
     }
 
     fun deleteFromDatabase(position: Int) {

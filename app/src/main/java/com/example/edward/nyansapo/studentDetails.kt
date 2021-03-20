@@ -6,24 +6,28 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
-import com.example.edward.nyansapo.presentation.utils.STUDENT_ID
-import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.jjoe64.graphview.DefaultLabelFormatter
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_home.*
 import java.util.*
 
 class studentDetails : AppCompatActivity(), View.OnClickListener {
 
-    lateinit var studentId:String
+    private val TAG = "studentDetails"
+
+    lateinit var studentId: String
+
     // declare ui elements
     var graphView: GraphView? = null
     var student_name: TextView? = null
@@ -40,16 +44,17 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
     var DataBaseHandler: dataBaseHandler? = null
     lateinit var assessmentList: ArrayList<Assessment>
     var student_id: String? = null
-    lateinit var student: Student
+
+    //    lateinit var student: Student
     var students: ArrayList<*>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_details)
         initProgressBar()
-        studentId=intent.getStringExtra(STUDENT_ID)
-        student = studentDocumentSnapshot!!.toObject(Student::class.java)!!
-        //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
-
+        /*     studentId=intent.getStringExtra(STUDENT_ID)
+             student = studentDocumentSnapshot!!.toObject(Student::class.java)!!
+             //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
+     */
 
         // toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -58,16 +63,35 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener {
             val intent = Intent(this@studentDetails, student_assessments::class.java)
-            intent.putExtra("student_activity", student)
+            //     intent.putExtra("student_activity", student)
             startActivity(intent)
         }
         DataBaseHandler = dataBaseHandler(this)
         assessmentList = ArrayList()
         //assessmentList = DataBaseHandler.getAllAssessment();
+
+
+        val sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE)
+
+        val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
+        val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
+        val campId = sharedPreferences.getString(Constants.KEY_CAMP_ID, null)
+        val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
+
+        if (campPos == -1) {
+            Toasty.error(this, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            supportFragmentManager.popBackStackImmediate()
+        }
+
         showProgress(true)
 
-       /* FirebaseUtils.assessmentsCollection(studentId).orderBy("timestamp").get()
-                .addOnSuccessListener {
+        val malianyeri = "F6HeFFcB1PZ6TrcTUr3I"
+
+        val malia = "bxC9TMv4vh7g0jvR0QZr"
+        val maliaodhiambo = "TBhZEcimJkkOG4s5mzLD"
+        val justeli = "EUj4JtZIxCnd2ef8WGdJ"
+        FirebaseUtils.getAssessmentsFromStudent(programId, groupId, campId, justeli)
+        {
             showProgress(false)
 
             assessmentList = it.toObjects(Assessment::class.java) as ArrayList<Assessment>
@@ -76,18 +100,21 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
             setUpGraph()
 
 
-        }*/
-
+        }
     }
 
     private fun setUpGraph() {
+        Log.d(TAG, "setUpGraph: ")
+        assessmentList.forEach {
+            Log.d(TAG, "setUpGraph: assessment:$it")
+        }
 
         student_name = findViewById(R.id.student_name)
         initial_level = findViewById(R.id.initial_level)
         current_level = findViewById(R.id.current_level)
         assessments_taken = findViewById(R.id.assessments_taken)
         assessments_taken!!.setText("0") // updated
-        student_name!!.setText(student.firstname + ' ' + student.lastname)
+        // student_name!!.setText(student.firstname + ' ' + student.lastname)
 
         // code for buttons
         //settings_button = findViewById(R.id.settings_button);
@@ -99,6 +126,8 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
         assessment_button!!.setOnClickListener(this)
         home_button!!.setOnClickListener(this)
         if (assessmentList!!.size > 0) {
+
+            Log.d(TAG, "setUpGraph: assessment size ${assessmentList.size}")
             //Toast.makeText(this, assessmentList.get(assessmentList.size()-1).getLEARNING_LEVEL(),Toast.LENGTH_LONG).show();
             graphView = findViewById<View>(R.id.graphview) as GraphView
             val series = LineGraphSeries<DataPoint>()
@@ -106,9 +135,14 @@ class studentDetails : AppCompatActivity(), View.OnClickListener {
             assessments_taken!!.setText(Integer.toString(num))
             var i = 0
             while (i < num && i < 5) {
+
+                val x = (i + 1).toDouble()
+                val y = getLevelIndex(assessmentList!!.get(i).learningLevel).toDouble()
+                Log.d(TAG, "setUpGraph: $x : $y :learning level:${assessmentList!!.get(i).learningLevel} ")
                 series.appendData(DataPoint((i + 1).toDouble(), getLevelIndex(assessmentList!!.get(i).learningLevel).toDouble()), true, 5)
                 i++
             }
+
             series.setAnimated(true)
             graphView!!.addSeries(series)
             graphView!!.title = "Literacy Level Vs. Time of Current Assessments"

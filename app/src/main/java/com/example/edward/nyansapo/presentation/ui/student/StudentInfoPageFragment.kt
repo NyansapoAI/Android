@@ -25,7 +25,7 @@ import java.util.*
 
 class StudentInfoPageFragment : Fragment(R.layout.activity_student_info_page) {
 
-             private  val TAG="StudentInfoPageFragment"
+private val TAG = "StudentInfoPageFragment"
 
     lateinit var binding: ActivityStudentInfoPageBinding
     lateinit var adapter: StudentAssessmentAdapter
@@ -156,9 +156,9 @@ class StudentInfoPageFragment : Fragment(R.layout.activity_student_info_page) {
                 .setLifecycleOwner(this).build()
 
 
-        adapter = StudentAssessmentAdapter(requireActivity(), firestoreRecyclerOptions, {
+        adapter = StudentAssessmentAdapter(requireActivity(), firestoreRecyclerOptions) {
             onAssmentClicked(it)
-        })
+        }
         recyclerview.setLayoutManager(LinearLayoutManager(requireContext()))
         recyclerview.setAdapter(adapter)
 
@@ -178,7 +178,7 @@ class StudentInfoPageFragment : Fragment(R.layout.activity_student_info_page) {
     }
 
     fun onAssmentClicked(assessment: Assessment) {
-        Log.d(TAG, "onAssmentClicked: ")
+        Log.d(TAG, "onAssmentClicked: $assessment")
 
         requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container, IndividualStudentPageFragment()).addToBackStack(null).commit()
 
@@ -228,6 +228,11 @@ class StudentInfoPageFragment : Fragment(R.layout.activity_student_info_page) {
 
     private fun setUpToolbar() {
         binding.toolbar.root.inflateMenu(R.menu.student_menu)
+
+        //setting up name of students
+        val fullname = "${studentDocumentSnapshot!!.toObject(Student::class.java)!!.firstname}  ${studentDocumentSnapshot!!.toObject(Student::class.java)!!.lastname}"
+        binding.toolbar.root.title = fullname
+
         binding.toolbar.root.setOnMenuItemClickListener { item ->
 
             when (item.itemId) {

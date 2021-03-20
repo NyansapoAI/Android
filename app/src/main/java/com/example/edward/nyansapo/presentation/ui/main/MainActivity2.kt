@@ -9,6 +9,7 @@ import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.databinding.ActivityMain2Binding
 import com.example.edward.nyansapo.presentation.ui.activities.ActivitiesFragment
 import com.example.edward.nyansapo.presentation.ui.assessment.AssessmentFragment
+import com.example.edward.nyansapo.presentation.ui.data_analytics.DataAnalyticsFragment
 import com.example.edward.nyansapo.presentation.ui.home.HomePageFragment
 import com.example.edward.nyansapo.presentation.ui.learning_level.LearningLevelFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -59,19 +60,14 @@ class MainActivity2 : AppCompatActivity() {
                 Log.d(TAG, "assessment clicked: ")
                 supportFragmentManager.beginTransaction().replace(R.id.container, AssessmentFragment()).commit()
             }
-            /*
-            R.id.action_grouping ->{
-                binding.viewpager.setCurrentItem(9)
-                setTitle("Learning Level")
+
+
+            R.id.action_patterns -> {
+                Log.d(TAG, "patterns clicked: ")
+                supportFragmentManager.beginTransaction().replace(R.id.container, DataAnalyticsFragment()).commit()
+
             }
-
-
-            R.id.action_patterns ->{
-                binding.viewpager.setCurrentItem(10)
-                setTitle("Data Analytics")
-
-            }*/
-         }
+        }
         true
     }
 

@@ -77,10 +77,7 @@ class LearningLevelAdapter(fragment: LearningLevelFragment, options: FirestoreRe
 
     inner class ViewHolder(val binding: ItemStudentBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        /*    init {
-                setOnClickListeners(this, bindingAdapterPosition)
-            }
-    */
+
     }
 
 
