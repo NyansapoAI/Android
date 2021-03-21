@@ -4,14 +4,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.View
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -28,8 +25,8 @@ class word_assessment : AppCompatActivity() {
 
     private val TAG = "word_assessment"
 
-    var words: String? = null
-    lateinit var word: Array<String>
+
+    lateinit var wordList: Array<String>
     var error_count = 0
     var word_count = 0
     var words_tried = 0
@@ -49,13 +46,7 @@ class word_assessment : AppCompatActivity() {
     var assessment_card: Button? = null
     var change_button: Button? = null
 
-    var filename = "/dev/null"
 
-    // progress bar
-    var progressBar: ProgressBar? = null
-
-    /// Control variables or code locks
-    var mediaStarted = false
     var transcriptStarted = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,20 +60,14 @@ class word_assessment : AppCompatActivity() {
         assessment = intent.getParcelableExtra("Assessment")
         ASSESSMENT_KEY = assessment!!.assessmentKey
         assessment_content = Assessment_Content()
-        word = getWords(ASSESSMENT_KEY)
+        wordList = getWords(ASSESSMENT_KEY).map { it.trim().toLowerCase() }.toTypedArray()
 
-        //words = "Table Pen Child Fish Lion Man Tree Door";
-        //word = words.split(" ");
 
         //ui components
         record_button = findViewById(R.id.record_button)
         change_button = findViewById(R.id.change_button)
         assessment_card = findViewById(R.id.assessment_card)
 
-        // progressbar
-        progressBar = findViewById(R.id.progressBar2)
-        progressBar!!.max = 15000
-        progressBar!!.progress = 0
 
         // intialize
         error_count = 0
@@ -90,33 +75,23 @@ class word_assessment : AppCompatActivity() {
         words_tried = 0
 
         // assign first word
-        assessment_card!!.text = word[0].trim { it <= ' ' }
+        assessment_card!!.text = wordList[0]
 
         // on click listeners
-        assessment_card!!.setOnClickListener(View.OnClickListener { v -> recordStudent(v) })
-        change_button!!.setOnClickListener(View.OnClickListener {
-            //changeWord1();
-            //Toast.makeText(word_assessment.this, "Read ")
-        })
-        record_button!!.setOnClickListener(View.OnClickListener { v -> recordStudent(v) })
+        assessment_card!!.setOnClickListener { recordStudent() }
+
+        record_button!!.setOnClickListener { recordStudent() }
     }
 
     var drawable: Drawable? = null
-    fun recordStudent(v: View?) {
+    fun recordStudent() {
         if (!transcriptStarted) {
             drawable = assessment_card!!.background
-            val newDrawable = drawable!!.constantState.newDrawable().mutate()
-            //read_button.setBackgroundColor(Color.BLUE);
             val lightblue = Color.parseColor("#82b6ff") //light blue
-            //int lightblue = Color.parseColor("#8B4513");
             val lightbrown = Color.parseColor("#eecab1") // light brown
-            //int lightbrown = Color.parseColor("#7ab121"); // Green
-            //int lightbrown = Color.parseColor("#FFFF00"); // bright yellow
-            newDrawable.colorFilter = PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY)
-            assessment_card!!.background = newDrawable
+            assessment_card!!.setBackgroundColor(lightblue)
             assessment_card!!.setTextColor(lightbrown)
-            val speechAsync: SpeechAsync = SpeechAsync()
-            speechAsync.execute(v)
+            SpeechAsync().execute()
             transcriptStarted = true
         }
 
@@ -125,38 +100,41 @@ class word_assessment : AppCompatActivity() {
 
 
     fun changeWord() {
-        progressBar!!.progress = 0
+        Log.d(TAG, "changeWord: error_count:$error_count")
+
+        Log.d(TAG, "changeWord: ")
+
         if (words_tried > 4) { // if 6 has been tried
+            Log.d(TAG, "changeWord: words tried:$words_tried")
+            Log.d(TAG, "changeWord: error_count:$error_count")
             if (error_count < 2) {
+                Log.d(TAG, "changeWord:go to thank you error_count:$error_count less than 2")
+                Log.d(TAG, "changeWord: words_correct:$words_correct")
+                Log.d(TAG, "changeWord: words_wrong:$words_wrong")
+
                 goToThankYou()
             } else {
+                Log.d(TAG, "changeWord:go to letter  error_count:$error_count more than 2")
+                Log.d(TAG, "changeWord: words_correct:$words_correct")
+                Log.d(TAG, "changeWord: words_wrong:$words_wrong")
                 goToLetter()
             }
-        } else if (word_count < word.size - 1) {
+        } else if (word_count < wordList.size - 1) {
             word_count += 1 // increment sentence count
             words_tried += 1
-            assessment_card!!.text = word[word_count].trim { it <= ' ' }
+            assessment_card!!.text = wordList[word_count]
+
+            Log.d(TAG, "changeWord: words_correct:$words_correct")
+            Log.d(TAG, "changeWord: words_wrong:$words_wrong")
+
+            Log.d(TAG, "changeWord: word_count:$word_count number of words:${wordList.size - 1}")
         } else {
             word_count = 0 // dont know why
         }
     }
 
-    fun changeWord1() {
-        if (word_count < word.size - 1) {
-            word_count += 1 // increment sentence count
-            assessment_card!!.text = word[word_count].trim { it <= ' ' }
-        } else {
-            word_count = 0 // dont know why
-        }
-    }
 
-    fun startLetter(v: View?) {
-        //mediaPlayer.release();
-        val myIntent = Intent(baseContext, letter_assessment::class.java)
-        startActivity(myIntent)
-    }
-
-    inner class SpeechAsync : AsyncTask<View?, String?, String?>() {
+    inner class SpeechAsync : AsyncTask<Void, String?, String?>() {
         // Replace below with your own subscription key
         var speechSubscriptionKey = "1c58abdab5d74d5fa41ec8b0b4a62367"
 
@@ -172,7 +150,7 @@ class word_assessment : AppCompatActivity() {
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion)
             config!!.endpointId = endpoint
             assessment_card = findViewById(R.id.assessment_card)
-            expected_txt = assessment_card!!.text.toString()
+            expected_txt = assessment_card!!.text.toString().trim().toLowerCase()
             //assessment_card.setEnabled(false);
             //record_button.setEnabled(false);
         }
@@ -185,12 +163,12 @@ class word_assessment : AppCompatActivity() {
 
         override fun onPostExecute(textFromServer: String?) {
             super.onPostExecute(textFromServer)
+            Log.d(TAG, "onPostExecute: textFromServer:$textFromServer")
+
             assessment_card!!.background = drawable
             assessment_card!!.setTextColor(Color.BLACK)
-            if (mediaStarted) {
-                mediaStarted = false
-            }
             transcriptStarted = false
+
             if (textFromServer.equals("canceled", ignoreCase = true)) {
                 Toast.makeText(this@word_assessment, "Internet Connection Failed", Toast.LENGTH_LONG).show()
             } else if (textFromServer.equals("no match", ignoreCase = true)) {
@@ -198,32 +176,38 @@ class word_assessment : AppCompatActivity() {
             } else {
                 var textFromServerFormatted = textFromServer!!.replace(".", "")
 
+                Log.d(TAG, "onPostExecute: remove dots textFromServerFormatted :$textFromServerFormatted")
+
                 if (expected_txt.equals(textFromServerFormatted)) {
                     Log.d(TAG, "onPostExecute: word is correct expected: $expected_txt text from server: $textFromServerFormatted")
-                    words_correct += expected_txt!!.trim() + ","
-                    Log.d(TAG, "onPostExecute: correct words: $words_correct")
-
-                } else {
-                    words_wrong += expected_txt!!.trim() + ","
-                    Log.d(TAG, "onPostExecute: word is wrong expected: $expected_txt error text: $textFromServerFormatted")
+                    words_correct += expected_txt!! + ","
+                    Log.d(TAG, "onPostExecute: correct words: $words_correct ")
                     Log.d(TAG, "onPostExecute: wrong words: $words_wrong")
 
+                    Log.d(TAG, "onPostExecute: error_count: $error_count")
+
+
+                } else {
+                    words_wrong += expected_txt!! + ","
+                    Log.d(TAG, "onPostExecute: word is wrong expected_text: $expected_txt :textFromServerFormatted: $textFromServerFormatted")
+                    Log.d(TAG, "onPostExecute: wrong words: $words_wrong")
+                    Log.d(TAG, "onPostExecute: correct words: $words_correct ")
                     error_count += 1
+
+                    Log.d(TAG, "onPostExecute: error_count: $error_count")
                 }
                 changeWord()
             }
             reco!!.close()
         }
 
-        override fun doInBackground(vararg p0: View?): String? {
+        override fun doInBackground(vararg p0: Void): String? {
             try {
-                view = p0[0]
                 reco = SpeechRecognizer(config)
                 var result: SpeechRecognitionResult? = null
                 val task = reco!!.recognizeOnceAsync()!!
 
-                // Note: this will block the UI thread, so eventually, you want to
-                //        register for the event (see full samples)
+
                 try {
                     result = task.get()
                 } catch (e: ExecutionException) {
@@ -251,7 +235,6 @@ class word_assessment : AppCompatActivity() {
 
     fun goToLetter() {
         val myIntent = Intent(baseContext, letter_assessment::class.java)
-
         val map = mapOf("wordsWrong" to words_wrong, "wordsCorrect" to words_correct)
         showProgress(true)
         assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {

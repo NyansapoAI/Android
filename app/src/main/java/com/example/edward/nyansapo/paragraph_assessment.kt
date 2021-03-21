@@ -5,14 +5,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.View
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -23,13 +20,8 @@ import java.util.concurrent.ExecutionException
 
 class paragraph_assessment : AppCompatActivity() {
 
-    companion object {
-        //audio stuff
-        private  const val TAG="paragraph_assessment"
+    private val TAG = "paragraph_assessment"
 
-        private var mEMA = 0.0
-        private const val EMA_FILTER = 0.6
-    }
 
     var paragraphButton: Button? = null
     var changeButton: Button? = null
@@ -52,11 +44,9 @@ class paragraph_assessment : AppCompatActivity() {
     // media
     var filename = "/dev/null"
 
-    // progress bar
-    var progressBar: ProgressBar? = null
 
     /// Control variables or code locks
-    var mediaStarted = false
+
     var transcriptStarted = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,8 +69,10 @@ class paragraph_assessment : AppCompatActivity() {
         }
 
 
-        sentences = paragraph!!.split("[.]".toRegex()).toTypedArray().filter { line->
-            line.trim().isNotBlank()
+        sentences = paragraph!!.split(".").map {
+            it.trim()
+        }.filter { line ->
+            line.isNotBlank()
         }.toTypedArray()
 
         paragraphButton = findViewById(R.id.paragraph1)
@@ -91,59 +83,41 @@ class paragraph_assessment : AppCompatActivity() {
 
         //changeButton.setEnabled(false);
 
-        // progressbar
-        progressBar = findViewById(R.id.progressBar2)
-        progressBar!!.setMax(15000)
-        progressBar!!.setProgress(0)
-        error_count = 0
-        sentence_count = 0
-        tries = 0
-        paragraphButton!!.setText(sentences[0].trim { it <= ' ' })
-        changeButton = findViewById(R.id.change_button)
-        changeButton!!.setOnClickListener(View.OnClickListener { //changeSentence();
-            Toast.makeText(this@paragraph_assessment, "Can't Change Sentence", Toast.LENGTH_SHORT).show()
-        })
+        paragraphButton!!.setText(sentences[0])
 
         record_button = findViewById(R.id.record_button)
-        record_button!!.setOnClickListener(View.OnClickListener { v -> recordStudent(v) })
-        paragraphButton!!.setOnClickListener(View.OnClickListener { view -> recordStudent(view) })
+        record_button!!.setOnClickListener { recordStudent() }
+        paragraphButton!!.setOnClickListener { recordStudent() }
     }
 
     var drawable: Drawable? = null
-    fun recordStudent(v: View?) {
-        //mediaPlayer.release();
+    fun recordStudent() {
         if (!transcriptStarted) {
             drawable = paragraphButton!!.background
-            val newDrawable = drawable!!.getConstantState().newDrawable().mutate()
-            //read_button.setBackgroundColor(Color.BLUE);
-            //int lightblue = Color.parseColor("#82b6ff"); light blue
-            val lightblue = Color.parseColor("#8B4513")
 
-            //int lightbrown = Color.parseColor("#eecab1"); // light brown
-            //int lightbrown = Color.parseColor("#7ab121"); // Green
-            val lightbrown = Color.parseColor("#FFFF00") // bright yellow
-            newDrawable.colorFilter = PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY)
-            paragraphButton!!.background = newDrawable
+            val lightblue = Color.parseColor("#8B4513") //color of paragraph button
+
+
+            val lightbrown = Color.parseColor("#FFFF00")// color of text in paragraph button
+            paragraphButton!!.setBackgroundColor(lightblue)
             paragraphButton!!.setTextColor(lightbrown)
-            val speechAsync: SpeechAsync = SpeechAsync()
-            speechAsync.execute(v)
+            SpeechAsync().execute()
             transcriptStarted = true
         }
 
     }
 
     fun changeSentence() {
+        Log.d(TAG, "changeSentence: ")
+        Log.d(TAG, "changeSentence: paragraph_words_wrong:$paragraph_words_wrong")
 
-
-
-        Log.d(TAG, "changeSentence: ${sentences.toString()}")
-        progressBar!!.progress = 0
-        //Toast.makeText(this, Integer.toString(error_count) , Toast.LENGTH_LONG).show();
         tries = 0 // everytime a sentence is changed tries go to one
         if (sentence_count < sentences.size - 1) {
             sentence_count += 1 // increment sentence count
-            paragraphButton!!.text = sentences[sentence_count].trim { it <= ' ' }
-        } else { // move a level
+            paragraphButton!!.text = sentences[sentence_count]
+            Log.d(TAG, "changeSentence: sentence_count:$sentence_count sentence_size: ${sentences.size - 1}")
+
+        } else { // move to another  level //only if we have finished reading all the paragraph containing 4 sentences
             if (error_count > 3) {
                 goToWord()
             } else {
@@ -153,26 +127,22 @@ class paragraph_assessment : AppCompatActivity() {
     }
 
 
-
-    inner class SpeechAsync : AsyncTask<View?, String?, String?>() {
-        // Replace below with your own subscription key
+    inner class SpeechAsync : AsyncTask<Void, String?, String?>() {
         var speechSubscriptionKey = "1c58abdab5d74d5fa41ec8b0b4a62367"
 
-        // Replace with your own subscription key and region identifier from here: https://aka.ms/speech/sdkregion
         var serviceRegion = "eastus"
         var endpoint = "275310be-2c21-4131-9609-22733b4e0c04"
         var config: SpeechConfig? = null
         var reco: SpeechRecognizer? = null
-        var view: View? = null
+
         lateinit var expected_txt: String
         override fun onPreExecute() {
             super.onPreExecute()
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion)
             config!!.setEndpointId(endpoint)
             paragraphButton = findViewById(R.id.paragraph1)
-            expected_txt = paragraphButton!!.getText().toString().toLowerCase()'['
-            //paragraphButton.setEnabled(false);
-            //record_button.setEnabled(false);
+            expected_txt = paragraphButton!!.getText().toString().toLowerCase()
+
         }
 
 
@@ -183,12 +153,14 @@ class paragraph_assessment : AppCompatActivity() {
 
         override fun onPostExecute(textFromServer: String?) {
             super.onPostExecute(textFromServer)
+            Log.d(TAG, "onPostExecute: received textFromServer: $textFromServer")
             paragraphButton!!.background = drawable
             paragraphButton!!.setTextColor(Color.BLACK)
-            if (mediaStarted) {
-                mediaStarted = false
-            }
+
+
             transcriptStarted = false
+
+
             if (textFromServer.equals("canceled", ignoreCase = true)) {
                 Toast.makeText(this@paragraph_assessment, "Internet Connection Failed", Toast.LENGTH_LONG).show()
             } else if (textFromServer.equals("no match", ignoreCase = true)) {
@@ -197,47 +169,49 @@ class paragraph_assessment : AppCompatActivity() {
                 /////////////////////////////////////////
 
                 var textFromServerFormatted = textFromServer?.replace(".", "")!!
-                Log.d(TAG, "onPostExecute:removed dot : $textFromServerFormatted")
+                Log.d(TAG, "onPostExecute:removed dot textFromServerFormatted : $textFromServerFormatted")
 
                 var listOfTxtFromServer = textFromServerFormatted.split(" ").map {
                     it.trim()
-                }!!
-                Log.d(TAG, "onPostExecute: split: $listOfTxtFromServer")
+                }.filter {
+                    it.isNotBlank()
+                }
 
-                val expectedTextList = expected_txt!!.split(" ").map {
-                    it.trim()
-                }!!
+
+                Log.d(TAG, "onPostExecute: textFromServer Split to list listOfTxtFromServer: $listOfTxtFromServer")
+
+
                 val expectedTextListDummy = expected_txt.split(" ").filter {
-                    !it.isBlank()
+                    it.isNotBlank()
                 }.map {
                     it.trim()
-                }!!
+                }
+                Log.d(TAG, "onPostExecute: list of words expected expectedTextListDummy: $expectedTextListDummy")
                 (expectedTextListDummy as ArrayList).removeAll(listOfTxtFromServer)
                 val countErrorFromSentence = expectedTextListDummy.size
                 Log.d(TAG, "onPostExecute: expectedTextListDummy $expectedTextListDummy")
                 Log.d(TAG, "onPostExecute: number of words got wrong: $countErrorFromSentence")
+                Log.d(TAG, "onPostExecute: words got wrong are:$expectedTextListDummy")
 
-                var error_txt: String = ""
+                var error_txt = ""
                 expectedTextListDummy.forEach {
                     error_txt += it + ","
+                    Log.d(TAG, "onPostExecute: error_text:$error_txt")
 
                 }
 
-                /////////////////////////////////////////
-
-                Log.d(TAG, "onPostExecute: expected text: $expected_txt : text from server: $textFromServer : transcribed fake text: $error_txt")
 
                 if (countErrorFromSentence > 2 || listOfTxtFromServer.size < 2) {
-                    Log.d(TAG, "onPostExecute: count error sentence: $countErrorFromSentence and list of text from server ${listOfTxtFromServer.size}")
+                    Log.d(TAG, "onPostExecute: number of words got wrong: $countErrorFromSentence and number of words retrieved from server ${listOfTxtFromServer.size}")
                     if (tries < 1) {
-                        tries++ // incremnent tries
-                        Toast.makeText(view!!.context, "Try Again!", Toast.LENGTH_LONG).show()
+                        tries++
+                        Toast.makeText(paragraphButton!!.context, "Try Again!", Toast.LENGTH_LONG).show()
                     } else {
                         error_count += countErrorFromSentence
                         if (countErrorFromSentence != 0) { // if no erro
                             //words_correct += ","+expected_txt.trim();
                             paragraph_words_wrong += error_txt.trim()
-                            Log.d(TAG, "onPostExecute: paragraph_words_wrong: $paragraph_words_wrong")
+                            Log.d(TAG, "onPostExecute: paragraph_words_wrong: $paragraph_words_wrong ")
                         }
 
 
@@ -260,9 +234,8 @@ class paragraph_assessment : AppCompatActivity() {
             reco!!.close()
         }
 
-        override fun doInBackground(vararg p0: View?): String? {
+        override fun doInBackground(vararg void: Void): String? {
             try {
-                view = p0[0]
                 reco = SpeechRecognizer(config)
                 var result: SpeechRecognitionResult? = null
                 val task = reco!!.recognizeOnceAsync()!!
@@ -278,10 +251,6 @@ class paragraph_assessment : AppCompatActivity() {
                 }
                 assert(result != null)
                 if (result!!.reason == ResultReason.RecognizedSpeech) {
-                    val properties = result.properties
-                    val property = properties.getProperty(PropertyId.SpeechServiceResponse_JsonResult)
-
-                    //Toast.makeText(paragraph_assessment.this, property, Toast.LENGTH_LONG).show();
                     return result.text.toLowerCase()
                 } else if (result.reason == ResultReason.NoMatch) {
                     return "no match"

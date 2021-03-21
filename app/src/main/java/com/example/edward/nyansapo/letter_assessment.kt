@@ -5,14 +5,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.View
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -23,20 +20,19 @@ import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer
+import kotlinx.android.synthetic.main.activity_index.*
 import java.util.concurrent.ExecutionException
 
 class letter_assessment : AppCompatActivity() {
 
     private val TAG = "letter_assessment"
 
-    var letters: String? = null
-    lateinit var letter: Array<String>
+    lateinit var letterList: Array<String>
 
     // intialize
     var error_count = 0
     var letter_count = 0
     var letters_tried = 0
-    var speechAsync: SpeechAsync? = null
 
     // assessment content
     var assessment_content: Assessment_Content? = null
@@ -50,111 +46,79 @@ class letter_assessment : AppCompatActivity() {
     // UI
     var record_button: Button? = null
     var assessment_card: Button? = null
-    var change_button: Button? = null
 
-    // media
-    var filename = "/dev/null"
 
-    // progress bar
-    var progressBar: ProgressBar? = null
-
-    /// Control variables or code locks
-    var mediaStarted = false
     var transcriptStarted = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_letter_assessment)
         initProgressBar()
-        //mediaPlayer = MediaPlayer.create(getBaseContext(), R.raw.letter);
-        //mediaPlayer.start();
-
-        // will replace later
         Toast.makeText(this, "Click on the Record Button to read or click on change to change the prompt", Toast.LENGTH_LONG).show()
         val intent = intent
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment = intent.getParcelableExtra("Assessment")
         ASSESSMENT_KEY = assessment!!.assessmentKey
         assessment_content = Assessment_Content()
-        letter = getLetters(ASSESSMENT_KEY)
+        letterList = getLetters(ASSESSMENT_KEY).map { it.trim().toLowerCase() }.toTypedArray()
 
-        //letters = "a d f g k i l m o v q r s t b j";
-        //letter = letters.split(" ");
 
         //ui components
         record_button = findViewById(R.id.record_button)
-        change_button = findViewById(R.id.change_button)
         assessment_card = findViewById(R.id.assessment_card)
         error_count = 0
         letter_count = 0
         letters_tried = 0
 
-        // progressbar
-        progressBar = findViewById(R.id.progressBar2)
-        progressBar!!.setMax(15000)
-        progressBar!!.setProgress(0)
 
         // assign first word
-        assessment_card!!.setText(letter[0].trim { it <= ' ' })
+        assessment_card!!.setText(letterList[0].trim { it <= ' ' })
 
         // on click listeners
-        assessment_card!!.setOnClickListener(View.OnClickListener { v -> recordStudent(v) })
-        change_button!!.setOnClickListener(View.OnClickListener {
-            //changeLetter();
-        })
-        record_button!!.setOnClickListener(View.OnClickListener { v -> recordStudent(v) })
+        assessment_card!!.setOnClickListener { recordStudent() }
+
+        record_button!!.setOnClickListener { recordStudent() }
     }
 
     fun changeLetter() {
         Log.d(TAG, "changeLetter: changing letter")
+
+        Log.d(TAG, "changeLetter: error_count:$error_count")
+
+        Log.d(TAG, "changeLetter: letter_correct: $letters_correct")
+        Log.d(TAG, "changeLetter: letter_wrong: $letters_wrong")
         if (letters_tried > 4) {
+            Log.d(TAG, "changeLetter: letters tried greater than 4")
             goToThankYou()
-        } else if (letter_count < letter.size - 1) {
+        } else if (letter_count < letterList.size - 1) {
             letter_count += 1 // increment sentence count
             letters_tried += 1
-            assessment_card!!.text = letter[letter_count].trim { it <= ' ' }
+            assessment_card!!.text = letterList[letter_count]
         } else {
             letter_count = 0 // dont know why
         }
+        Log.d(TAG, "changeLetter: current letter:$letters_tried :total number of letters :${letterList.size - 1}")
     }
 
 
-
-    fun changeLetter1() {
-        if (letter_count < letter.size - 1) {
-            letter_count += 1 // increment sentence count
-            assessment_card!!.text = letter[letter_count].trim { it <= ' ' }
-        } else {
-            letter_count = 0 // dont know why
-        }
-    }
 
     var drawable: Drawable? = null
-    fun recordStudent(v: View?) {
-        // mediaPlayer.release();
+    fun recordStudent() {
         if (!transcriptStarted) {
             drawable = assessment_card!!.background
-            val newDrawable = drawable!!.getConstantState().newDrawable().mutate()
-            //read_button.setBackgroundColor(Color.BLUE);
-            //int lightblue = Color.parseColor("#82b6ff"); light blue
+
             val lightblue = Color.parseColor("#8B4513")
 
-            //int lightbrown = Color.parseColor("#eecab1"); // light brown
             val lightbrown = Color.parseColor("#7ab121") // Green
-            //int lightbrown = Color.parseColor("#FFFF00"); // bright yellow
-            newDrawable.colorFilter = PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY)
-            assessment_card!!.background = newDrawable
+            assessment_card!!.setBackgroundColor(lightblue)
             assessment_card!!.setTextColor(lightbrown)
-            val speechAsync: SpeechAsync = SpeechAsync()
-            speechAsync.execute(v)
+
+            SpeechAsync().execute()
             transcriptStarted = true
         }
-        //SpeechAsync speechAsync = new SpeechAsync();
-        //speechAsync.execute(v);
 
     }
 
-    inner class SpeechAsync : AsyncTask<View?, String?, String?>() {
-        // Replace below with your own subscription key
+    inner class SpeechAsync : AsyncTask<Void, String?, String?>() {
         var speechSubscriptionKey = "1c58abdab5d74d5fa41ec8b0b4a62367"
 
         // Replace with your own subscription key and region identifier from here: https://aka.ms/speech/sdkregion
@@ -169,7 +133,7 @@ class letter_assessment : AppCompatActivity() {
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion)
             config!!.setEndpointId(endpoint)
             assessment_card = findViewById(R.id.assessment_card)
-            expected_txt = assessment_card!!.getText().toString()
+            expected_txt = assessment_card!!.getText().toString().toLowerCase().trim()
             //assessment_card.setEnabled(false);
             //record_button.setEnabled(false);
         }
@@ -182,28 +146,26 @@ class letter_assessment : AppCompatActivity() {
 
         override fun onPostExecute(textFromServer: String?) {
             super.onPostExecute(textFromServer)
+            Log.d(TAG, "onPostExecute: textFromServer:$textFromServer")
             assessment_card!!.background = drawable
             assessment_card!!.setTextColor(Color.BLACK)
-            if (mediaStarted) {
-                mediaStarted = false
-            }
+
             transcriptStarted = false
 
-            Log.d(TAG, "onPostExecute: text from server original: $textFromServer")
-            if (textFromServer.equals("canceled", ignoreCase = true)) {
+             if (textFromServer.equals("canceled", ignoreCase = true)) {
                 Toast.makeText(this@letter_assessment, "Internet Connection Failed", Toast.LENGTH_LONG).show()
             } else if (textFromServer.equals("no match", ignoreCase = true)) {
                 Toast.makeText(this@letter_assessment, "Try Again Please", Toast.LENGTH_LONG).show()
             } else {
                 val textFromServerFormatted = textFromServer!!.replace(".", "")
+                Log.d(TAG, "onPostExecute: textFromServerFormatted by removing dots: $textFromServerFormatted")
                 if (expected_txt.equals(textFromServerFormatted)) {
                     Log.d(TAG, "onPostExecute: letter is correct expected text: $expected_txt found: $textFromServerFormatted")
-                    letters_correct += expected_txt!!.trim() + ","
+                    letters_correct += expected_txt + ","
                     Log.d(TAG, "onPostExecute: letters_correct: $letters_correct")
                 } else {
                     Log.d(TAG, "onPostExecute: letter is wrong expected text: $expected_txt found: $textFromServerFormatted")
-
-                    letters_wrong += expected_txt!!.trim() + ","
+                    letters_wrong += expected_txt + ","
                     Log.d(TAG, "onPostExecute: letters_wrong :$letters_wrong")
                     error_count += 1
                 }
@@ -212,9 +174,8 @@ class letter_assessment : AppCompatActivity() {
             reco!!.close()
         }
 
-        override fun doInBackground(vararg p0: View?): String? {
+        override fun doInBackground(vararg p0: Void): String? {
             try {
-                view = p0[0]
                 reco = SpeechRecognizer(config)
                 var result: SpeechRecognitionResult? = null
                 val task = reco!!.recognizeOnceAsync()!!

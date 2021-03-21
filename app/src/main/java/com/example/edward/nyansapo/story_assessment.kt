@@ -5,14 +5,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.View
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -29,14 +26,13 @@ class story_assessment : AppCompatActivity() {
 
     private val TAG = "story_assessment"
 
-     var record_student: Button? = null
     var next_button: Button? = null
     var story_view: Button? = null
     var back_button: Button? = null
 
     //TextView story_view;
-    var story: String? = null
-    lateinit var sentences: Array<String>
+    var storyString: String? = null
+    lateinit var sentenceList: Array<String>
     var sentence_count = 0
 
     // assessment content
@@ -49,108 +45,91 @@ class story_assessment : AppCompatActivity() {
     var error_count = 0
     var tries = 0
 
-    // media
 
-    // progress bar
-    var progressBar2: ProgressBar? = null
-
-    /// Control variables or code locks
-    var mediaStarted = false
     var transcriptStarted = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_story_assessment)
         initProgressBar()
-        //mediaPlayer = MediaPlayer.create(getBaseContext(), R.raw.story);
-        //mediaPlayer.start();
-        val intent = intent
-        //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment = intent.getParcelableExtra("Assessment")
+
         ASSESSMENT_KEY = assessment!!.assessmentKey
+
         assessment_content = Assessment_Content()
-        story = getStory(ASSESSMENT_KEY)
+
+        storyString = getStory(ASSESSMENT_KEY)
         back_button = findViewById(R.id.back_button)
         next_button = findViewById(R.id.next_button)
         story_view = findViewById(R.id.story_view)
 
-        // progressbar
-        progressBar2 = findViewById(R.id.progressBar2)
-        progressBar2!!.setMax(15000)
-        progressBar2!!.setProgress(0)
-
 
         //story = "One day the wind chased the sun away. It told the sun to go to another sky. The sun did not go. The next morning, the wind ran after the sun. The sun fell down and started crying. That is how it began to rain. We clapped for Juma.\\n\\n One day the wind chased the sun away. It told the sun to go to another sky. The sun did not go. The next morning, the wind ran after the sun. The sun fell down and started crying. That is how it began to rain. We clapped for Juma.";
-        sentences = story!!.split("[.]".toRegex()).toTypedArray().filter { line ->
-            line.trim().isNotBlank()
-        }.toTypedArray()
+        sentenceList = storyString!!.split(".")
+                .filter { line ->
+                    line.isNotBlank()
+                }.map {
+                    it.trim()
+                }.toTypedArray()
 
         sentence_count = 0
         tries = 0
-        //story_view.setText(story);
-        story_view!!.setText(sentences[sentence_count])
-        back_button!!.setEnabled(false)
-        next_button!!.setOnClickListener(View.OnClickListener { v ->
-            nextParagraph(v)
-            //Toast.makeText(story_assessment.this, "Click on the text to read", Toast.LENGTH_LONG).show();
-        })
-        back_button!!.setOnClickListener(View.OnClickListener { v -> backParagraph(v) })
-        story_view!!.setOnClickListener(View.OnClickListener { v -> recordStudent(v) })
-
-        // story reading evaluation code
         error_count = 0
+
+        story_view!!.setText(sentenceList[sentence_count])
+        back_button!!.setEnabled(false)
+        next_button!!.setOnClickListener {
+            nextParagraph()
+        }
+        back_button!!.setOnClickListener { backParagraph() }
+        story_view!!.setOnClickListener { recordStudent() }
+
+
     }
 
     var drawable: Drawable? = null
-    fun recordStudent(v: View?) {
+    fun recordStudent() {
         if (!transcriptStarted) {
             drawable = story_view!!.background
-            val newDrawable = drawable!!.getConstantState().newDrawable().mutate()
-            //read_button.setBackgroundColor(Color.BLUE);
             val lightblue = Color.parseColor("#82b6ff") //light blue
-            //int lightblue = Color.parseColor("#8B4513");
             val lightbrown = Color.parseColor("#eecab1") // light brown
-            //int lightbrown = Color.parseColor("#7ab121"); // Green
-            //int lightbrown = Color.parseColor("#FFFF00"); // bright yellow
-            newDrawable.colorFilter = PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY)
-            story_view!!.background = newDrawable
+            story_view!!.setBackgroundColor(lightblue)
             story_view!!.setTextColor(lightbrown)
-            val speechAsync: SpeechAsync = SpeechAsync()
-            speechAsync.execute(v)
+            SpeechAsync().execute()
             transcriptStarted = true
         }
 
     }
 
-    fun backParagraph(v: View?) {
+    fun backParagraph() {
         if (sentence_count == 0) {
             back_button!!.isEnabled = false
         } else {
             sentence_count--
-            story_view!!.text = sentences[sentence_count]
+            story_view!!.text = sentenceList[sentence_count]
             if (sentence_count == 0) back_button!!.isEnabled = false
         }
     }
 
-    fun nextParagraph(v: View?) {
+    fun nextParagraph() {
+        Log.d(TAG, "nextParagraph: ")
+        Log.d(TAG, "nextParagraph: story_words_wrong:$story_words_wrong")
+        Log.d(TAG, "nextParagraph: error_count:$error_count")
+
+
         tries = 0
-        progressBar2!!.progress = 0
-        if (sentence_count < sentences.size - 1) {
-            //back_button.setEnabled(true);
-            sentence_count += 1 // increment sentence count
-            story_view!!.text = sentences[sentence_count].trim { it <= ' ' }
+        if (sentence_count < sentenceList.size - 1) {
+            sentence_count += 1
+            story_view!!.text = sentenceList[sentence_count].trim { it <= ' ' }
         } else {
             Log.d(TAG, "nextParagraph: ")
-            //assessment.setSTORY_WORDS_WRONG(story_words_wrong); // set story wrong words
             val temp = assessment!!.storyWordsWrong
-
-
             val map = mapOf("storyWordsWrong" to temp + story_words_wrong)
 
             showProgress(true)
-           assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
+            assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
 
-               assessment!!.storyWordsWrong = temp + story_words_wrong
+                assessment!!.storyWordsWrong = temp + story_words_wrong
                 val myIntent = Intent(baseContext, storyQuestions::class.java)
                 myIntent.putExtra("Assessment", assessment)
                 myIntent.putExtra("question", "0")
@@ -163,7 +142,7 @@ class story_assessment : AppCompatActivity() {
     }
 
 
-    private inner class SpeechAsync : AsyncTask<View?, String?, String?>() {
+    private inner class SpeechAsync : AsyncTask<Void, String?, String?>() {
         // Replace below with your own subscription key
         var speechSubscriptionKey = "1c58abdab5d74d5fa41ec8b0b4a62367"
 
@@ -172,15 +151,13 @@ class story_assessment : AppCompatActivity() {
         var endpoint = "275310be-2c21-4131-9609-22733b4e0c04"
         var config: SpeechConfig? = null
         var reco: SpeechRecognizer? = null
-        var view: View? = null
         var expected_txt: String? = null
         override fun onPreExecute() {
             super.onPreExecute()
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion)
             config!!.setEndpointId(endpoint)
             story_view = findViewById(R.id.story_view)
-            expected_txt = story_view!!.getText().toString()
-            //story_view.setEnabled(false);
+            expected_txt = story_view!!.getText().toString().toLowerCase().trim()
         }
 
 
@@ -189,67 +166,85 @@ class story_assessment : AppCompatActivity() {
             reco!!.close()
         }
 
-        override fun onPostExecute(s: String?) {
-            super.onPostExecute(s)
+        override fun onPostExecute(textFromServer: String?) {
+            super.onPostExecute(textFromServer)
             story_view!!.background = drawable
             story_view!!.setTextColor(Color.BLACK)
 
-            //story_view.setEnabled(true);
-            if (mediaStarted) {
-
-                mediaStarted = false
-            }
             transcriptStarted = false
-            if (s.equals("canceled", ignoreCase = true)) {
+
+            if (textFromServer.equals("canceled", ignoreCase = true)) {
                 Toast.makeText(this@story_assessment, "Internet Connection Failed", Toast.LENGTH_LONG).show()
-            } else if (s.equals("no match", ignoreCase = true)) {
+            } else if (textFromServer.equals("no match", ignoreCase = true)) {
                 Toast.makeText(this@story_assessment, "Try Again", Toast.LENGTH_LONG).show()
             } else {
-                val error_txt = SpeechRecognition.compareTranscript(expected_txt, s)
-                //error_count += SpeechRecognition.countError(error_txt);
-                //Toast.makeText(view.getContext(), "transcript: \'"+ s +"\'" , Toast.LENGTH_LONG).show();
-                //Toast.makeText(view.getContext(), "expected: \'"+expected_txt+"\'" , Toast.LENGTH_LONG).show();
-                //Toast.makeText(view.getContext(), error_txt , Toast.LENGTH_LONG).show();
-                //Toast.makeText(view.getContext(), Integer.toString(error_count) , Toast.LENGTH_LONG).show();
+
+
+                var textFromServerFormatted = textFromServer?.replace(".", "")!!
+                Log.d(TAG, "onPostExecute:removed dot textFromServerFormatted : $textFromServerFormatted")
+
+                var listOfTxtFromServer = textFromServerFormatted.split(" ").map {
+                    it.trim()
+                }.filter {
+                    it.isNotBlank()
+                }
+
+
+                Log.d(TAG, "onPostExecute: textFromServer Split to list listOfTxtFromServer: $listOfTxtFromServer")
+
+
+                val expectedTextListDummy = expected_txt!!.split(" ").filter {
+                    it.isNotBlank()
+                }.map {
+                    it.trim()
+                }
+                Log.d(TAG, "onPostExecute: list of words expected expectedTextListDummy: $expectedTextListDummy")
+                (expectedTextListDummy as ArrayList).removeAll(listOfTxtFromServer)
+                val countErrorFromSentence = expectedTextListDummy.size
+                Log.d(TAG, "onPostExecute: words got wrong expectedTextListDummy: $expectedTextListDummy")
+                Log.d(TAG, "onPostExecute: number of words got wrong: $countErrorFromSentence")
+
+                var error_txt = ""
+                expectedTextListDummy.forEach {
+                    error_txt += it + ","
+                    Log.d(TAG, "onPostExecute: error_text:$error_txt")
+
+                }
+
+
                 if (error_count > 12) { // if error less than 8 move to story level
                     goToThankYou()
-                } else if (s !== "no match") {
-                    if (SpeechRecognition.countError(error_txt) > 3 || s!!.split(" ".toRegex()).toTypedArray().size < 2) {
+                } else {
+                    if (countErrorFromSentence > 3 || listOfTxtFromServer.size < 2) {
                         if (tries < 1) {
                             tries++ // incremnent tries
-                            Toast.makeText(view!!.context, "Try Again!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(story_view!!.context, "Try Again!", Toast.LENGTH_LONG).show()
                         } else {
-                            //story_words_wrong += error_txt.trim() + ",";
-                            if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
-                                //words_correct += ","+expected_txt.trim();
-                                story_words_wrong += error_txt.trim { it <= ' ' } + ","
+
+                            if (countErrorFromSentence != 0) {
+                                story_words_wrong += error_txt
                             }
-                            error_count += SpeechRecognition.countError(error_txt)
-                            nextParagraph(view)
+                            error_count += countErrorFromSentence
+                            nextParagraph()
                         }
                     } else {
-                        //story_words_wrong += error_txt.trim() + ",";
-                        if (SpeechRecognition.countError(error_txt) != 0) { // if no erro
-                            //words_correct += ","+expected_txt.trim();
-                            story_words_wrong += error_txt.trim { it <= ' ' } + ","
+                        if (countErrorFromSentence != 0) { //there is an error
+                            story_words_wrong += error_txt
                         }
-                        error_count += SpeechRecognition.countError(error_txt)
-                        nextParagraph(view)
+                        error_count += countErrorFromSentence
+                        nextParagraph()
                     }
                 }
             }
             reco!!.close()
         }
 
-        override fun doInBackground(vararg p0: View?): String? {
+        override fun doInBackground(vararg p0: Void): String? {
             try {
-                view = p0[0]
+
                 reco = SpeechRecognizer(config)
                 var result: SpeechRecognitionResult? = null
                 val task = reco!!.recognizeOnceAsync()!!
-
-                // Note: this will block the UI thread, so eventually, you want to
-                //        register for the event (see full samples)
                 try {
                     result = task.get()
                 } catch (e: ExecutionException) {
@@ -259,7 +254,7 @@ class story_assessment : AppCompatActivity() {
                 }
                 assert(result != null)
                 if (result!!.reason == ResultReason.RecognizedSpeech) {
-                    return result.text
+                    return result.text.toLowerCase().trim()
                 } else if (result.reason == ResultReason.NoMatch) {
                     return "no match"
                 } else if (result.reason == ResultReason.Canceled) {

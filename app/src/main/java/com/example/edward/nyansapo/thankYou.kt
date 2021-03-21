@@ -1,11 +1,11 @@
 package com.example.edward.nyansapo
 
-import android.app.ActivityOptions
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +20,9 @@ import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 
 class thankYou : AppCompatActivity() {
+
+             private  val TAG="thankYou"
+
     var done_button: Button? = null
     var assessment: Assessment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +42,7 @@ class thankYou : AppCompatActivity() {
         Toast.makeText(this, assessment.getSTORY_ANS_Q2(), Toast.LENGTH_SHORT).show();
         Toast.makeText(this,assessment.getLEARNING_LEVEL(),Toast.LENGTH_SHORT).show();*/
         storeAssessment() // will do on another thread
-        done_button!!.setOnClickListener(View.OnClickListener { v -> nextAssessment(v) })
+        done_button!!.setOnClickListener { v -> nextAssessment(v) }
     }
 
     fun nextAssessment(w: View?) {
@@ -54,23 +57,18 @@ class thankYou : AppCompatActivity() {
         // first update in cloud and if successful update locally
         //dataBaseHandler.addAssessment(assessment);
         postAssessment(assessment)
-        updateLearning_level(assessment)
+        updateStudentLearningLevel(assessment)
         //dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
     }
 
-    fun updateLearning_level(assessment: Assessment?) {
+    fun updateStudentLearningLevel(assessment: Assessment?) {
 
-        val map = mapOf("learningLevel" to assessment?.learningLevel)
         showProgress(true)
-       assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
-            //updating student learning level
-            val map2 = mapOf("learningLevel" to assessment?.learningLevel)
-            studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
-                showProgress(false)
+        val map2 = mapOf("learningLevel" to assessment?.learningLevel)
+        studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+            showProgress(false)
 
-            }
-
-
+            Log.d(TAG, "updateStudentLearningLevel: finished updating student learning level")
         }
 
     }
@@ -79,6 +77,7 @@ class thankYou : AppCompatActivity() {
         showProgress(true)
      assessmentDocumentSnapshot!!.reference.set(assessment!!).addOnSuccessListener {
             showProgress(false)
+         Log.d(TAG, "postAssessment: finished updating assessment")
         }
     }
 
