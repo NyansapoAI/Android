@@ -101,12 +101,17 @@ class story_assessment : AppCompatActivity() {
     }
 
     fun backParagraph() {
+        Log.d(TAG, "backParagraph: back button clicked")
         if (sentence_count == 0) {
             back_button!!.isEnabled = false
         } else {
             sentence_count--
             story_view!!.text = sentenceList[sentence_count]
-            if (sentence_count == 0) back_button!!.isEnabled = false
+            Log.d(TAG, "backParagraph: back button clicked current sentence: $sentence_count :size :${sentenceList.size - 1}")
+
+            if (sentence_count == 0) {
+                back_button!!.isEnabled = false
+            }
         }
     }
 
@@ -119,23 +124,22 @@ class story_assessment : AppCompatActivity() {
         tries = 0
         if (sentence_count < sentenceList.size - 1) {
             sentence_count += 1
-            story_view!!.text = sentenceList[sentence_count].trim { it <= ' ' }
+            story_view!!.text = sentenceList[sentence_count]
+            Log.d(TAG, "nextParagraph: current sentence:$sentence_count: :size:${sentenceList.size - 1}")
         } else {
-            Log.d(TAG, "nextParagraph: ")
-            val temp = assessment!!.storyWordsWrong
-            val map = mapOf("storyWordsWrong" to temp + story_words_wrong)
+            Log.d(TAG, "nextParagraph: current sentence:$sentence_count: :size:${sentenceList.size - 1}")
+
+            val map = mapOf("storyWordsWrong" to story_words_wrong)
 
             showProgress(true)
             assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
-
-                assessment!!.storyWordsWrong = temp + story_words_wrong
+                Log.d(TAG, "nextParagraph: going to answer questions screen")
+                assessment!!.storyWordsWrong = story_words_wrong
                 val myIntent = Intent(baseContext, storyQuestions::class.java)
                 myIntent.putExtra("Assessment", assessment)
                 myIntent.putExtra("question", "0")
                 startActivity(myIntent)
-
-
             }
 
         }
@@ -157,7 +161,7 @@ class story_assessment : AppCompatActivity() {
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion)
             config!!.setEndpointId(endpoint)
             story_view = findViewById(R.id.story_view)
-            expected_txt = story_view!!.getText().toString().toLowerCase().trim()
+            expected_txt = story_view!!.getText().toString().toLowerCase().trim().replace(".", "")!!.replace(",", "")
         }
 
 
@@ -168,6 +172,8 @@ class story_assessment : AppCompatActivity() {
 
         override fun onPostExecute(textFromServer: String?) {
             super.onPostExecute(textFromServer)
+            Log.d(TAG, "onPostExecute: textFromServer:$textFromServer")
+
             story_view!!.background = drawable
             story_view!!.setTextColor(Color.BLACK)
 
@@ -180,8 +186,8 @@ class story_assessment : AppCompatActivity() {
             } else {
 
 
-                var textFromServerFormatted = textFromServer?.replace(".", "")!!
-                Log.d(TAG, "onPostExecute:removed dot textFromServerFormatted : $textFromServerFormatted")
+                var textFromServerFormatted = textFromServer?.replace(".", "")!!.replace(",", "")
+                Log.d(TAG, "onPostExecute:removed dot and commas textFromServerFormatted : $textFromServerFormatted")
 
                 var listOfTxtFromServer = textFromServerFormatted.split(" ").map {
                     it.trim()
@@ -203,7 +209,6 @@ class story_assessment : AppCompatActivity() {
                 val countErrorFromSentence = expectedTextListDummy.size
                 Log.d(TAG, "onPostExecute: words got wrong expectedTextListDummy: $expectedTextListDummy")
                 Log.d(TAG, "onPostExecute: number of words got wrong: $countErrorFromSentence")
-
                 var error_txt = ""
                 expectedTextListDummy.forEach {
                     error_txt += it + ","
@@ -211,10 +216,13 @@ class story_assessment : AppCompatActivity() {
 
                 }
 
+                val dummy_error_count = error_count + countErrorFromSentence
 
-                if (error_count > 12) { // if error less than 8 move to story level
+                if (dummy_error_count > 12) { // if error less than 8 move to story level
+                    Log.d(TAG, "onPostExecute: error_count is greater than 12 :dummy_error_count:$dummy_error_count")
                     goToThankYou()
                 } else {
+                    Log.d(TAG, "onPostExecute: error_count is 12 or lesser:dummy_error_count:$dummy_error_count")
                     if (countErrorFromSentence > 3 || listOfTxtFromServer.size < 2) {
                         if (tries < 1) {
                             tries++ // incremnent tries
@@ -223,15 +231,18 @@ class story_assessment : AppCompatActivity() {
 
                             if (countErrorFromSentence != 0) {
                                 story_words_wrong += error_txt
+                                error_count += countErrorFromSentence
+
                             }
-                            error_count += countErrorFromSentence
                             nextParagraph()
                         }
                     } else {
                         if (countErrorFromSentence != 0) { //there is an error
                             story_words_wrong += error_txt
+                            error_count += countErrorFromSentence
+
                         }
-                        error_count += countErrorFromSentence
+                        //    error_count += countErrorFromSentence
                         nextParagraph()
                     }
                 }

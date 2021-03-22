@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.jjoe64.graphview.DefaultLabelFormatter
+import com.jjoe64.graphview.GridLabelRenderer
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
 import es.dmoral.toasty.Toasty
@@ -38,7 +39,7 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDataAnalyticsBinding.bind(view)
-
+        setUpToolbar()
 
         getStudents { list ->
             val students = list.toObjects(Student::class.java)
@@ -66,7 +67,7 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
             graph.viewport.isYAxisBoundsManual = true
             graph.viewport.setMinY(0.0)
             graph.viewport.setMaxY((students as ArrayList<Student>).size.toDouble())
-
+            graph.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.HORIZONTAL
             graph.gridLabelRenderer.labelFormatter = object : DefaultLabelFormatter() {
                 override fun formatLabel(value: Double, isValueX: Boolean): String {
                     return if (isValueX) {
@@ -87,6 +88,11 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
         }
 
 
+    }
+
+    private fun setUpToolbar() {
+        binding.toolbar.root.inflateMenu(R.menu.overflow_menu)
+        binding.toolbar.root.title = "Patterns"
     }
 
 

@@ -53,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "onActivityResult: success sign in")
 
                 goToMainScreen()
+                finish()
 
             } else {
                 // Sign in failed
@@ -75,6 +76,7 @@ class LoginActivity : AppCompatActivity() {
     private fun goToMainScreen() {
         val intent = Intent(this, MainActivity2::class.java)
         startActivity(intent)
+        finish()
     }
 
     private fun showToast(message: String) {

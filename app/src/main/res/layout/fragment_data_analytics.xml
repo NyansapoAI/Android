@@ -10,12 +10,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
+                android:textStyle="bold"
                 android:id="@+id/totalStudentsTxtView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -55,6 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Commonly Missed Words"
+                android:textStyle="bold"
                 android:textAppearance="@android:style/TextAppearance.Large" />
 
             <LinearLayout

@@ -7,10 +7,13 @@
         android:id="@+id/searchItem"
         android:icon="@drawable/ic_search"
         android:title="search"
+        android:iconTint="@color/black"
+
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
 
-    <item
+    <item  android:iconTint="@color/black"
+
         android:id="@+id/editItem"
         android:visible="false"
         tools:visible="true"

@@ -93,9 +93,11 @@
         android:id="@+id/answer_view"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:padding="8dp"
+        tools:text="many"
         android:background="@drawable/bg_round"
         android:lines="3"
-        android:text=""
+
         app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintEnd_toEndOf="@+id/question_button"
         app:layout_constraintStart_toStartOf="@+id/question_button"

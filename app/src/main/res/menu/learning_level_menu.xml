@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/searchItem"
-        android:icon="@drawable/ic_search"
+        android:icon="@drawable/ic_search"  android:iconTint="@color/black"
+
         android:title="search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
     <item android:id="@+id/addStudentItem"
-        android:title="Add Student"
+        android:title="Add Student"  android:iconTint="@color/black"
+
         android:icon="@drawable/ic_add_person"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/dummyItem"

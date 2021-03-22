@@ -74,6 +74,13 @@ private val TAG = "StudentInfoPageFragment"
             binding.graphview.apply {
                 addSeries(series)
                 title = "Literacy Level Vs. Time of Current Assessments"
+
+                /*      viewport.isScalable=true
+                      viewport.isScrollable=true
+                      viewport.setScalableY(true)
+                      gridLabelRenderer.horizontalAxisTitle="Time of Current Assessments"
+                      gridLabelRenderer.verticalAxisTitle="Literacy Level"
+                      */
                 viewport.isXAxisBoundsManual = true
                 viewport.setMinX(1.0)
                 viewport.setMaxX(5.0)
@@ -202,7 +209,8 @@ private val TAG = "StudentInfoPageFragment"
 
         FirebaseUtils.getAssessmentsFromStudent(programId, groupId, campId, studentDocumentSnapshot!!.id) {
             if (it.isEmpty) {
-                openDialog()
+                //  openDialog()
+                //no assessments available
             } else {
                 //this list is need by graphview
                 assessmentList = it.toObjects(Assessment::class.java) as ArrayList<Assessment>
@@ -215,15 +223,21 @@ private val TAG = "StudentInfoPageFragment"
     }
 
     fun openDialog() {
-        val addDialog = AddDialog()
-        addDialog.setInfo("Add Assessment", "Do you want to add an Assessment?")
-        addDialog.show(requireActivity().supportFragmentManager, "Add Assessment")
-    }
+
+        FirebaseUtils.showAlertDialog(requireContext(),R.drawable.button_first,"Add Assessment","Do you want to add an Assessment?",{
+            addAssessment()
+        }){
+            //no clicked
+
+        }
+
+       }
 
     private fun addAssessment() {
 
-        val selectAssessmentModal = SelectAssessmentModal()
-        selectAssessmentModal.show(requireActivity().supportFragmentManager, "Select Assessment Modal")
+        Log.d(TAG, "addAssessment: btn clicked ")
+        val intent = Intent(requireContext(), SelectAssessment::class.java)
+        startActivity(intent)
     }
 
     private fun setUpToolbar() {

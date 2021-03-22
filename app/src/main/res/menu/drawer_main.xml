@@ -4,12 +4,14 @@
     <item
         android:id="@+id/instructorNameItem"
         android:title="Instructor Name" />
-    <item
-        android:id="@+id/countyItem"
-        android:title="County" />
-    <item
-        android:id="@+id/schoolNameItem"
-        android:title="School Name" />
+    <!--
+        <item
+            android:id="@+id/countyItem"
+            android:title="County" />
+        <item
+            android:id="@+id/schoolNameItem"
+            android:title="School Name" />
+    -->
 
 
     <group android:id="@+id/group1">
@@ -25,16 +27,19 @@
             android:title="Camp Number" />
     </group>
     <group android:id="@+id/group2">
-        <item
-           android:icon="@drawable/ic_export_data"
+        <item  android:iconTint="@color/black"
+
+            android:icon="@drawable/ic_export_data"
             android:id="@+id/exportDataItem"
             android:title="Export Data" />
 
-        <item
+        <item  android:iconTint="@color/black"
+
             android:icon="@drawable/ic_settings"
             android:id="@+id/settingsItem"
             android:title="Settings" />
-        <item
+        <item  android:iconTint="@color/black"
+
             android:icon="@drawable/ic_tutorial"
             android:id="@+id/tutorialItem"
             android:title="Tutorial" />

@@ -335,49 +335,6 @@ public class SpeechRecognition {
         return error_txt;
 
 
-
-        /*String error_txt;
-        error_txt = "";
-
-        transcript_txt = removeDuplicates(transcript_txt);
-
-        // convert string into a string array of the words
-        String[] expected_words = expected_txt.split(" ");
-        String[] transcript_words = transcript_txt.split(" ");
-
-        // clean up array and remove . and ,
-        for(int i=0;i<expected_words.length;i++){
-            if(expected_words[i].contains("."))
-                expected_words[i] = expected_words[i].substring(0,(expected_words[i].length()-1));
-            if(expected_words[i].contains(",")) expected_words[i] = expected_words[i].substring(0,(expected_words[i].length()-1));
-        }
-
-        for(int i=0;i<transcript_words.length;i++){
-            if(transcript_words[i].contains("."))
-                transcript_words[i] = transcript_words[i].substring(0,(transcript_words[i].length()-1));
-            if(transcript_words[i].contains(",")) transcript_words[i] = transcript_words[i].substring(0,(transcript_words[i].length()-1));
-        }
-
-        // find errors
-        if(transcript_words.length < expected_words.length) {
-            for (int i = 0; i < transcript_words.length; i++) {
-                if (transcript_words[i].compareToIgnoreCase(expected_words[i]) == 0) continue;
-                else {
-                    error_txt += expected_words[i] + " ";
-                }
-            }
-        }else{
-            for (int i = 0; i < expected_words.length; i++) {
-                if (transcript_words[i].compareToIgnoreCase(expected_words[i]) == 0) continue;
-                else {
-                    error_txt += expected_words[i] + " ";
-                }
-            }
-        }
-
-        return error_txt;*/
-
-
     }
 
 

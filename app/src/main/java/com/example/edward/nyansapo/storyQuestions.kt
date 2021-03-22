@@ -5,11 +5,14 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.edward.nyansapo.presentation.utils.answerQ1
+import com.example.edward.nyansapo.presentation.utils.answerQ2
 import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
@@ -17,21 +20,20 @@ import com.microsoft.cognitiveservices.speech.SpeechRecognizer
 import java.util.concurrent.ExecutionException
 
 class storyQuestions : AppCompatActivity() {
+    private val TAG = "storyQuestions"
     private val Q_1: String = "q1"
     private val Q_2: String = "q2"
-    private val SHARED_PREF = "shared_pref"
     var mediaPlayer: MediaPlayer? = null
     var question_button: Button? = null
     var submit_button: Button? = null
     var story_button: Button? = null
     var record_button: Button? = null
     var answer_view: TextView? = null
-    var story_view: TextView? = null
-    var story_txt: String? = null
+    var storyString: String? = null
     var question_count = 0
-    lateinit var questions: Array<String>
+    lateinit var questionsList: Array<String>
 
-    // assessment content
+
     var assessment_content: Assessment_Content? = null
   lateinit  var assessment: Assessment
     var ASSESSMENT_KEY: String? = null
@@ -47,87 +49,95 @@ class storyQuestions : AppCompatActivity() {
         submit_button = findViewById(R.id.submit_button)
         answer_view = findViewById(R.id.answer_view)
         record_button = findViewById(R.id.record_button)
-        //story_view = findViewById(R.id.story_view);
-        val intent = intent
-        //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment = intent.getParcelableExtra("Assessment")
         ASSESSMENT_KEY = assessment.assessmentKey
+        Log.d(TAG, "onCreate: assessmentKey:$ASSESSMENT_KEY")
         assessment_content = Assessment_Content()
-        questions = getQuestions(ASSESSMENT_KEY)
+        questionsList = getQuestions(ASSESSMENT_KEY)
         story_score = 0
         nyansapoNLP = NyansapoNLP()
         question_count = intent.getStringExtra("question").toInt()
-        question_button!!.setText(questions[question_count])
-        //mediaPlayer = MediaPlayer.create(getBaseContext(), R.raw.questions);
-        //mediaPlayer.start();
+        question_button!!.setText(questionsList[question_count])
 
-        story_txt = getStory(ASSESSMENT_KEY)
-        //story_view.setText(story_txt);
-        submit_button!!.setOnClickListener(View.OnClickListener { v -> submitAnswer(v) })
-        question_button!!.setOnClickListener(View.OnClickListener { //recordStudent(v);
+        storyString = getStory(ASSESSMENT_KEY)
+        submit_button!!.setOnClickListener { submitAnswer() }
+        question_button!!.setOnClickListener {
             Toast.makeText(this@storyQuestions, "Click on the mic icon to answer question", Toast.LENGTH_LONG).show()
-        })
-        record_button!!.setOnClickListener(View.OnClickListener { v -> recordStudent(v) })
-        story_button!!.setOnClickListener(View.OnClickListener { //recordStudent(v);
+        }
+        record_button!!.setOnClickListener { recordStudent() }
+        story_button!!.setOnClickListener {
+            Log.d(TAG, "onCreate: going to question story")
 
-            saveStudentAnswer()
             val myIntent = Intent(baseContext, QuestionStory::class.java)
             myIntent.putExtra("Assessment", assessment)
-            myIntent.putExtra("story", story_txt)
+            myIntent.putExtra("story", storyString)
             myIntent.putExtra("question", Integer.toString(question_count))
             startActivity(myIntent)
-        })
+        }
     }
 
     private fun saveStudentAnswer() {
-        val share_pref = getSharedPreferences(SHARED_PREF, MODE_PRIVATE)
+        Log.d(TAG, "saveStudentAnswer: saving students answer")
 
         when (question_count) {
             0 -> {
-                share_pref.edit().putString(Q_1, answer_view?.text.toString()).commit()
+                answerQ1 = answer_view?.text.toString()
 
             }
             1 -> {
-                share_pref.edit().putString(Q_2, answer_view?.text.toString()).commit()
+                answerQ2 = answer_view?.text.toString()
 
             }
         }
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: ")
+        saveStudentAnswer()
 
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "onResume: ")
 
-        val share_pref = getSharedPreferences(SHARED_PREF, MODE_PRIVATE)
+        setDefaultValuesForAnswers()
+
+    }
+
+    private fun setDefaultValuesForAnswers() {
+        Log.d(TAG, "setDefaultValuesForAnswers: ")
         when (question_count) {
             0 -> {
-                answer_view?.text = share_pref.getString(Q_1, null)
+                answer_view?.text = answerQ1
 
             }
             1 -> {
-                answer_view?.text = share_pref.getString(Q_2, null)
+                answer_view?.text = answerQ2
 
             }
         }
 
     }
 
-    fun submitAnswer(v: View?) {
+    fun submitAnswer() {
         when (question_count) {
             0 -> {
                 question_count++
-                question_button!!.text = questions[question_count]
+                question_button!!.text = questionsList[question_count]
                 assessment!!.storyAnswerQ1 = answer_view!!.text.toString()
-                //Toast.makeText(this, answer_view.getText().toString(), Toast.LENGTH_LONG).show();
                 answer_view!!.text = ""
             }
             1 -> {
 
-                //Toast.makeText(this, answer_view.getText().toString(), Toast.LENGTH_LONG).show();
                 assessment!!.storyAnswerQ2 = answer_view!!.text.toString()
                 if (checkAns(assessment) > 0) { // one or all is correct
                     assessment!!.learningLevel = "ABOVE"
+                    Log.d(TAG, "submitAnswer: ABOVE")
                 } else {
+                    Log.d(TAG, "submitAnswer: STORY")
                     assessment!!.learningLevel = "STORY"
                 }
                 val myIntent = Intent(baseContext, thankYou::class.java)
@@ -140,10 +150,18 @@ class storyQuestions : AppCompatActivity() {
     }
 
     fun checkAns(assessment: Assessment?): Int {
-        story_score = nyansapoNLP!!.evaluateAnswer(assessment!!.storyAnswerQ1, assessment.assessmentKey.toInt(), 0) +
-                nyansapoNLP!!.evaluateAnswer(assessment.storyAnswerQ2, assessment.assessmentKey.toInt(), 1)
+        Log.d(TAG, "checkAns: ")
+        Log.d(TAG, "checkAns: asssessmentKey:${assessment!!.assessmentKey}")
 
-        //Toast.makeText(this, Integer.toString(story_score), Toast.LENGTH_LONG).show();
+
+        val score1 = nyansapoNLP!!.evaluateAnswer(assessment!!.storyAnswerQ1, assessment.assessmentKey.toInt(), 0)
+        val score2 = nyansapoNLP!!.evaluateAnswer(assessment.storyAnswerQ2, assessment.assessmentKey.toInt(), 1)
+        story_score = score1 + score2
+        Log.d(TAG, "checkAns:score1:$score1 ")
+        Log.d(TAG, "checkAns:score2:$score2 ")
+        Log.d(TAG, "checkAns:story_score:$story_score ")
+
+
         return if (story_score > 110) {
             1
         } else {
@@ -151,12 +169,12 @@ class storyQuestions : AppCompatActivity() {
         }
     }
 
-    fun recordStudent(v: View?) {
-        val speechAsync: SpeechAsync = SpeechAsync()
-        speechAsync.execute(v)
+    fun recordStudent() {
+
+        SpeechAsync().execute()
     }
 
-    private inner class SpeechAsync : AsyncTask<View?, String?, String?>() {
+    inner class SpeechAsync : AsyncTask<Void?, String?, String?>() {
         // Replace below with your own subscription key
         var speechSubscriptionKey = "1c58abdab5d74d5fa41ec8b0b4a62367"
 
@@ -166,7 +184,6 @@ class storyQuestions : AppCompatActivity() {
         var config: SpeechConfig? = null
         var reco: SpeechRecognizer? = null
         var view: View? = null
-        var expected_txt: String? = null
         override fun onPreExecute() {
             super.onPreExecute()
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion)
@@ -176,35 +193,35 @@ class storyQuestions : AppCompatActivity() {
         }
 
 
-
         override fun onCancelled(s: String?) {
             super.onCancelled(s)
             reco!!.close()
         }
 
-        override fun onPostExecute(s: String?) {
-            super.onPostExecute(s)
-            if (s.equals("canceled", ignoreCase = true)) {
+        override fun onPostExecute(textFromServer: String?) {
+            super.onPostExecute(textFromServer)
+            Log.d(TAG, "onPostExecute: textFromServer:$textFromServer")
+
+            if (textFromServer.equals("canceled", ignoreCase = true)) {
                 Toast.makeText(this@storyQuestions, "Internet Connection Failed", Toast.LENGTH_LONG).show()
-            } else if (s.equals("no match", ignoreCase = true)) {
+            } else if (textFromServer.equals("no match", ignoreCase = true)) {
                 Toast.makeText(this@storyQuestions, "Try Again", Toast.LENGTH_LONG).show()
             } else {
-                answer_view!!.text = s
+                answer_view!!.text = textFromServer
             }
             question_button!!.isEnabled = true
             record_button!!.isEnabled = true
             reco!!.close()
         }
 
-        override fun doInBackground(vararg p0: View?): String? {
+
+        override fun doInBackground(vararg p0: Void?): String? {
             try {
-                view = p0[0]
+
                 reco = SpeechRecognizer(config)
                 var result: SpeechRecognitionResult? = null
                 val task = reco!!.recognizeOnceAsync()!!
 
-                // Note: this will block the UI thread, so eventually, you want to
-                //        register for the event (see full samples)
                 try {
                     result = task.get()
                 } catch (e: ExecutionException) {
@@ -214,7 +231,7 @@ class storyQuestions : AppCompatActivity() {
                 }
                 assert(result != null)
                 if (result!!.reason == ResultReason.RecognizedSpeech) {
-                    return result.text
+                    return result.text.toLowerCase().trim()
                 } else if (result.reason == ResultReason.NoMatch) {
                     return "no match"
                 } else if (result.reason == ResultReason.Canceled) {
@@ -223,7 +240,8 @@ class storyQuestions : AppCompatActivity() {
             } catch (err: Error) {
                 return " Error" + err.message
             }
-            return null  }
+            return null
+        }
     }
 
 

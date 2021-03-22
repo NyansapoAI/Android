@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
@@ -31,35 +32,24 @@ class thankYou : AppCompatActivity() {
         initProgressBar()
         done_button = findViewById(R.id.done_button)
 
-        //Intent intent = getIntent();
-        //assessment = intent.getParcelableExtra("Assessment");
         val intent = intent
-        //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
         assessment = intent.getParcelableExtra("Assessment")
-        /*
-        Toast.makeText(this, assessment.getPARAGRAPH_WORDS_WRONG(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, assessment.getSTORY_ANS_Q1(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, assessment.getSTORY_ANS_Q2(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,assessment.getLEARNING_LEVEL(),Toast.LENGTH_SHORT).show();*/
-        storeAssessment() // will do on another thread
+        Log.d(TAG, "onCreate: assessment:$assessment")
         done_button!!.setOnClickListener { v -> nextAssessment(v) }
-    }
+
+        storeAssessment()
+     }
 
     fun nextAssessment(w: View?) {
-        val myIntent = Intent(baseContext, home::class.java)
-        //Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
+        val myIntent = Intent(baseContext, MainActivity2::class.java)
         startActivity(myIntent)
     }
 
     fun storeAssessment() {
-        //dataBaseHandler.addAssessment(assessment);
-
-        // first update in cloud and if successful update locally
-        //dataBaseHandler.addAssessment(assessment);
+        Log.d(TAG, "storeAssessment: ")
         postAssessment(assessment)
         updateStudentLearningLevel(assessment)
-        //dataBaseHandler.updateStudentLevel(assessment.getSTUDENT_ID(), assessment.getLEARNING_LEVEL());
-    }
+     }
 
     fun updateStudentLearningLevel(assessment: Assessment?) {
 
@@ -78,6 +68,11 @@ class thankYou : AppCompatActivity() {
      assessmentDocumentSnapshot!!.reference.set(assessment!!).addOnSuccessListener {
             showProgress(false)
          Log.d(TAG, "postAssessment: finished updating assessment")
+        }
+        val map= mapOf("learningLevel" to assessment.learningLevel)
+
+        studentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
+            Log.d(TAG, "postAssessment: success updating student learning level")
         }
     }
 

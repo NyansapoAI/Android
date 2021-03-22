@@ -134,7 +134,7 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                adapter?.deleteFromDatabase(viewHolder.adapterPosition)
+                adapter?.deleteFromDatabase(viewHolder.bindingAdapterPosition)
             }
         }).attachToRecyclerView(recyclerview)
     }
@@ -146,6 +146,7 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
         binding.tabs.addTab(binding.tabs.newTab().setText("Word"))
         binding.tabs.addTab(binding.tabs.newTab().setText("Paragraph"))
         binding.tabs.addTab(binding.tabs.newTab().setText("Story"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Above"))
 
 
         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -185,15 +186,18 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
             5 -> {
                 initRecyclerViewAdapter(Learning_Level.STORY.name)
             }
+            6 -> {
+                initRecyclerViewAdapter(Learning_Level.ABOVE.name)
+            }
         }
 
 
     }
 
     private fun setUpToolbar() {
-        binding.toolbar.inflateMenu(R.menu.learning_level_menu)
-        binding.toolbar.setTitle("Grouping")
-        binding.toolbar.setOnMenuItemClickListener { menuItem ->
+        binding.toolbar.root.inflateMenu(R.menu.learning_level_menu)
+        binding.toolbar.root.setTitle("Grouping")
+        binding.toolbar.root.setOnMenuItemClickListener { menuItem ->
 
             when (menuItem.itemId) {
                 R.id.addStudentItem -> {

@@ -12,6 +12,8 @@
         <item name="windowNoTitle">true</item>
 
 
+        <item name="android:textColorSecondary">@color/black</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">

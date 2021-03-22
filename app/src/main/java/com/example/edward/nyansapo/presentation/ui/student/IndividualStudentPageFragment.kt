@@ -55,8 +55,9 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
             "BEGINNER" -> setDataForBeginnerLevel()
             "LETTER" -> setDataForLetterLevel()
             "WORD" -> setDataForWordLevel()
-            "STORY" -> setDataForStoryLevel()
             "PARAGRAPH" -> setDataForParagraphLevel()
+            "STORY" -> setDataForStoryLevel()
+            //    "ABOVE" -> setDataForAboveLevel()
 
 
         }

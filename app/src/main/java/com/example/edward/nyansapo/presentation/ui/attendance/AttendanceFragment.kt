@@ -47,6 +47,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated: ")
         binding = ActivityAttendanceBinding.bind(view)
         sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         setUpToolBar()
@@ -196,6 +197,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
 
     private fun setUpToolBar() {
         binding.toolbar.root.inflateMenu(R.menu.attendance_menu)
+        binding.toolbar.root.title="Attendance"
         binding.toolbar.root.setOnMenuItemClickListener { item ->
 
             when (item.itemId) {
@@ -324,11 +326,18 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
 
     private fun setCurrentDate() {
         Log.d(TAG, "setCurrentDate: setting current date")
-        FirebaseUtils.getCurrentDate {
 
-            currentDateServer = it!!
 
-            binding.dateBtn.text = SimpleDateFormat.getDateTimeInstance().format(it)
+        FirebaseUtils.getCurrentDate { date ->
+            Log.d(TAG, "setCurrentDate: date retrieved:${date}")
+            if (date == null) {
+                currentDateServer = Calendar.getInstance().time
+                binding.dateBtn.text = SimpleDateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
+
+            } else {
+                currentDateServer = date
+                binding.dateBtn.text = SimpleDateFormat.getDateTimeInstance().format(date)
+            }
 
 
         }

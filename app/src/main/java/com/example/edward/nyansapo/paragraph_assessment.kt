@@ -24,8 +24,7 @@ class paragraph_assessment : AppCompatActivity() {
 
 
     var paragraphButton: Button? = null
-    var changeButton: Button? = null
-    var record_button: Button? = null
+     var record_button: Button? = null
     var paragraph: String? = null
     lateinit var sentences: Array<String>
     var error_count = 0
@@ -141,7 +140,7 @@ class paragraph_assessment : AppCompatActivity() {
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion)
             config!!.setEndpointId(endpoint)
             paragraphButton = findViewById(R.id.paragraph1)
-            expected_txt = paragraphButton!!.getText().toString().toLowerCase()
+            expected_txt = paragraphButton!!.getText().toString().toLowerCase().replace(".", "")!!.replace(",", "")
 
         }
 
@@ -168,8 +167,8 @@ class paragraph_assessment : AppCompatActivity() {
             } else {
                 /////////////////////////////////////////
 
-                var textFromServerFormatted = textFromServer?.replace(".", "")!!
-                Log.d(TAG, "onPostExecute:removed dot textFromServerFormatted : $textFromServerFormatted")
+                var textFromServerFormatted = textFromServer?.replace(".", "")!!.replace(",", "")!!
+                Log.d(TAG, "onPostExecute:removed dot and comma textFromServerFormatted : $textFromServerFormatted")
 
                 var listOfTxtFromServer = textFromServerFormatted.split(" ").map {
                     it.trim()

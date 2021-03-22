@@ -148,6 +148,7 @@
             <Button
                 android:id="@+id/create_button"
                 android:layout_width="match_parent"
+                android:background="@android:color/holo_blue_dark"
                 android:layout_height="wrap_content"
                 android:text="Register"
                 app:layout_constraintBottom_toBottomOf="parent"

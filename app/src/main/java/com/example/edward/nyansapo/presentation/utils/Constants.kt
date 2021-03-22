@@ -12,21 +12,23 @@ class Constants {
         const val KEY_CAMP_ID = "camp_id"
 
         //used for getting positions
-        const val PROGRAM_POS="program_pos"
-        const val GROUP_POS="group_pos"
-        const val CAMP_POS="camp_pos"
+        const val PROGRAM_POS = "program_pos"
+        const val GROUP_POS = "group_pos"
+        const val CAMP_POS = "camp_pos"
     }
 
 }
 
-    var studentDocumentSnapshot: DocumentSnapshot?=null
-    var assessmentDocumentSnapshot: DocumentSnapshot?=null
+var studentDocumentSnapshot: DocumentSnapshot? = null
+var assessmentDocumentSnapshot: DocumentSnapshot? = null
+
+var answerQ1: String? = null
+var answerQ2: String? = null
 
 
-    val COLLECTION_ROOT="nyansapo"
-    val COLLECTION_STUDENTS="students"
-    val COLLECTION_ASSESSMENTS="assessments"
+val COLLECTION_ROOT = "nyansapo"
+val COLLECTION_STUDENTS = "students"
+val COLLECTION_ASSESSMENTS = "assessments"
 
 
-
-    val STUDENT_ID="studentId"
+val STUDENT_ID = "studentId"

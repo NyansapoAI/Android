@@ -46,13 +46,9 @@ class registerStudent : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
-        toolbar.setNavigationOnClickListener { //startActivity(new Intent(getApplicationContext(), home.class));
-            val myIntent = Intent(baseContext, home::class.java)
-            startActivity(myIntent)
-        }
 
-        // get intent
-        val intent = this.intent
+
+
         instructor_id = FirebaseUtils.instructor_id
         //Toast.makeText(getApplicationContext(), instructor_id , Toast.LENGTH_SHORT).show();
 
@@ -141,11 +137,12 @@ class registerStudent : AppCompatActivity() {
                 studentDocumentSnapshot = it
 
                 Log.d(TAG, "postStudent: ${it.toObject(Student::class.java)!!.id}")
-                val myIntent = Intent(baseContext, student_assessments::class.java)
+                onBackPressed()
+               /* val myIntent = Intent(baseContext, student_assessments::class.java)
                 myIntent.putExtra(STUDENT_ID, it.id)
                 myIntent.putExtra("instructor_id", instructor_id)
                 myIntent.putExtra("student_activity", student)
-                startActivity(myIntent)
+                startActivity(myIntent)*/
             }
 
         }

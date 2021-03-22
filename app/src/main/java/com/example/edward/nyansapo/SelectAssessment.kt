@@ -31,9 +31,8 @@ class SelectAssessment : AppCompatActivity(), View.OnClickListener {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
-        toolbar.setNavigationOnClickListener { //startActivity(new Intent(getApplicationContext(), home.class));
-            val intent = Intent(this@SelectAssessment, student_assessments::class.java)
-             startActivity(intent)
+        toolbar.setNavigationOnClickListener {
+          onBackPressed()
         }
 
 

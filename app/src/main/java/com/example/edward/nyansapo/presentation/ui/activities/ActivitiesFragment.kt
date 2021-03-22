@@ -25,42 +25,51 @@ class ActivitiesFragment : Fragment(R.layout.fragment_activities) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: ")
-
         binding = FragmentActivitiesBinding.bind(view)
-       // (activity as AppCompatActivity?)!!.setSupportActionBar(binding.toolbar)
-      //  setHasOptionsMenu(true)
+
+
         setUpToolbar()
-        setUpViewPager()
+        setUpTabLayout()
+        setOnClickListeners()
+
     }
 
-    private fun setUpToolbar() {
-
-        binding.toolbar.inflateMenu(R.menu.overflow_menu)
-        binding.toolbar.setTitle("Activities")
-        toolbar.setOnMenuItemClickListener { item->
-
-
-            true
+    private fun setOnClickListeners() {
+        binding.fob.setOnClickListener {
 
         }
     }
 
+    private fun setUpToolbar() {
+        binding.toolbar.root.inflateMenu(R.menu.search_menu)
+        binding.toolbar.root.setTitle("Activities")
+        binding.toolbar.root.setOnMenuItemClickListener { menuItem ->
 
-    fun setUpViewPager() {
-
-        binding.viewpager!!.adapter = ViewPagerAdapter(requireActivity(), TabEnum.ACTIVITES) //Attach the adapter with our ViewPagerAdapter passing the host activity
-        TabLayoutMediator(tabs, binding.viewpager!!
-        ) { tab, position ->
-
-            tab.text = (binding.viewpager!!.adapter as ViewPagerAdapter?)!!.mFragmentNames[position] //Sets tabs names as mentioned in ViewPagerAdapter fragmentNames array, this can be implemented in many different ways.
+            when (menuItem.itemId) {
+                R.id.addStudentItem -> {
+                   //
+                }
+            }
 
 
-        }.attach()
+            true
+        }
+    }
+    private fun setUpTabLayout() {
+        binding.tabs.addTab(binding.tabs.newTab().setText("UNKNOWN"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Beginner"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Letter"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Word"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Paragraph"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Story"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("Above"))
+
 
         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val position = tab?.position
                 Log.d(TAG, "onTabSelected: $position")
+            //    thisTabPositionHasBeenSelected(position!!)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -70,7 +79,7 @@ class ActivitiesFragment : Fragment(R.layout.fragment_activities) {
             }
         })
 
-    }
 
+    }
 
 }

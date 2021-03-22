@@ -26,7 +26,8 @@ class StudentAssessmentAdapter(private val studentAssessments: Activity, options
 
         holder.binding.apply {
             setOnClickListeners(holder, position)
-            assessmentBtn.setText("Assessment " + Integer.toString(itemCount - position) + " :${model.learningLevel}")
+            assessmentBtn.setText("Assessment " + Integer.toString(itemCount - position))
+         //   assessmentBtn.setText("Assessment " + Integer.toString(itemCount - position) + " :${model.learningLevel}")
 
 
         }

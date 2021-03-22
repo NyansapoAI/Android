@@ -10,11 +10,14 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.databinding.FragmentHomePageBinding
 import com.example.edward.nyansapo.presentation.ui.attendance.AttendanceFragment
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -69,6 +72,9 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume: ")
+        //setting main activity toolbar to visible
+        (requireActivity() as MainActivity2).binding.root.findViewById<Toolbar>(R.id.toolbar).isVisible = true
+        (requireActivity() as MainActivity2).binding.root.findViewById<Toolbar>(R.id.toolbar).title = "Home"
     }
 
     private fun fetchProgramNames() {
@@ -218,6 +224,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
 
     }
 
+
     private fun startFetchingSpecificCamp() {
         val programID = programNames.documents.get(binding.programNameSpinner.selectedItemPosition).id
         val groupID = groupNames.documents.get(binding.groupSpinner.selectedItemPosition).id
@@ -236,15 +243,32 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
             binding.campSpinner.setAdapter(adapter)
             setDefaultCamp()
 
-
+//set Data For Drawer
+            setDataForDrawer()
         }
+    }
+
+    private fun setDataForDrawer() {
+        val menu = (requireActivity() as MainActivity2).binding.navView.menu
+        FirebaseUtils.firebaseAuth.currentUser.apply {
+            menu.findItem(R.id.instructorNameItem).title = "${this?.displayName} "
+        }
+        val programName = programNames.toObjects(Program::class.java)[binding.programNameSpinner.selectedItemPosition]
+        val groupName = groupNames.toObjects(Group::class.java)[binding.groupSpinner.selectedItemPosition]
+        val campName = campNames.toObjects(Camp::class.java)[binding.campSpinner.selectedItemPosition]
+        menu.findItem(R.id.programNameItem).title = "Program ${programName.number}"
+        menu.findItem(R.id.groupItem).title = "Group ${groupName.number}"
+        menu.findItem(R.id.campNumberItem).title = "Camp ${campName.number}"
+
+        Log.d(TAG, "setDataForDrawer: programName:$programName programName From Spinner: ${binding.programNameSpinner.selectedItem}")
+
     }
 
     private fun startFetchingSpecificGroup() {
         val programID = programNames.documents.get(binding.programNameSpinner.selectedItemPosition).id
 
-        if (programNames.size()==1){
-            Toasty.info(requireContext(),"You Only have one Program").show()
+        if (programNames.size() == 1) {
+            Toasty.info(requireContext(), "You Only have one Program").show()
 
         }
 
@@ -375,6 +399,14 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop: called")
+
+
+        //setting main activity toolbar to invisible
+        (requireActivity() as MainActivity2).binding.root.findViewById<Toolbar>(R.id.toolbar).isVisible = false
+
+
+
+
         if (this::listenerRegistrationProgram.isInitialized) {
             listenerRegistrationProgram.remove()
 
@@ -387,6 +419,25 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
             listenerRegistrationCamp.remove()
 
         }
+
+        if (!this::programNames.isInitialized || !this::groupNames.isInitialized || !this::campNames.isInitialized) {
+            Log.d(TAG, "onStop: something is not initialized")
+            return
+
+        }
+        if (programNames.isEmpty) {
+            showToast("Please First create a program")
+        }
+        if (groupNames.isEmpty) {
+            showToast("Please First create a group")
+        }
+        if (campNames.isEmpty) {
+            showToast("Please First create a camp")
+        }
+
+        updateProgramSharedPref()
+        updateGroupSharedPref()
+        updateCampSharedPref()
 
     }
 

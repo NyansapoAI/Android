@@ -1,10 +1,13 @@
 package com.example.edward.nyansapo;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
 public class NyansapoNLP {
+    private static final String TAG = "NyansapoNLP";
 
     static Hashtable<String, Integer> ans_s3_dict_1;
     static Hashtable<String, Integer> ans_s3_dict_2;
@@ -114,7 +117,11 @@ public class NyansapoNLP {
     }
 
     public int evaluateAnswer(String ans, int assessment_key, int question){
-        String[] tokens = ans.split(" ");
+    //   Log.d(TAG, "evaluateAnswer: ans:$ans :assessment_key:$asse");
+        String[] tokens = ans.split(" ");//splitting answer to list
+
+        //score 110 you passed
+
         int score = 0;
         for(String token: tokens){
             try{

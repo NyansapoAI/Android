@@ -71,10 +71,12 @@ class letter_assessment : AppCompatActivity() {
 
 
         // assign first word
-        assessment_card!!.setText(letterList[0].trim { it <= ' ' })
+        assessment_card!!.setText(letterList[0])
 
         // on click listeners
-        assessment_card!!.setOnClickListener { recordStudent() }
+        assessment_card!!.setOnClickListener {
+            recordStudent()
+        }
 
         record_button!!.setOnClickListener { recordStudent() }
     }
