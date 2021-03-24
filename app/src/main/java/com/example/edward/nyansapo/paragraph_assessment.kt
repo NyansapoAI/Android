@@ -62,8 +62,11 @@ class paragraph_assessment : AppCompatActivity() {
         paragraph = para[0]
         //Toast.makeText(this, intent.getStringExtra("paragraph"), Toast.LENGTH_LONG);
         paragraph = if (intent.getStringExtra("paragraph").equals("0", ignoreCase = true)) {
+
+          assessment!!.paragraphChoosen=0
             para[0]
         } else {
+            assessment!!.paragraphChoosen=1
             para[1]
         }
 

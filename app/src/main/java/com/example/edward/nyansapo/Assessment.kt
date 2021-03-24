@@ -15,6 +15,7 @@ data class Assessment(
         var wordsCorrect: String = "",
         var wordsWrong: String = "",
         var paragraphWordsWrong: String = "",
+        var paragraphChoosen: Int =0,
         var storyWordsWrong: String = "",
 
         var storyAnswerQ1: String = "",
@@ -25,5 +26,5 @@ data class Assessment(
         var LOCAL_ID: String = "",
         var CLOUD_ID: String = ""
 ) : Parcelable {
-    constructor() : this("", "", "", "", "", "", "", "", "", "", "", null, "", "")
+    constructor() : this("", "", "", "", "", "", "", 0,"", "", "", "", null, "", "")
 }

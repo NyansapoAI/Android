@@ -193,8 +193,7 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
 
     private fun startSettingParagraphs() {
         Log.d(TAG, "startSettingParagraphs: ")
-        val wholeParagraph = getPara(assessment.assessmentKey)[0]
-
+        val wholeParagraph = getPara(assessment.assessmentKey)[assessment.paragraphChoosen]
 
         val wordtoSpan: Spannable = SpannableString(wholeParagraph)
 
@@ -217,10 +216,18 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
 
     private fun underLineThisWord(string: String, wholeParagraph: String, wordsToSpan: Spannable) {
         Log.d(TAG, "underLineThisWord: started underlining words in paragraph/story")
-        wholeParagraph.indexOf(string, ignoreCase = true).apply {
-            val endOfString = this + string.length
-            wordsToSpan.setSpan(ForegroundColorSpan(Color.RED), this, endOfString, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        Log.d(TAG, "underLineThisWord: string::$string wholeParagraph: :$wholeParagraph")
+
+        try {
+            wholeParagraph.indexOf(string, ignoreCase = true).apply {
+                val endOfString = this + string.length
+                wordsToSpan.setSpan(ForegroundColorSpan(Color.RED), this, endOfString, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+
     }
 
     private fun startSettingWords() {
