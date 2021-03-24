@@ -13,7 +13,7 @@ class index2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_index)
 
-logoutUser()
+        logoutUser()
 
         logo.setOnClickListener { checkUser() }
          checkUser()
