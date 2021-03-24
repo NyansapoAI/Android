@@ -2,10 +2,13 @@ package com.example.edward.nyansapo
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.edward.nyansapo.presentation.ui.login.LoginActivity
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.firebase.ui.auth.AuthUI
 import kotlinx.android.synthetic.main.activity_index.*
+import java.util.*
 
 class index2 : AppCompatActivity() {
     // declare database connection
@@ -13,11 +16,8 @@ class index2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_index)
 
-        logoutUser()
 
-        logo.setOnClickListener { checkUser() }
-         checkUser()
-
+     checkIfUserIsLoggedIn()
     }
 
     private fun logoutUser() {
@@ -25,6 +25,21 @@ class index2 : AppCompatActivity() {
         AuthUI.getInstance().signOut(this).addOnSuccessListener {
 
         }
+    }
+    private fun checkIfUserIsLoggedIn() {
+
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setLogo(R.drawable.logo_wrapper)
+                            .setAvailableProviders(Arrays.asList(
+                                 //   AuthUI.IdpConfig.GoogleBuilder().build(),
+                                    AuthUI.IdpConfig.EmailBuilder().build(),
+                               //     AuthUI.IdpConfig.PhoneBuilder().build() //     new   AuthUI.IdpConfig.AnonymousBuilder().build()
+                            ))
+                            .build(),
+                    LoginActivity.RC_SIGN_IN)
+
     }
 
     private fun checkUser() {
