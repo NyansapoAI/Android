@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.edward.nyansapo.*
 import com.example.edward.nyansapo.databinding.ActivityStudentInfoPageBinding
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
@@ -75,12 +76,12 @@ private val TAG = "StudentInfoPageFragment"
                 addSeries(series)
                 title = "Literacy Level Vs. Time of Current Assessments"
 
-                /*      viewport.isScalable=true
-                      viewport.isScrollable=true
+                viewport.isScalable = true
+                viewport.isScrollable = true
                       viewport.setScalableY(true)
                       gridLabelRenderer.horizontalAxisTitle="Time of Current Assessments"
                       gridLabelRenderer.verticalAxisTitle="Literacy Level"
-                      */
+
                 viewport.isXAxisBoundsManual = true
                 viewport.setMinX(1.0)
                 viewport.setMaxX(5.0)
@@ -145,7 +146,7 @@ private val TAG = "StudentInfoPageFragment"
 
     private fun initRecyclerViewAdapter() {
 
-        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
 
         val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
         val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
@@ -153,8 +154,8 @@ private val TAG = "StudentInfoPageFragment"
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
         if (campPos == -1) {
-            Toasty.error(requireActivity(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
         }
 
 
@@ -163,10 +164,10 @@ private val TAG = "StudentInfoPageFragment"
                 .setLifecycleOwner(this).build()
 
 
-        adapter = StudentAssessmentAdapter(requireActivity(), firestoreRecyclerOptions) {
+        adapter = StudentAssessmentAdapter(MainActivity2.activityContext!!, firestoreRecyclerOptions) {
             onAssmentClicked(it)
         }
-        recyclerview.setLayoutManager(LinearLayoutManager(requireContext()))
+        recyclerview.setLayoutManager(LinearLayoutManager(MainActivity2.activityContext!!))
         recyclerview.setAdapter(adapter)
 
     }
@@ -187,15 +188,15 @@ private val TAG = "StudentInfoPageFragment"
     fun onAssmentClicked(assessment: Assessment) {
         Log.d(TAG, "onAssmentClicked: $assessment")
 
-        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container, IndividualStudentPageFragment()).addToBackStack(null).commit()
+        MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, IndividualStudentPageFragment()).addToBackStack(null).commit()
 
-        /*  val intent = Intent(requireContext(), assessment_detail::class.java)
+        /*  val intent = Intent(MainActivity2.activityContext!!, assessment_detail::class.java)
           intent.putExtra("assessment", assessment)
           startActivity(intent)*/
     }
 
     private fun checkIfDatabaseIsEmpty() {
-        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
 
         val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
         val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
@@ -203,8 +204,8 @@ private val TAG = "StudentInfoPageFragment"
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
         if (campPos == -1) {
-            Toasty.error(requireActivity(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
         }
 
         FirebaseUtils.getAssessmentsFromStudent(programId, groupId, campId, studentDocumentSnapshot!!.id) {
@@ -224,9 +225,9 @@ private val TAG = "StudentInfoPageFragment"
 
     fun openDialog() {
 
-        FirebaseUtils.showAlertDialog(requireContext(),R.drawable.button_first,"Add Assessment","Do you want to add an Assessment?",{
+        FirebaseUtils.showAlertDialog(MainActivity2.activityContext!!, R.drawable.button_first, "Add Assessment", "Do you want to add an Assessment?", {
             addAssessment()
-        }){
+        }) {
             //no clicked
 
         }
@@ -236,7 +237,7 @@ private val TAG = "StudentInfoPageFragment"
     private fun addAssessment() {
 
         Log.d(TAG, "addAssessment: btn clicked ")
-        val intent = Intent(requireContext(), SelectAssessment::class.java)
+        val intent = Intent(MainActivity2.activityContext!!, SelectAssessment::class.java)
         startActivity(intent)
     }
 
@@ -251,7 +252,7 @@ private val TAG = "StudentInfoPageFragment"
 
             when (item.itemId) {
                 R.id.settings -> {
-                    val myIntent = Intent(requireContext(), studentSettings::class.java)
+                    val myIntent = Intent(MainActivity2.activityContext!!, studentSettings::class.java)
                     startActivity(myIntent)
                     true
                 }
@@ -260,7 +261,7 @@ private val TAG = "StudentInfoPageFragment"
                     true
                 }
                 R.id.analytics -> {
-                    val intent = Intent(requireContext(), studentDetails::class.java)
+                    val intent = Intent(MainActivity2.activityContext!!, studentDetails::class.java)
                     startActivity(intent)
                     true
                 }

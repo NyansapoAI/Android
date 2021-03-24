@@ -14,6 +14,7 @@ import com.example.edward.nyansapo.Assessment_Content
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.ActivityIndividualStudentPageBinding
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import es.dmoral.toasty.Toasty
@@ -33,9 +34,18 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
         student = studentDocumentSnapshot!!.toObject(Student::class.java)!!
         assessment = assessmentDocumentSnapshot!!.toObject(Assessment::class.java)!!
         setupToolBar()
-
+        underLineHeaderTxt()
         setAssessmentInfoToUi()
 
+    }
+
+    private fun underLineHeaderTxt() {
+        binding.apply {
+            letterHeader.paint.isUnderlineText = true
+            wordHeader.paint.isUnderlineText = true
+            paragraphHeader.paint.isUnderlineText = true
+            storyHeader.paint.isUnderlineText = true
+        }
     }
 
     private fun setupToolBar() {
@@ -50,17 +60,28 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
 //first determine which level we are in
         when (assessment.learningLevel) {
             "UNKNOWN" -> {
-                Toasty.info(requireContext(), "You assessment is unknown You might have started the assessment but didnt complete", Toasty.LENGTH_LONG).show()
+                Toasty.info(MainActivity2.activityContext!!, "You assessment is unknown You might have started the assessment but didnt complete", Toasty.LENGTH_LONG).show()
             }
             "BEGINNER" -> setDataForBeginnerLevel()
             "LETTER" -> setDataForLetterLevel()
             "WORD" -> setDataForWordLevel()
             "PARAGRAPH" -> setDataForParagraphLevel()
             "STORY" -> setDataForStoryLevel()
-            //    "ABOVE" -> setDataForAboveLevel()
+            "ABOVE" -> setDataForAboveLevel()
 
 
         }
+    }
+
+    private fun setDataForAboveLevel() {
+        Log.d(TAG, "setDataForAboveLevel:")
+        binding.learningLevelImageView.setImageResource(R.mipmap.above_level)
+
+        binding.letterLinearLayout.visibility = View.GONE
+        binding.wordLinearLayout.visibility = View.GONE
+
+        startSettingParagraphs()
+        startSettingStory()
     }
 
     private fun setDataForBeginnerLevel() {
@@ -88,11 +109,20 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
 
     }
 
-    private fun startSettingQuestions() {
+    private fun startSettingQuestions(isParagraph: Boolean) {
         val questions = getQuestions(assessment.assessmentKey)
 
-        binding.q1TxtView.text = "Q1. ${questions[0]} ${assessment.storyAnswerQ1}"
-        binding.q2TxtView.text = "Q2. ${questions[1]} ${assessment.storyAnswerQ2}"
+        binding.q1TxtView.text = "Q1. ${questions[0]} "
+        binding.q2TxtView.text = "Q2. ${questions[1]} "
+
+
+        if (isParagraph) {
+            binding.answer1TxtView.setTextColor(Color.RED)
+            binding.answer2TxtView.setTextColor(Color.RED)
+        }
+
+        binding.answer1TxtView.text = assessment.storyAnswerQ1
+        binding.answer2TxtView.text = assessment.storyAnswerQ2
     }
 
     private fun startSettingStory() {
@@ -119,7 +149,7 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
 
 
 
-        startSettingQuestions()
+        startSettingQuestions(false)
 
     }
 
@@ -199,15 +229,14 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
 
 
         var lastIndex: Int = 0
-
-
+        var flag: Boolean = true
 
         assessment.wordsWrong.split(",", ignoreCase = true).filter {
             !it.isBlank()
         }.forEachIndexed { index, string ->
             Log.d(TAG, "startSettingWords: index: $index word: $string")
 
-
+            flag = false
             val textView: TextView = binding.root.findViewWithTag<TextView>("word_$index")
 
             textView.setBackgroundResource(R.drawable.bg_wrong_word)
@@ -218,7 +247,9 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
             Log.d(TAG, "startSettingWords: last index $lastIndex")
         }
 
-
+        if (flag) {
+            lastIndex = -1
+        }
         assessment.wordsCorrect.split(",", ignoreCase = true).filter {
             !it.isBlank()
         }.forEachIndexed { index, string ->
@@ -249,11 +280,13 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
 
 
         var lastIndex: Int = 0
+        var flag: Boolean = true
 
         assessment.lettersWrong.split(",", ignoreCase = true).filter {
             !it.isBlank()
         }.forEachIndexed { index, string ->
 
+            flag=false
 
             val textView: TextView = binding.root.findViewWithTag<TextView>("letter_$index")
             textView.setBackgroundResource(R.drawable.bg_wrong_word)
@@ -261,6 +294,10 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
             lastIndex = index
         }
 
+        Log.d(TAG, "startSettingLetters: lastIndex :$lastIndex")
+        if (flag) {
+            lastIndex = -1
+        }
 
         assessment.letterCorrect.split(",", ignoreCase = true).filter {
             !it.isBlank()

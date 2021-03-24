@@ -33,6 +33,9 @@ class SpinnerAdapter(context: Context?,   items: QuerySnapshot,   listValue: Lis
         return 0
     }
 
+    override fun notifyDataSetChanged() {
+        super.notifyDataSetChanged()
+    }
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
         val view = convertView ?: inflator!!.inflate(R.layout.item_spinner, null)

@@ -13,6 +13,7 @@ import com.example.edward.nyansapo.Learning_Level
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.FragmentLearningLevelBinding
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.ui.student.StudentInfoPageFragment
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
@@ -61,7 +62,7 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
 
     private fun initRecyclerViewAdapter(learningLevel: String = Learning_Level.UNKNOWN.name) {
         Log.d(TAG, "initRecyclerViewAdapter: ")
-        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
 
         val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
         val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
@@ -71,8 +72,8 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
         Log.d(TAG, "initRecyclerViewAdapter: programid $programId  groupid $groupId campid $campId}")
 
         if (campPos == -1) {
-            Toasty.error(requireContext(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
         }
 
 
@@ -88,7 +89,7 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
         })
 
 
-        binding.recyclerview.setLayoutManager(LinearLayoutManager(requireContext()))
+        binding.recyclerview.setLayoutManager(LinearLayoutManager(MainActivity2.activityContext!!))
         binding.recyclerview.setAdapter(adapter)
         Log.d(TAG, "initRecyclerViewAdapter: adapter set up")
 
@@ -96,7 +97,7 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
     }
 
     private fun checkIfTheDatabaseIsEmpty() {
-        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
 
         val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
         val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
@@ -104,16 +105,21 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
         if (campPos == -1) {
-            Toasty.error(requireContext(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
         }
 
         FirebaseUtils.getCollectionStudentFromCamp_ReturnSnapshot(programId, groupId, campId) {
 
             if (it.isEmpty) {
                 Log.d(TAG, "checkIfTheDatabaseIsEmpty: database is empty")
-                MaterialAlertDialogBuilder(requireContext()).setBackground(requireActivity().getDrawable(R.drawable.button_first)).setIcon(R.drawable.ic_add_24).setTitle("Add").setMessage("Do You want To add Student ").setNegativeButton("no") { dialog, which ->
-                }.setPositiveButton("yes") { dialog, which -> addstudent() }.show()
+
+                if (context != null) {
+                    Log.d(TAG, "checkIfTheDatabaseIsEmpty: context is null")
+                    MaterialAlertDialogBuilder(MainActivity2.activityContext!!).setBackground(MainActivity2.activityContext?.getDrawable(R.drawable.button_first)).setIcon(R.drawable.ic_add_24).setTitle("Add").setMessage("Do You want To add Student ").setNegativeButton("no") { dialog, which ->
+                    }.setPositiveButton("yes") { dialog, which -> addstudent() }.show()
+
+                }
 
             } else {
                 Log.d(TAG, "checkIfTheDatabaseIsEmpty: database has ${it.size()} students")
@@ -123,7 +129,7 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
 
     private fun onStudentClicked(it: DocumentSnapshot) {
         Log.d(TAG, "onStudentClicked: student Has been clicked")
-        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container, StudentInfoPageFragment()).addToBackStack(null).commit()
+        MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, StudentInfoPageFragment()).addToBackStack(null).commit()
     }
 
 
@@ -213,7 +219,7 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
 
     fun addstudent() {
 
-        val myIntent = Intent(requireContext(), registerStudent::class.java)
+        val myIntent = Intent(MainActivity2.activityContext!!, registerStudent::class.java)
         startActivity(myIntent)
     }
 

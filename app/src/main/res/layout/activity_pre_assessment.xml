@@ -95,34 +95,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/arrow" />
 
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_margin="10dp"
-        android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/read_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-
-    <!--<Button
-        android:fontFamily="monospace"
-        android:textAllCaps="false"
-        android:textSize="30sp"
-        android:background="@drawable/button_default"
-        android:id="@+id/read_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="I live in Kenya"
-        android:layout_margin="10dp"
-        android:padding="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

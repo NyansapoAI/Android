@@ -15,7 +15,7 @@
         android:layout_marginBottom="68dp"
         android:background="@drawable/button_default"
         android:ellipsize="end"
-        android:onClick="nextAssessment"
+        android:onClick="doneBtnClicked"
         android:text="Done"
         android:textAllCaps="false"
         android:textSize="35sp"

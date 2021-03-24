@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.ItemStudentBinding
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -21,7 +22,7 @@ class LearningLevelAdapter(fragment: LearningLevelFragment, options: FirestoreRe
     private val TAG = "LearningLevelAdapter"
 
 
-    private val context: Context? = fragment.requireContext()
+    private val context: Context? = MainActivity2.activityContext!!
     override fun onBindViewHolder(holder: ViewHolder, position: Int, model: Student) {
 
 

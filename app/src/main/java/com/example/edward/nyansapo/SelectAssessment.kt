@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.edward.nyansapo.PreAssessment
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 
 class SelectAssessment : AppCompatActivity(), View.OnClickListener {
@@ -113,5 +112,7 @@ class SelectAssessment : AppCompatActivity(), View.OnClickListener {
             else -> {
             }
         }
+
+        finish()
     }
 }

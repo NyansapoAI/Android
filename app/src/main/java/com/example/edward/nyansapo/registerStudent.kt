@@ -1,117 +1,90 @@
 package com.example.edward.nyansapo
 
 
+import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
-import android.widget.EditText
+import android.view.ViewGroup
+import android.view.ViewGroup.*
+import android.view.WindowManager
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import com.example.edward.nyansapo.databinding.ActivityRegisterStudentBinding
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
-import com.example.edward.nyansapo.presentation.utils.STUDENT_ID
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_register_student.*
-import java.util.*
 
 class registerStudent : AppCompatActivity() {
 
              private  val TAG="registerStudent"
 
-    // Initialize variables
-    var firstname: EditText? = null
-    var lastname: EditText? = null
-    var age: EditText? = null
-    var gender: EditText? = null
-    var std_class: EditText? = null
-    var notes: EditText? = null
-
-    // Instructor id
-    var instructor_id: String? = null
-
-    // Progress bar
-    var progressBar: loading_progressBar? = null
-    var network_lock = 0
+    lateinit var binding: ActivityRegisterStudentBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register_student)
+        binding = ActivityRegisterStudentBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        initProgressBar()
+        setUpToolbar()
+        setOnClickListener()
+
+    }
+
+    private fun setUpToolbar() {
+        binding.toolbar.root.title = "Add Student"
+    }
 
 
-        // toolbar
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-
-
-
-        instructor_id = FirebaseUtils.instructor_id
-        //Toast.makeText(getApplicationContext(), instructor_id , Toast.LENGTH_SHORT).show();
-
-        // Assign variables
-        firstname = findViewById(R.id.edit_firstname)
-        lastname = findViewById(R.id.edit_lastname)
-        age = findViewById(R.id.edit_age)
-        gender = findViewById(R.id.edit_gender)
-        std_class = findViewById(R.id.edit_class)
-        notes = findViewById(R.id.edit_notes)
-
-
-        // progress bar
-        network_lock = 0
-        progressBar = loading_progressBar(this@registerStudent)
-        create_button.setOnClickListener(View.OnClickListener { view ->
+    private fun setOnClickListener() {
+        create_button.setOnClickListener { view ->
             addStudentToDatabase(view)
 
-        })
-    }
-
-    fun startAssessment(v: View?) {
-        val myIntent = Intent(baseContext, Begin_Assessment::class.java)
-        startActivity(myIntent)
-    }
-
-    fun addStudentToDatabase(v: View?) {
-        progressBar!!.showDialog()
-        val uuid = UUID.randomUUID()
-        // Validation for inputs needs to happen before creating student_activity
-        if (firstname!!.text.toString() === "" || lastname!!.text.toString() === "" || gender!!.text.toString() === "" || notes!!.text.toString() === "" || std_class!!.text.toString() === "") {
-            Toasty.error(this, "Provide all fields", Toast.LENGTH_LONG).show()
-        } else {
-            val student: Student
-            student = Student()
-            student.age=age!!.text.toString()// set age
-            student.firstname=firstname!!.text.toString()
-            student.lastname=lastname!!.text.toString()
-            student.gender=gender!!.text.toString()
-            student.notes=notes!!.text.toString()
-            student.instructor_id=instructor_id
-            //student_activity.setInstructor_id("5f39b701b4270100524952ed");
-            student.std_class=std_class!!.text.toString()
-
-            //Toast.makeText(getApplicationContext(), student_activity.getInstructor_id() , Toast.LENGTH_SHORT).show();
-            // send student_activity object to database
-            try {
-                //createStudent(student_activity); // save in cloud
-                postStudent(student)
-                //String uuid1 =  databasehelper.addStudent(student_activity);
-                //Toast.makeText(getApplicationContext(), uuid1,Toast.LENGTH_LONG).show();
-
-                // go to home
-                //Intent myIntent = new Intent(getBaseContext(), home.class);
-                //myIntent.putExtra("instructor_id", instructor_id);
-                //startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-            } catch (err: Error) {
-                Toasty.error(applicationContext, "Could not insert student_activity", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 
+
+    fun addStudentToDatabase(v: View?) {
+
+        binding.apply {
+
+            if (editFirstname!!.text!!.isBlank() || editLastname!!.text!!.isBlank() || editAge!!.text!!.isBlank() || editNotes!!.text!!.isBlank()|| editClass!!.text!!.isBlank()) {
+                Toasty.error(applicationContext, "Provide all fields", Toast.LENGTH_LONG).show()
+            } else {
+                val student: Student
+                student = Student()
+                student.firstname = editFirstname!!.text.toString()
+                student.lastname = editLastname!!.text.toString()
+                student.age = editAge!!.text.toString()// set age
+
+                student.notes = editNotes!!.text.toString()
+                student.std_class = editClass!!.text.toString()
+
+                if (radioGroup.checkedRadioButtonId == R.id.maleRadioBtn) {
+                    student.gender = "Male"
+                } else if (radioGroup.checkedRadioButtonId == R.id.femaleRadioBtn) {
+                    student.gender = "Female"
+                } else {
+                    student.gender = "Other"
+                }
+
+                postStudent(student)
+            }
+
+        }
+
+
+    }
+
     fun postStudent(student: Student) {
+        Log.d(TAG, "postStudent: student:$student")
 
 
         val sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
@@ -126,25 +99,93 @@ class registerStudent : AppCompatActivity() {
            onBackPressed()
         }
 
-
+        showProgress(true)
         FirebaseUtils.addStudentsToCamp(programId, groupId, campId, student) {
             Toasty.success(this, "Success adding student").show()
 
 
             it.get().addOnSuccessListener {
-                progressBar?.dismissDialog()
+                showProgress(false)
 
                 studentDocumentSnapshot = it
 
                 Log.d(TAG, "postStudent: ${it.toObject(Student::class.java)!!.id}")
                 onBackPressed()
-               /* val myIntent = Intent(baseContext, student_assessments::class.java)
-                myIntent.putExtra(STUDENT_ID, it.id)
-                myIntent.putExtra("instructor_id", instructor_id)
-                myIntent.putExtra("student_activity", student)
-                startActivity(myIntent)*/
+
             }
 
         }
 
-    }}
+    }
+
+
+    /////////////////////PROGRESS_BAR////////////////////////////
+    lateinit var dialog: AlertDialog
+
+    private fun showProgress(show: Boolean) {
+
+        if (show) {
+            dialog.show()
+
+        } else {
+            dialog.dismiss()
+
+        }
+
+    }
+
+    private fun initProgressBar() {
+
+        dialog = setProgressDialog(this, "Loading..")
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
+    }
+
+    fun setProgressDialog(context: Context, message: String): AlertDialog {
+        val llPadding = 30
+        val ll = LinearLayout(context)
+        ll.orientation = LinearLayout.HORIZONTAL
+        ll.setPadding(llPadding, llPadding, llPadding, llPadding)
+        ll.gravity = Gravity.CENTER
+        var llParam = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT)
+        llParam.gravity = Gravity.CENTER
+        ll.layoutParams = llParam
+
+        val progressBar = ProgressBar(context)
+        progressBar.isIndeterminate = true
+        progressBar.setPadding(0, 0, llPadding, 0)
+        progressBar.layoutParams = llParam
+
+        llParam = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT)
+        llParam.gravity = Gravity.CENTER
+        val tvText = TextView(context)
+        tvText.text = message
+        tvText.setTextColor(Color.parseColor("#000000"))
+        tvText.textSize = 20.toFloat()
+        tvText.layoutParams = llParam
+
+        ll.addView(progressBar)
+        ll.addView(tvText)
+
+        val builder = AlertDialog.Builder(context)
+        builder.setCancelable(true)
+        builder.setView(ll)
+
+        val dialog = builder.create()
+        val window = dialog.window
+        if (window != null) {
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog.window?.attributes)
+            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+            dialog.window?.attributes = layoutParams
+        }
+        return dialog
+    }
+
+    //end progressbar
+
+}

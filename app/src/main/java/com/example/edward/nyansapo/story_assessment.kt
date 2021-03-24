@@ -298,6 +298,7 @@ class story_assessment : AppCompatActivity() {
                 //assessment.setSTORY_WORDS_WRONG(story_words_wrong);
                 myIntent.putExtra("Assessment", assessment)
                 startActivity(myIntent)
+               finish()
 
             }
 

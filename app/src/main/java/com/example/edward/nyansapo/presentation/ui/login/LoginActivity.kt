@@ -64,7 +64,9 @@ class LoginActivity : AppCompatActivity() {
                     return
                 }
                 if (response.error!!.errorCode == ErrorCodes.NO_NETWORK) {
-                    showToast("not internet connection")
+                    Log.d(TAG, "onActivityResult: no internet connection")
+                    Log.d(TAG, "onActivityResult: ",response.error)
+                    showToast("no internet connection")
                     return
                 }
                 showToast("unknown error")

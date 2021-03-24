@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
@@ -35,19 +34,19 @@ class thankYou : AppCompatActivity() {
         val intent = intent
         assessment = intent.getParcelableExtra("Assessment")
         Log.d(TAG, "onCreate: assessment:$assessment")
-        done_button!!.setOnClickListener { v -> nextAssessment(v) }
+        done_button!!.setOnClickListener { doneBtnClicked() }
 
         storeAssessment()
      }
 
-    fun nextAssessment(w: View?) {
+    fun doneBtnClicked() {
         val myIntent = Intent(baseContext, MainActivity2::class.java)
         startActivity(myIntent)
+        finish()
     }
 
     fun storeAssessment() {
         Log.d(TAG, "storeAssessment: ")
-        postAssessment(assessment)
         updateStudentLearningLevel(assessment)
      }
 
@@ -56,25 +55,18 @@ class thankYou : AppCompatActivity() {
         showProgress(true)
         val map2 = mapOf("learningLevel" to assessment?.learningLevel)
         studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
-            showProgress(false)
 
             Log.d(TAG, "updateStudentLearningLevel: finished updating student learning level")
-        }
+
+            assessmentDocumentSnapshot!!.reference.set(assessment!!).addOnSuccessListener {
+                showProgress(false)
+
+                Log.d(TAG, "postAssessment: finished updating assessment")
+            }
+         }
 
     }
 
-    fun postAssessment(assessment: Assessment?) {
-        showProgress(true)
-     assessmentDocumentSnapshot!!.reference.set(assessment!!).addOnSuccessListener {
-            showProgress(false)
-         Log.d(TAG, "postAssessment: finished updating assessment")
-        }
-        val map= mapOf("learningLevel" to assessment.learningLevel)
-
-        studentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
-            Log.d(TAG, "postAssessment: success updating student learning level")
-        }
-    }
 
 
     /////////////////////PROGRESS_BAR////////////////////////////

@@ -17,6 +17,7 @@ import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.ActivityAttendanceBinding
 import com.example.edward.nyansapo.databinding.ItemAttendanceBinding
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.example.edward.nyansapo.registerStudent
@@ -49,7 +50,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: ")
         binding = ActivityAttendanceBinding.bind(view)
-        sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         setUpToolBar()
         setCurrentDate()
         getCurrentInfo()
@@ -116,7 +117,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
         }
 
 
-        DatePickerDialog(requireContext(), dateSetListener, myCalendar[Calendar.YEAR], myCalendar[Calendar.MONTH],
+        DatePickerDialog(MainActivity2.activityContext!!, dateSetListener, myCalendar[Calendar.YEAR], myCalendar[Calendar.MONTH],
                 myCalendar[Calendar.DAY_OF_MONTH]).show()
 
 
@@ -148,7 +149,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
 
             myCalendar.get(Calendar.YEAR)
 
-            Toasty.error(requireContext(), "Please Don't Choose  Future date only past  can be choosen").show()
+            Toasty.error(MainActivity2.activityContext!!, "Please Don't Choose  Future date only past  can be choosen").show()
             return
         }
 
@@ -172,7 +173,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
 
         } else {
             Log.d(TAG, "submitBtnClicked: adapter not initialized maybe becos database is empty")
-            Toasty.info(requireContext(), "No Data In Database").show()
+            Toasty.info(MainActivity2.activityContext!!, "No Data In Database").show()
         }
 
     }
@@ -189,7 +190,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
 
             }
         } else {
-            Toasty.info(requireContext(), "Adapter is null").show()
+            Toasty.info(MainActivity2.activityContext!!, "Adapter is null").show()
             Log.d(TAG, "recreateAdapterWithCheckBoxesDisabled: adapter is null")
         }
 
@@ -223,8 +224,12 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
 
             if (it.isEmpty) {
                 Log.d(TAG, "checkIfWeHaveAnyStudentInTheGroup: not student in database")
-                Toasty.info(requireContext(), "No Student In the Database").show()
-                MaterialAlertDialogBuilder(requireContext()!!).setBackground(requireActivity().getDrawable(R.drawable.button_first)).setIcon(R.drawable.ic_add_24).setTitle("Add Student").setMessage("Database is Empty,Do you want to add student? ").setNegativeButton("no") { dialog, which -> }.setPositiveButton("yes") { dialog, which -> goToAddStudent() }.show()
+                Toasty.info(MainActivity2.activityContext!!, "No Student In the Database").show()
+
+                if (context!=null){
+                    MaterialAlertDialogBuilder(MainActivity2.activityContext!!).setBackground(MainActivity2.activityContext!!.getDrawable(R.drawable.button_first)).setIcon(R.drawable.ic_add_24).setTitle("Add Student").setMessage("Database is Empty,Do you want to add student? ").setNegativeButton("no") { dialog, which -> }.setPositiveButton("yes") { dialog, which -> goToAddStudent() }.show()
+
+                }
 
             }
 
@@ -263,7 +268,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
     }
 
     private fun goToAddStudent() {
-        val myIntent = Intent(requireContext(), registerStudent::class.java)
+        val myIntent = Intent(MainActivity2.activityContext!!, registerStudent::class.java)
         startActivity(myIntent)
 
     }
@@ -279,7 +284,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
         adapter = AttendanceAdapter(firestoreRecyclerOptions) { documentSnapshot, isChecked ->
             onCheckBoxClicked(documentSnapshot, isChecked)
         }
-        recyclerview.setLayoutManager(LinearLayoutManager(requireContext()))
+        recyclerview.setLayoutManager(LinearLayoutManager(MainActivity2.activityContext!!))
         recyclerview.setAdapter(adapter)
 
     }
@@ -319,8 +324,8 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
         if (campPos == -1) {
-            Toasty.error(requireContext(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
         }
     }
 

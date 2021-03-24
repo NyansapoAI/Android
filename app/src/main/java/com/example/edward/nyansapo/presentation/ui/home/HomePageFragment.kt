@@ -7,7 +7,10 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.widget.Toolbar
@@ -54,7 +57,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
         binding = FragmentHomePageBinding.bind(view)
         Log.d(TAG, "onViewCreated: ")
         initProgressBar()
-        sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE)
+        sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE)
         setOnClickListeners()
         setItemClickListener()
 
@@ -73,42 +76,57 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
         super.onResume()
         Log.d(TAG, "onResume: ")
         //setting main activity toolbar to visible
-        (requireActivity() as MainActivity2).binding.root.findViewById<Toolbar>(R.id.toolbar).isVisible = true
-        (requireActivity() as MainActivity2).binding.root.findViewById<Toolbar>(R.id.toolbar).title = "Home"
+        (MainActivity2.activityContext!! as MainActivity2).binding.root.findViewById<Toolbar>(R.id.toolbar).isVisible = true
+        (MainActivity2.activityContext!! as MainActivity2).binding.root.findViewById<Toolbar>(R.id.toolbar).title = "Home"
     }
 
     private fun fetchProgramNames() {
+
         listenerRegistrationProgram = FirebaseUtils.getProgramNamesContinuously() { programs ->
             programNames = programs
 
+
+            val spinnerValue = programs.map {
+                "Program: ${it.toObject(Program::class.java).number}"
+            }
+
+            val adapter = SpinnerAdapter(MainActivity2.activityContext!!, programNames, spinnerValue, {
+                deleteItem(it)
+
+            }) { documentReference, documentSnapshot ->
+                val program = documentSnapshot.toObject(Program::class.java)
+                editItem(TYPE_PROGRAM, documentReference, program!!)
+            }
+
+
+            binding.programNameSpinner.setAdapter(adapter)
+
+
+            //set default value of program
+            setDefaultProgram()
+            setDataForDrawer()
+
+            startFetchingSpecificGroup()
+
             if (programs.isEmpty) {
+                adapter.notifyDataSetChanged()
+
+                Log.d(TAG, "fetchProgramNames: programs is empty")
                 showToast("Please First create A program")
-                return@getProgramNamesContinuously
-            } else {
-                val spinnerValue = programs.map {
-                    "Program: ${it.toObject(Program::class.java).number}"
-                }
-                // val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_dropdown_item, spinnerValue)
+                programsIsEmpty()
 
-                val adapter = SpinnerAdapter(requireContext(), programNames, spinnerValue, {
-                    deleteItem(it)
-
-                }) { documentReference, documentSnapshot ->
-                    val program = documentSnapshot.toObject(Program::class.java)
-                    editItem(TYPE_PROGRAM, documentReference, program!!)
-                }
-
-
-
-                binding.programNameSpinner.setAdapter(adapter)
-                //set default value of program
-                setDefaultProgram()
-
-                startFetchingSpecificGroup()
+                setDataForDrawer()
             }
 
 
         }
+    }
+
+    private fun programsIsEmpty() {
+        Log.d(TAG, "programsIsEmpty: ")
+
+        binding.programNameSpinner.adapter = null
+        groupsIsEmpty()
     }
 
     private fun editItem(type: Int, documentReference: DocumentReference, organisation: Organisation) {
@@ -128,7 +146,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
 
     private fun showToast(message: String) {
 
-        Toasty.error(requireContext(), message, Toasty.LENGTH_LONG).show()
+        Toasty.info(MainActivity2.activityContext!!, message, Toasty.LENGTH_LONG).show()
 
     }
 
@@ -137,6 +155,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
         showProgress(true)
         reference.delete().addOnSuccessListener {
             Log.d(TAG, "deleteItem: deletion success")
+
             showProgress(false)
         }
 
@@ -187,6 +206,8 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
                     //saving campId to be accessed in other screens
                     updateCampSharedPref()
 
+                    setDataForDrawer()
+
 
                 }
 
@@ -202,97 +223,185 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
 
     private fun updateProgramSharedPref() {
         Log.d(TAG, "updateProgramSharedPref: updating program shared pref")
-        val programID = programNames.documents[binding.programNameSpinner.selectedItemPosition].id
-        val programPos = binding.programNameSpinner.selectedItemPosition
-        sharedPreferences.edit().putString(Constants.KEY_PROGRAM_ID, programID).putInt(Constants.PROGRAM_POS, programPos).apply()
+        try {
+            val program = programNames.documents[binding.programNameSpinner.selectedItemPosition].toObject(Program::class.java)
+            val programID = programNames.documents[binding.programNameSpinner.selectedItemPosition].id
+            val programPos = binding.programNameSpinner.selectedItemPosition
+            sharedPreferences.edit().putString(Constants.KEY_PROGRAM_ID, programID).putInt(Constants.PROGRAM_POS, programPos).apply()
+
+            Log.d(TAG, "updateProgramSharedPref: :program:$program")
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            sharedPreferences.edit().putString(Constants.KEY_PROGRAM_ID, null).putInt(Constants.PROGRAM_POS, -1).apply()
+
+        }
+
 
     }
 
     private fun updateGroupSharedPref() {
         Log.d(TAG, "updateGroupSharedPref: updating group")
-        val groupId = groupNames.documents[binding.groupSpinner.selectedItemPosition].id
-        val groupPos = binding.groupSpinner.selectedItemPosition
-        sharedPreferences.edit().putString(Constants.KEY_GROUP_ID, groupId).putInt(Constants.GROUP_POS, groupPos).apply()
 
+        try {
+            val group = groupNames.documents[binding.groupSpinner.selectedItemPosition].toObject(Group::class.java)
+            val groupId = groupNames.documents[binding.groupSpinner.selectedItemPosition].id
+            val groupPos = binding.groupSpinner.selectedItemPosition
+            sharedPreferences.edit().putString(Constants.KEY_GROUP_ID, groupId).putInt(Constants.GROUP_POS, groupPos).apply()
+            Log.d(TAG, "updateGroupSharedPref: group:$group")
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            sharedPreferences.edit().putString(Constants.KEY_GROUP_ID, null).putInt(Constants.GROUP_POS, -1).apply()
+
+
+        }
     }
 
     private fun updateCampSharedPref() {
         Log.d(TAG, "updateCampSharedPref: updating camp")
-        val campId = campNames.documents[binding.campSpinner.selectedItemPosition].id
-        val campPos = binding.campSpinner.selectedItemPosition
-        sharedPreferences.edit().putString(Constants.KEY_CAMP_ID, campId).putInt(Constants.CAMP_POS, campPos).apply()
+
+
+        try {
+            val camp = campNames!!.documents[binding.campSpinner.selectedItemPosition].toObject(Camp::class.java)
+            val campId = campNames!!.documents[binding.campSpinner.selectedItemPosition].id
+            val campPos = binding.campSpinner.selectedItemPosition
+            sharedPreferences.edit().putString(Constants.KEY_CAMP_ID, campId).putInt(Constants.CAMP_POS, campPos).apply()
+
+            Log.d(TAG, "updateCampSharedPref: camp:$camp")
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            sharedPreferences.edit().putString(Constants.KEY_CAMP_ID, null).putInt(Constants.CAMP_POS, -1).apply()
+
+        }
 
     }
 
+    private fun updateSharedPreference() {
+        updateProgramSharedPref()
+        updateGroupSharedPref()
+        updateCampSharedPref()
+    }
 
     private fun startFetchingSpecificCamp() {
-        val programID = programNames.documents.get(binding.programNameSpinner.selectedItemPosition).id
-        val groupID = groupNames.documents.get(binding.groupSpinner.selectedItemPosition).id
-        listenerRegistrationCamp = FirebaseUtils.getCampNamesContinously(programID, groupID) { camps ->
-            campNames = camps
 
-            val spinnerValue = camps.map {
-                "Camp: ${it.toObject(Camp::class.java).number}"
 
+        if (!programNames.isEmpty && !groupNames.isEmpty) {
+            val programID = programNames.documents.get(binding.programNameSpinner.selectedItemPosition).id
+            val groupID = groupNames.documents.get(binding.groupSpinner.selectedItemPosition).id
+            listenerRegistrationCamp = FirebaseUtils.getCampNamesContinously(programID, groupID) { camps ->
+                campNames = camps
+
+                val spinnerValue = camps.map {
+                    "Camp: ${it.toObject(Camp::class.java).number}"
+
+                }
+                val adapter = SpinnerAdapter(MainActivity2.activityContext!!, campNames!!, spinnerValue, { deleteItem(it) }) { documentReference, documentSnapshot ->
+                    val camp = documentSnapshot.toObject(Camp::class.java)
+
+                    editItem(TYPE_CAMP, documentReference, camp!!)
+                }
+                binding.campSpinner.setAdapter(adapter)
+                setDefaultCamp()
+
+                //set Data For Drawer
+                setDataForDrawer()
             }
-            val adapter = SpinnerAdapter(requireContext(), campNames, spinnerValue, { deleteItem(it) }) { documentReference, documentSnapshot ->
-                val camp = documentSnapshot.toObject(Camp::class.java)
 
-                editItem(TYPE_CAMP, documentReference, camp!!)
-            }
-            binding.campSpinner.setAdapter(adapter)
-            setDefaultCamp()
-
-//set Data For Drawer
+        } else {
             setDataForDrawer()
+            campIsEmpty()
         }
+
+
+    }
+
+    private fun campIsEmpty() {
+        Log.d(TAG, "campIsEmpty: ")
+        campSpinner.adapter = null
+
     }
 
     private fun setDataForDrawer() {
-        val menu = (requireActivity() as MainActivity2).binding.navView.menu
+        val menu = (MainActivity2.activityContext!! as MainActivity2).binding.navView.menu
         FirebaseUtils.firebaseAuth.currentUser.apply {
             menu.findItem(R.id.instructorNameItem).title = "${this?.displayName} "
         }
-        val programName = programNames.toObjects(Program::class.java)[binding.programNameSpinner.selectedItemPosition]
-        val groupName = groupNames.toObjects(Group::class.java)[binding.groupSpinner.selectedItemPosition]
-        val campName = campNames.toObjects(Camp::class.java)[binding.campSpinner.selectedItemPosition]
-        menu.findItem(R.id.programNameItem).title = "Program ${programName.number}"
-        menu.findItem(R.id.groupItem).title = "Group ${groupName.number}"
-        menu.findItem(R.id.campNumberItem).title = "Camp ${campName.number}"
 
-        Log.d(TAG, "setDataForDrawer: programName:$programName programName From Spinner: ${binding.programNameSpinner.selectedItem}")
 
+        try {
+            val programName = programNames.toObjects(Program::class.java)[binding.programNameSpinner.selectedItemPosition]
+            menu.findItem(R.id.programNameItem).title = "Program ${programName.number}"
+        } catch (e: Exception) {
+            menu.findItem(R.id.programNameItem).title = "No Program Selected"
+            e.printStackTrace()
+        }
+
+        try {
+            val groupName = groupNames.toObjects(Group::class.java)[binding.groupSpinner.selectedItemPosition]
+            menu.findItem(R.id.groupItem).title = "Group ${groupName.number}"
+
+        } catch (e: Exception) {
+            menu.findItem(R.id.groupItem).title = "No Group Selected"
+            e.printStackTrace()
+        }
+        try {
+            val campName = campNames!!.toObjects(Camp::class.java)[binding.campSpinner.selectedItemPosition]
+            Log.d(TAG, "setDataForDrawer:campName:${campName.number} : :campSize:${campNames!!.size()} ::selected position:${binding.campSpinner.selectedItemPosition} ")
+
+            menu.findItem(R.id.campNumberItem).title = "Camp ${campName.number}"
+
+        } catch (e: Exception) {
+            menu.findItem(R.id.campNumberItem).title = "No camp selected"
+            e.printStackTrace()
+        }
+
+        updateSharedPreference()
     }
 
     private fun startFetchingSpecificGroup() {
-        val programID = programNames.documents.get(binding.programNameSpinner.selectedItemPosition).id
 
-        if (programNames.size() == 1) {
-            Toasty.info(requireContext(), "You Only have one Program").show()
+        if (!programNames.isEmpty) {
 
-        }
+            val programID = programNames.documents.get(binding.programNameSpinner.selectedItemPosition).id
 
-        listenerRegistrationGroup = FirebaseUtils.getGroupNamesContinously(programID) { groups ->
-            groupNames = groups
-
-
-            val spinnerValue = groups.map {
-                "Group: ${it.toObject(Group::class.java).number}"
+            if (programNames.size() == 1) {
+                //  Toasty.info(MainActivity2.activityContext!!, "You Only have one Program").show()
+                Log.d(TAG, "startFetchingSpecificGroup: you only have one program")
             }
-            val adapter = SpinnerAdapter(requireContext(), groupNames, spinnerValue, { deleteItem(it) }) { documentReference, documentSnapshot ->
-                val group = documentSnapshot.toObject(Group::class.java)
 
-                editItem(TYPE_GROUP, documentReference, group!!)
-            }
-            binding.groupSpinner.setAdapter(adapter)
-            setDefaultGroup()
+            listenerRegistrationGroup = FirebaseUtils.getGroupNamesContinously(programID) { groups ->
+                groupNames = groups
 
-            if (!groups.isEmpty) {
+                if (groupNames.isEmpty) {
+                    campIsEmpty()
+                }
+
+                val spinnerValue = groups.map {
+                    "Group: ${it.toObject(Group::class.java).number}"
+                }
+                val adapter = SpinnerAdapter(MainActivity2.activityContext!!, groupNames, spinnerValue, { deleteItem(it) }) { documentReference, documentSnapshot ->
+                    val group = documentSnapshot.toObject(Group::class.java)
+
+                    editItem(TYPE_GROUP, documentReference, group!!)
+                }
+                binding.groupSpinner.setAdapter(adapter)
+                setDefaultGroup()
+                setDataForDrawer()
+
                 startFetchingSpecificCamp()
             }
-
+        } else {
+            Log.d(TAG, "startFetchingSpecificGroup: programNames is empty")
+            setDataForDrawer()
+            groupsIsEmpty()
         }
+    }
 
+    private fun groupsIsEmpty() {
+        groupSpinner.adapter = null
+        campIsEmpty()
     }
 
     private fun setOnClickListeners() {
@@ -311,7 +420,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
             Log.d(TAG, "setOnClickListeners: ")
 
 
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container, CreateNewFragment()).addToBackStack(null).commit()
+            MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, CreateNewFragment()).addToBackStack(null).commit()
 
 
         }
@@ -327,7 +436,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
 
         attendanceFragment.arguments = bundle
 
-        requireActivity()
+        MainActivity2.activityContext!!
                 .supportFragmentManager
                 .beginTransaction().replace(R.id.container, attendanceFragment)
                 .addToBackStack(null).commit()
@@ -353,7 +462,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
 
         val programID = programNames.documents[binding.programNameSpinner.selectedItemPosition].id
         val groupID = groupNames.documents[binding.groupSpinner.selectedItemPosition].id
-        val campID = campNames.documents[binding.campSpinner.selectedItemPosition].id
+        val campID = campNames!!.documents[binding.campSpinner.selectedItemPosition].id
 
         val bundle = bundleOf(Constants.KEY_PROGRAM_ID to programID, Constants.KEY_GROUP_ID to groupID, Constants.KEY_CAMP_ID to campID)
         return bundle
@@ -364,6 +473,10 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
         val programPos = sharedPreferences.getInt(Constants.PROGRAM_POS, AdapterView.INVALID_POSITION)
 
         if (programPos == AdapterView.INVALID_POSITION || programPos >= programNames.size()) {
+
+            ///
+            updateProgramSharedPref()
+
             return
         }
 
@@ -387,7 +500,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
         Log.d(TAG, "setDefaultCamp: ")
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, AdapterView.INVALID_POSITION)
 
-        if (campPos == AdapterView.INVALID_POSITION || campPos >= campNames.size()) {
+        if (campPos == AdapterView.INVALID_POSITION || campPos >= campNames!!.size()) {
             return
         }
 
@@ -402,7 +515,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
 
 
         //setting main activity toolbar to invisible
-        (requireActivity() as MainActivity2).binding.root.findViewById<Toolbar>(R.id.toolbar).isVisible = false
+        (MainActivity2.activityContext!! as MainActivity2).binding.root.findViewById<Toolbar>(R.id.toolbar).isVisible = false
 
 
 
@@ -431,7 +544,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
         if (groupNames.isEmpty) {
             showToast("Please First create a group")
         }
-        if (campNames.isEmpty) {
+        if (campNames!!.isEmpty) {
             showToast("Please First create a camp")
         }
 
@@ -443,12 +556,12 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
 
     fun createAlertDialog(title: String, message: String, documentReference: DocumentReference, organisation: Organisation) {
 
-        val edittext = EditText(requireContext())
+        val edittext = EditText(MainActivity2.activityContext!!)
         edittext.setTextColor(Color.WHITE)
         edittext.setText(organisation.name)
 
-        MaterialAlertDialogBuilder(requireContext())
-                .setBackground(requireActivity().getDrawable(R.drawable.bg_dialog)).setIcon(R.drawable.ic_edit)
+        MaterialAlertDialogBuilder(MainActivity2.activityContext!!)
+                .setBackground(MainActivity2.activityContext!!.getDrawable(R.drawable.bg_dialog)).setIcon(R.drawable.ic_edit)
                 .setTitle(title).setMessage(message).setView(edittext)
                 .setNegativeButton("Cancel") { dialog, which -> //
                     // what to execute on cancel
@@ -460,7 +573,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
                 }.show()
 
 
-        /*   val alert = AlertDialog.Builder(requireContext())
+        /*   val alert = AlertDialog.Builder(MainActivity2.activityContext!!)
 
            edittext.setText(organisation.name)
 
@@ -509,7 +622,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
 
     private fun initProgressBar() {
 
-        dialog = setProgressDialog(requireContext(), "Loading..")
+        dialog = setProgressDialog(MainActivity2.activityContext!!, "Loading..")
         dialog.setCancelable(false)
         dialog.setCanceledOnTouchOutside(false)
     }

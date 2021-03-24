@@ -22,6 +22,7 @@ import com.example.edward.nyansapo.presentation.ui.home.HomePageFragment
 import com.example.edward.nyansapo.presentation.ui.learning_level.LearningLevelFragment
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
+import com.firebase.ui.auth.AuthUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import es.dmoral.toasty.Toasty
@@ -29,8 +30,14 @@ import java.io.File
 
 
 class MainActivity2 : AppCompatActivity() {
+
+
+
     companion object {
         private const val TAG = "MainActivity2"
+        @JvmField
+        var activityContext: MainActivity2?=null
+
     }
 
     lateinit var binding: ActivityMain2Binding
@@ -39,7 +46,7 @@ class MainActivity2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        activityContext = this
         setUpNavigationDrawer()
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
@@ -74,6 +81,9 @@ class MainActivity2 : AppCompatActivity() {
                 R.id.tutorialItem -> {
 
                 }
+                R.id.logoutItem -> {
+                    logoutClicked()
+                }
             }
 
             val drawer = binding.drawerLayout
@@ -82,40 +92,131 @@ class MainActivity2 : AppCompatActivity() {
         }
     }
 
-
-    val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.action_activities -> {
-                Log.d(TAG, "activities clicked: ")
-
-                supportFragmentManager.beginTransaction().replace(R.id.container, ActivitiesFragment()).commit()
-
-            }
-            R.id.action_grouping -> {
-                Log.d(TAG, "grouping clicked: ")
-
-                supportFragmentManager.beginTransaction().replace(R.id.container, LearningLevelFragment()).commit()
-
-            }
-            R.id.action_home -> {
-                Log.d(TAG, "home clicked: ")
-                supportFragmentManager.beginTransaction().replace(R.id.container, HomePageFragment()).commit()
-
-            }
-            R.id.action_assess -> {
-                Log.d(TAG, "assessment clicked: ")
-                supportFragmentManager.beginTransaction().replace(R.id.container, AssessmentFragment()).commit()
-            }
-
-
-            R.id.action_patterns -> {
-                Log.d(TAG, "patterns clicked: ")
-                supportFragmentManager.beginTransaction().replace(R.id.container, DataAnalyticsFragment()).commit()
-
-            }
+    private fun logoutClicked() {
+        AuthUI.getInstance().signOut(this).addOnSuccessListener {
+            Log.d(TAG, "logoutClicked: sucess")
+            finish()
         }
-        true
     }
+
+    val onNavigationItemSelectedListener = object : BottomNavigationView.OnNavigationItemSelectedListener {
+        override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
+            val sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE)
+
+            val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
+            val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
+            val campId = sharedPreferences.getString(Constants.KEY_CAMP_ID, null)
+            val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
+
+            Log.d(TAG, "onNavigationItemSelected: programId:$programId: :groupId:$groupId: :campId:$campId")
+
+            if (campId == null) {
+
+                if (item.itemId == R.id.action_home) {
+
+                    supportFragmentManager.beginTransaction().replace(R.id.container, HomePageFragment()).commit()
+                    return true
+                }
+
+                Toasty.error(this@MainActivity2, "Please First create A camp", Toasty.LENGTH_LONG).show()
+                return false
+            } else {
+
+
+                when (item.itemId) {
+                    R.id.action_activities -> {
+                        Log.d(TAG, "activities clicked: ")
+
+
+                        supportFragmentManager.beginTransaction().replace(R.id.container, ActivitiesFragment()).commit()
+
+                    }
+                    R.id.action_grouping -> {
+                        Log.d(TAG, "grouping clicked: ")
+
+                        supportFragmentManager.beginTransaction().replace(R.id.container, LearningLevelFragment()).commit()
+
+                    }
+                    R.id.action_home -> {
+                        Log.d(TAG, "home clicked: ")
+                        supportFragmentManager.beginTransaction().replace(R.id.container, HomePageFragment()).commit()
+
+                    }
+                    R.id.action_assess -> {
+                        Log.d(TAG, "assessment clicked: ")
+                        supportFragmentManager.beginTransaction().replace(R.id.container, AssessmentFragment()).commit()
+                    }
+
+
+                    R.id.action_patterns -> {
+                        Log.d(TAG, "patterns clicked: ")
+                        supportFragmentManager.beginTransaction().replace(R.id.container, DataAnalyticsFragment()).commit()
+
+                    }
+                }
+            }
+            return true
+        }
+    }
+
+    /*  val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+
+          val sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE)
+
+          val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
+          val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
+          val campId = sharedPreferences.getString(Constants.KEY_CAMP_ID, null)
+          val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
+
+          if (campPos == -1) {
+              Toasty.error(this, "Please First create A camp", Toasty.LENGTH_LONG).show()
+              false
+          } else {
+
+
+              when (item.itemId) {
+                  R.id.action_activities -> {
+                      Log.d(TAG, "activities clicked: ")
+
+
+                      supportFragmentManager.beginTransaction().replace(R.id.container, ActivitiesFragment()).commit()
+
+                  }
+                  R.id.action_grouping -> {
+                      Log.d(TAG, "grouping clicked: ")
+
+                      supportFragmentManager.beginTransaction().replace(R.id.container, LearningLevelFragment()).commit()
+
+                  }
+                  R.id.action_home -> {
+                      Log.d(TAG, "home clicked: ")
+                      supportFragmentManager.beginTransaction().replace(R.id.container, HomePageFragment()).commit()
+
+                  }
+                  R.id.action_assess -> {
+                      Log.d(TAG, "assessment clicked: ")
+                      supportFragmentManager.beginTransaction().replace(R.id.container, AssessmentFragment()).commit()
+                  }
+
+
+                  R.id.action_patterns -> {
+                      Log.d(TAG, "patterns clicked: ")
+                      supportFragmentManager.beginTransaction().replace(R.id.container, DataAnalyticsFragment()).commit()
+
+                  }
+              }
+          }
+
+
+
+
+
+
+
+
+          true
+      }*/
 
     fun exportData() {
         val sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)

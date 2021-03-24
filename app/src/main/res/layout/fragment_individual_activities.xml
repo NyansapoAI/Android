@@ -1,57 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp"
-    tools:context=".presentation.ui.individual_activities.IndividualActivitiesActivity">
+    android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Learning Objectivies"
-        android:textAppearance="@android:style/TextAppearance.Large" />
+        android:padding="8dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:text="
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Learning Objectivies"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/learningObjectivesTxtView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            tools:text="
 &#8226;is simply dummy text \n
 &#8226; of the printing and typesetting industry.\n
 &#8226;  Lorem Ipsum has been the industry's \n
 &#8226; standard dummy text ever since the 1500s, \n
 &#8226; when an unknown printer took a galley" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Materials"
-        android:textAppearance="@android:style/TextAppearance.Large" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Materials"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:text="
+        <TextView
+            android:id="@+id/materialsTxtView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            tools:text="
 &#8226;is simply dummy text \n
 &#8226; of the printing and typesetting industry.\n
 &#8226;  Lorem Ipsum has been the industry's \n
 &#8226; standard dummy text ever since the 1500s, \n
 &#8226; when an unknown printer took a galley" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Procedures"
-        android:textAppearance="@android:style/TextAppearance.Large" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Steps"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:text="
+        <TextView
+            android:id="@+id/stepsTxtView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            tools:text="
 &#8226;is simply dummy text \n
 &#8226; of the printing and typesetting industry.\n
 &#8226;  Lorem Ipsum has been the industry's \n
@@ -59,4 +69,7 @@
 &#8226; when an unknown printer took a galley" />
 
 
-</LinearLayout>
+    </LinearLayout>
+
+
+</ScrollView>

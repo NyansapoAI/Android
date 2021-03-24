@@ -58,12 +58,13 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/letterTxtview"
-                android:textStyle="bold"
+                android:id="@+id/letterHeader"
                 android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"
                 android:text="Letter"
                 android:textAppearance="@android:style/TextAppearance.Large"
+                android:textStyle="bold"
                 tools:text="Letter" />
 
             <LinearLayout
@@ -81,7 +82,7 @@
                     android:background="@drawable/bg_correct_word"
                     android:gravity="center"
                     android:minWidth="50dp"
-                    android:text="kite" />
+                    tools:text="kite" />
 
                 <TextView
                     android:id="@+id/letter_1"
@@ -173,6 +174,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="word"
+                android:id="@+id/wordHeader"
                 android:layout_marginTop="8dp"
                 android:textStyle="bold"
                 android:textAppearance="@android:style/TextAppearance.Large"
@@ -278,6 +280,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Paragraph"
+                android:id="@+id/paragraphHeader"
                 android:textStyle="bold"
                 android:textAppearance="@android:style/TextAppearance.Large" />
 
@@ -305,6 +308,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="Story"
+                android:id="@+id/storyHeader"
                 android:textStyle="bold"
                 android:textAppearance="@android:style/TextAppearance.Large" />
 
@@ -319,15 +323,39 @@
 
             <TextView
                 android:id="@+id/q1TxtView"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="what did the forest have?" />
 
             <TextView
+                android:id="@+id/answer1TxtView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_round"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                tools:text="my answer 1" />
+
+            <TextView
+                android:textAppearance="@android:style/TextAppearance.Large"
                 android:id="@+id/q2TxtView"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="what did the forest have?" />
+
+            <TextView
+                android:id="@+id/answer2TxtView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_round"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                tools:text="my answer 2" />
         </LinearLayout>
 
         </LinearLayout>

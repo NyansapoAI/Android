@@ -246,6 +246,7 @@ class word_assessment : AppCompatActivity() {
             assessment!!.wordsCorrect = words_correct
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent)
+            finish()
         }
 
     }
@@ -267,6 +268,7 @@ class word_assessment : AppCompatActivity() {
                 assessment!!.learningLevel = "WORD"
                 myIntent.putExtra("Assessment", assessment)
                 startActivity(myIntent)
+                finish()
 
             }
 

@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
-import android.media.MediaRecorder
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -33,27 +32,18 @@ import java.util.concurrent.ExecutionException
 
 class PreAssessment : AppCompatActivity(), View.OnClickListener {
 
-    companion object {
-        //audio stuff
-        private var mEMA = 0.0
-        private const val EMA_FILTER = 0.6
 
-        private  const val TAG="PreAssessment"
-
-    }
+    private val TAG = "PreAssessment"
 
 
-    lateinit var studentId:String
+    lateinit var studentId: String
+
     // button ui
     var next_button: Button? = null
     var record_button: Button? = null
     var read_button: Button? = null
 
-    // Audio Recording Settings
-    var outputFile: String? = null
-    var myAudioRecorder: MediaRecorder? = null
 
-    //
     var button_toggle: Int? = null
 
     //
@@ -61,10 +51,6 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
 
     // Permission
     val REQUEST_PERSMISSION_CODE = 1000
-    var filename = "/dev/null"
-
-    // Asyn stuff
-    var speechAsync: SpeechAsync? = null
 
     // Assessment key
     var ASSESSMENT_KEY = "3"
@@ -75,11 +61,6 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
     var arrow_animation_blink: Animation? = null
     var arrow_animation_fadeOut: Animation? = null
 
-    // progress bar
-    var progressBar: ProgressBar? = null
-
-    /// Control variables or code locks
-    var mediaStarted = false
     var transcriptStarted = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,11 +72,6 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         val bundle = intent.extras
         ASSESSMENT_KEY = bundle.getString("ASSESSMENT_KEY")
         val intent = this.intent
-        //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
-
-        //Toast.makeText(getApplicationContext(), "Click on the record button and read!", Toast.LENGTH_LONG).show();
-
-        // Request Runtime Permission
         if (!checkPermissionFromDevice()) requestPermission()
 
         // assign buttons to xml components
@@ -103,9 +79,6 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         record_button = findViewById(R.id.record_button)
         read_button = findViewById(R.id.read_button)
 
-
-        // progressbar
-        progressBar = findViewById(R.id.progressBar2)
 
         // set onclick listeners
         next_button!!.setOnClickListener(this)
@@ -139,9 +112,6 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         arrow_animation_fadeOut = AnimationUtils.loadAnimation(this, R.anim.fadeout)
 
 
-        //progressBar
-        progressBar!!.setMax(15000)
-        progressBar!!.setProgress(0)
     }
 
     fun arrowBlink() {
@@ -157,7 +127,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         startActivity(myIntent)
     }
 
-    fun recordStudent(v: View?) {
+    fun recordStudent() {
 
         val sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE)
 
@@ -193,7 +163,6 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    var txt: String? = null
     var drawable: Drawable? = null
     fun Func(v: View?) {
 
@@ -204,18 +173,13 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         if (!transcriptStarted) {
             drawable = read_button!!.background
             val newDrawable = drawable!!.getConstantState().newDrawable().mutate()
-            //read_button.setBackgroundColor(Color.BLUE);
             val lightblue = Color.parseColor("#82b6ff") //light blue
-            //int lightblue = Color.parseColor("#8B4513");
-
-            //int lightbrown = Color.parseColor("#eecab1"); // light brown
-            //int lightbrown = Color.parseColor("#7ab121"); // Green
             val lightbrown = Color.parseColor("#FFFF00") // bright yellow
             newDrawable.colorFilter = PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY)
             read_button!!.background = newDrawable
             read_button!!.setTextColor(lightbrown)
-            val speechAsync: SpeechAsync = SpeechAsync()
-            speechAsync.execute(v)
+
+            SpeechAsync().execute()
             transcriptStarted = true
         }
     }
@@ -295,7 +259,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         return write_external_storage_result == PackageManager.PERMISSION_GRANTED && record_audio_result == PackageManager.PERMISSION_GRANTED && internet_permission == PackageManager.PERMISSION_GRANTED
     }
 
-    inner class SpeechAsync : AsyncTask<View?, String?, String?>() {
+    inner class SpeechAsync : AsyncTask<Void, String?, String?>() {
         // Replace below with your own subscription key
         var speechSubscriptionKey = "1c58abdab5d74d5fa41ec8b0b4a62367"
 
@@ -306,8 +270,6 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         var reco: SpeechRecognizer? = null
         var view: View? = null
         override fun onPreExecute() {
-            //read_button.setEnabled(false);
-            //record_button.setEnabled(false);
             super.onPreExecute()
             config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion)
             config!!.setEndpointId(endpoint)
@@ -321,17 +283,13 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         }
 
         override fun onPostExecute(s: String?) {
+            super.onPostExecute(s)
+
             read_button!!.background = drawable
             read_button!!.setTextColor(Color.BLACK)
-            if (mediaStarted) {
-                progressBar!!.progress = 0
-                mediaStarted = false
-            }
+
             transcriptStarted = false
 
-            //read_button.setEnabled(true);
-            //record_button.setEnabled(true);
-            super.onPostExecute(s)
             if (s.equals("canceled", ignoreCase = true)) {
                 Toast.makeText(this@PreAssessment, "Internet Connection Failed", Toast.LENGTH_LONG).show()
             } else if (s.equals("no match", ignoreCase = true)) {
@@ -339,16 +297,16 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
             } else {
                 val err_txt = SpeechRecognition.compareTranscript("I Live in Kenya", s)
                 val count = SpeechRecognition.countError(err_txt)
-                if (count < 2) {
-                    recordStudent(view)
-                }
+
+                recordStudent()
+
             }
             reco!!.close()
         }
 
-        override fun doInBackground(vararg p0: View?): String? {
+        override fun doInBackground(vararg p0: Void?): String? {
             try {
-                view = p0[0]
+
                 reco = SpeechRecognizer(config)
                 var result: SpeechRecognitionResult? = null
                 val task = reco!!.recognizeOnceAsync()!!

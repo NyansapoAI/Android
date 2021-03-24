@@ -11,6 +11,7 @@ import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.SelectAssessment
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.ActivityBeginAssessementBinding
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
@@ -51,6 +52,7 @@ class BeginAssessmentFragment : Fragment(R.layout.activity_begin_assessement) {
 
         binding.beginAssessmentBtn.setOnClickListener {
             addAssessment()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStack()
 
         }
     }
@@ -58,13 +60,13 @@ class BeginAssessmentFragment : Fragment(R.layout.activity_begin_assessement) {
     private fun addAssessment() {
 
         Log.d(TAG, "addAssessment: btn clicked ")
-        val intent = Intent(requireContext(), SelectAssessment::class.java)
+        val intent = Intent(MainActivity2.activityContext!!, SelectAssessment::class.java)
         startActivity(intent)
     }
 
     private fun checkIfDatabaseIsEmpty() {
         Log.d(TAG, "checkIfDatabaseIsEmpty: ")
-        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
 
         val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
         val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
@@ -72,8 +74,8 @@ class BeginAssessmentFragment : Fragment(R.layout.activity_begin_assessement) {
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
         if (campPos == -1) {
-            Toasty.error(requireActivity(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
         }
 
         FirebaseUtils.getAssessmentsFromStudent(programId, groupId, campId, studentDocumentSnapshot!!.id) {
@@ -113,6 +115,17 @@ class BeginAssessmentFragment : Fragment(R.layout.activity_begin_assessement) {
             series.setAnimated(true)
             graphView!!.addSeries(series)
             graphView!!.title = "Literacy Level Vs. Time of Current Assessments"
+            graphView!!. gridLabelRenderer.horizontalAxisTitle="Time of Current Assessments"
+            graphView!!.  gridLabelRenderer.verticalAxisTitle="Literacy Level"
+
+
+
+            graphView!!.viewport.isScalable = true
+            graphView!!.viewport.isScrollable = true
+            graphView!!.viewport.setScalableY(true)
+
+
+
             graphView!!.viewport.isXAxisBoundsManual = true
             graphView!!.viewport.setMinX(1.0)
             graphView!!.viewport.setMaxX(5.0)

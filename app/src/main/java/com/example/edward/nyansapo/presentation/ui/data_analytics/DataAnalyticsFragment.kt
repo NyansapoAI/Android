@@ -11,6 +11,7 @@ import com.example.edward.nyansapo.Learning_Level
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.FragmentDataAnalyticsBinding
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.google.android.gms.tasks.Task
@@ -61,6 +62,15 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
             series.isAnimated = true
             graph.addSeries(series)
             graph.title = "Students Vs. Literacy Level"
+
+            graph.gridLabelRenderer.horizontalAxisTitle = "Literacy Level"
+            graph.gridLabelRenderer.verticalAxisTitle = "Students"
+
+            graph.viewport.isScalable = true
+            graph.viewport.isScrollable = true
+            graph.viewport.setScalableY(true)
+
+
             graph.viewport.isXAxisBoundsManual = true
             graph.viewport.setMinX(1.0)
             graph.viewport.setMaxX(5.0)
@@ -82,8 +92,13 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
                     } else super.formatLabel(value, isValueX)
                 }
             }
+            try {
+                setMissedWords()
+            } catch (e: Exception) {
+                //there is possibility of user closing this screen while am still trying to get the assessment list hence the MainActivity2.activityContext!! will return null
+                e.printStackTrace()
+            }
 
-            setMissedWords()
 
         }
 
@@ -148,7 +163,7 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
     }
 
     private fun getAllAssessments(onComplete: (MutableList<Assessment>) -> Unit) {
-        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
 
         val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
         val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
@@ -156,8 +171,8 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
         if (campPos == -1) {
-            Toasty.error(requireActivity(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
         }
 
         val assessments = mutableListOf<Assessment>()
@@ -177,7 +192,12 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
                     assessments.addAll(specificStudentAssessments)
 
                 }
-                taskList.add(task)
+
+                if (task != null) {
+                    taskList.add(task)
+
+                }
+
 
             }
             Tasks.whenAll(taskList).addOnSuccessListener {
@@ -201,25 +221,33 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
         }
     }
 
-    private fun getAssessmentFromSpicificStudent(snapshot: QueryDocumentSnapshot, onComplete: (List<Assessment>) -> Unit): Task<QuerySnapshot> {
+    private fun getAssessmentFromSpicificStudent(snapshot: QueryDocumentSnapshot, onComplete: (List<Assessment>) -> Unit): Task<QuerySnapshot>? {
 
-        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
-        val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
-        val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
-        val campId = sharedPreferences.getString(Constants.KEY_CAMP_ID, null)
-        val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
-        if (campPos == -1) {
-            Toasty.error(requireActivity(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+        if (context != null) {
+            val sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+            val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
+            val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
+            val campId = sharedPreferences.getString(Constants.KEY_CAMP_ID, null)
+            val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
+
+            if (campPos == -1) {
+                Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+                MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
+            }
+
+            val task = FirebaseUtils.getAssessmentsFromStudent_Task(programId, groupId, campId, snapshot.id)
+
+            task.addOnSuccessListener {
+                onComplete(it.toObjects(Assessment::class.java))
+            }
+            return task
+
+        } else {
+            return null
         }
 
-        val task = FirebaseUtils.getAssessmentsFromStudent_Task(programId, groupId, campId, snapshot.id)
 
-        task.addOnSuccessListener {
-            onComplete(it.toObjects(Assessment::class.java))
-        }
-        return task
     }
 
     fun sortStudents(students: List<Student>?) {
@@ -243,7 +271,7 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
     }
 
     private fun getStudents(onComplete: (QuerySnapshot) -> Unit) {
-        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
 
         val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
         val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
@@ -251,8 +279,8 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
         if (campPos == -1) {
-            Toasty.error(requireActivity(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
         }
 
         FirebaseUtils.getCollectionStudentFromCamp_ReturnSnapshot(programId, groupId, campId) {

@@ -225,6 +225,7 @@ class letter_assessment : AppCompatActivity() {
                 assessment!!.learningLevel = "LETTER"
                 myIntent.putExtra("Assessment", assessment)
                 startActivity(myIntent)
+                finish()
             }
 
         }

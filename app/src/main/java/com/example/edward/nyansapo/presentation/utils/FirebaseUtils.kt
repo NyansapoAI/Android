@@ -232,7 +232,6 @@ object FirebaseUtils {
         }
     }
 
-
     fun getCollectionStudentFromCamp_attendance_ReturnCollection(programId: String, groupId: String, campId: String, date: String): CollectionReference {
         return firestoreInstance.collection(COLLECTION_ROOT + "/" + instructor_id + "/" + COLLECTION_PROGRAM_NAMES).document(programId).collection(COLLECTION_GROUPS).document(groupId).collection(COLLECTION_CAMPS).document(campId).collection(COLLECTION_ATTENDANCE).document(date).collection(COLLECTION_STUDENTS)
     }

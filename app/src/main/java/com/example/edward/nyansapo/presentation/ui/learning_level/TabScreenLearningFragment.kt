@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.edward.nyansapo.*
 import com.example.edward.nyansapo.AddDialog
 import com.example.edward.nyansapo.databinding.FragmentTabScreenLearningBinding
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 
 class TabScreenLearningFragment : Fragment(R.layout.fragment_tab_screen_learning) {
       companion object {
@@ -37,7 +38,7 @@ class TabScreenLearningFragment : Fragment(R.layout.fragment_tab_screen_learning
 
         binding.recyclerview.apply {
             setAdapter(adapter)
-            setLayoutManager(LinearLayoutManager(requireContext()))
+            setLayoutManager(LinearLayoutManager(MainActivity2.activityContext!!))
 
         }*/
 
@@ -51,18 +52,18 @@ class TabScreenLearningFragment : Fragment(R.layout.fragment_tab_screen_learning
 
     fun addstudent() {
 
-        val databaseHander = dataBaseHandler(requireContext())
+        val databaseHander = dataBaseHandler(MainActivity2.activityContext!!)
 
         val instructor_id = "123"
 
-        val myIntent = Intent(requireContext(), registerStudent::class.java)
+        val myIntent = Intent(MainActivity2.activityContext!!, registerStudent::class.java)
         myIntent.putExtra("instructor_id", instructor_id)
-        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(requireActivity()).toBundle())
+        startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(MainActivity2.activityContext!!).toBundle())
     }
 
 
     fun getStudents():List<Student> {
-        val databaseHander = dataBaseHandler(requireContext())
+        val databaseHander = dataBaseHandler(MainActivity2.activityContext!!)
 
         var instructor_id = "123"
 
@@ -82,7 +83,7 @@ class TabScreenLearningFragment : Fragment(R.layout.fragment_tab_screen_learning
     fun openDialog() {
         val addDialog = AddDialog()
         addDialog.setInfo("Add Student", "Do you want to add a student?")
-        addDialog.show(requireActivity().supportFragmentManager, "Add student")
+        addDialog.show(MainActivity2.activityContext!!.supportFragmentManager, "Add student")
     }
 
 }

@@ -15,11 +15,13 @@ import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.FragmentAssessmentBinding
+import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.example.edward.nyansapo.registerStudent
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import es.dmoral.toasty.Toasty
@@ -36,6 +38,8 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
     lateinit var mSearchView: FloatingSearchView
     lateinit var mainQuerySnapshot: QuerySnapshot
     val filteredQuerySnapshot: ArrayList<DocumentSnapshot> = ArrayList()
+
+    lateinit var listenerRegistration: ListenerRegistration
 
 
     private var mIsDarkSearchTheme = false
@@ -57,6 +61,14 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        fetchAllStudentFirst {
+            mainQuerySnapshot = it
+
+        }
+    }
+
     private fun setOnClickListeners() {
         binding.fob.setOnClickListener {
             addStudent()
@@ -64,12 +76,13 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
     }
 
     private fun addStudent() {
-        val intent = Intent(requireContext(), registerStudent::class.java)
+        val intent = Intent(MainActivity2.activityContext!!, registerStudent::class.java)
         startActivity(intent)
     }
 
+
     private fun fetchAllStudentFirst(onComplete: (QuerySnapshot) -> Unit) {
-        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
 
         val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
         val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
@@ -77,8 +90,8 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
         if (campPos == -1) {
-            Toasty.error(requireActivity(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
         }
 
 
@@ -164,7 +177,7 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
             } else {
 
                 //just print action
-                Toast.makeText(requireContext(), item.title,
+                Toast.makeText(MainActivity2.activityContext!!, item.title,
                         Toast.LENGTH_SHORT).show()
             }
         })
@@ -194,18 +207,22 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
     }
 
     private fun onStudentClicked(student: Student) {
-        Log.d(TAG, "onStudentClicked: Student id ${student.id}")
-        var currentSnapshot: DocumentSnapshot = mainQuerySnapshot.documents[0]
-        for (snapshot in mainQuerySnapshot) {
-            if (snapshot.id.equals(student.id)) {
-                currentSnapshot = snapshot
+
+        if (!mainQuerySnapshot.isEmpty) {
+            Log.d(TAG, "onStudentClicked: Student id ${student.id}")
+            var currentSnapshot: DocumentSnapshot = mainQuerySnapshot.documents[0]
+            for (snapshot in mainQuerySnapshot) {
+                if (snapshot.id.equals(student.id)) {
+                    currentSnapshot = snapshot
+                }
+
             }
 
+            studentDocumentSnapshot = currentSnapshot
+
+            MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, BeginAssessmentFragment()).addToBackStack(null).commit()
+
         }
-
-        studentDocumentSnapshot = currentSnapshot
-
-        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container, BeginAssessmentFragment()).addToBackStack(null).commit()
 
 
     }
@@ -244,7 +261,7 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
 
 
     private fun getSuggestions(number: Int, onComplete: (QuerySnapshot) -> Unit) {
-        val sharedPreferences = requireActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = MainActivity2.activityContext!!.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE)
 
         val programId = sharedPreferences.getString(Constants.KEY_PROGRAM_ID, null)
         val groupId = sharedPreferences.getString(Constants.KEY_GROUP_ID, null)
@@ -252,8 +269,8 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
         val campPos = sharedPreferences.getInt(Constants.CAMP_POS, -1)
 
         if (campPos == -1) {
-            Toasty.error(requireActivity(), "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            Toasty.error(MainActivity2.activityContext!!, "Please First create A camp before coming to this page", Toasty.LENGTH_LONG).show()
+            MainActivity2.activityContext!!.supportFragmentManager.popBackStackImmediate()
         }
 
         FirebaseUtils.getCollectionStudentFromCamp_ReturnCollection(programId, groupId, campId).orderBy("timestamp", Query.Direction.DESCENDING).limit(number.toLong()).get().addOnSuccessListener {
@@ -273,6 +290,7 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
     }
 
     private fun setupDrawer() {
+        binding.mSearchView.attachNavigationDrawerToMenuButton(MainActivity2.activityContext!!.binding.drawerLayout)
         //   attachSearchViewActivityDrawer(mSearchView)
     }
 

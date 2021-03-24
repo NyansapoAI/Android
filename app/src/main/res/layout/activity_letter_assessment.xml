@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".TeacherLogin">
 
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/assessment_card"
-        app:layout_constraintTop_toBottomOf="@+id/divider3"
-        tools:layout_editor_absoluteX="10dp" />
 
     <Button
 

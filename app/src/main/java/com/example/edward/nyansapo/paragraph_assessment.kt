@@ -275,6 +275,7 @@ class paragraph_assessment : AppCompatActivity() {
             val myIntent = Intent(baseContext, story_assessment::class.java)
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent)
+            finish()
 
         }
 
@@ -290,6 +291,7 @@ class paragraph_assessment : AppCompatActivity() {
             val myIntent = Intent(baseContext, word_assessment::class.java)
             myIntent.putExtra("Assessment", assessment)
             startActivity(myIntent)
+            finish()
 
         }
     }

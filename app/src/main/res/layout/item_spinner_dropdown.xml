@@ -27,6 +27,7 @@
         android:id="@+id/deleteImageview"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
+        android:tint="@color/black"
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_delete" />
 
