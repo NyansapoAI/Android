@@ -198,7 +198,6 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
         val wordtoSpan: Spannable = SpannableString(wholeParagraph)
 
 
-
         Log.d(TAG, "startSettingParagraphs: paragraph words wrong ${assessment.paragraphWordsWrong}")
 
         assessment.paragraphWordsWrong.split(",", ignoreCase = true).forEach { string ->

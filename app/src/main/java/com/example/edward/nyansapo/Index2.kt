@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
+import com.firebase.ui.auth.AuthUI
 import kotlinx.android.synthetic.main.activity_index.*
 
 class index2 : AppCompatActivity() {
@@ -12,11 +13,18 @@ class index2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_index)
 
-
+logoutUser()
 
         logo.setOnClickListener { checkUser() }
          checkUser()
 
+    }
+
+    private fun logoutUser() {
+
+        AuthUI.getInstance().signOut(this).addOnSuccessListener {
+
+        }
     }
 
     private fun checkUser() {
