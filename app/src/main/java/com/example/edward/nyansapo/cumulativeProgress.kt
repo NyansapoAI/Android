@@ -67,14 +67,15 @@ class cumulativeProgress : AppCompatActivity() {
                     DataPoint(1.toDouble(), list_letters!!.size.toDouble()),
                     DataPoint(2.toDouble(), list_words!!.size.toDouble()),
                     DataPoint(3.toDouble(), list_paragraph!!.size.toDouble()),
-                    DataPoint(4.toDouble(), list_story!!.size.toDouble()),
-                    DataPoint(5.toDouble(), (students as ArrayList<Student>).size.toDouble())))
+                    DataPoint(4.toDouble(), list_story!!.size.toDouble())
+                    //DataPoint(5.toDouble(), (students as ArrayList<Student>).size.toDouble())
+            ))
             series.isAnimated = true
             graph.addSeries(series)
             graph.title = "Students Vs. Literacy Level"
             graph.viewport.isXAxisBoundsManual = true
-            graph.viewport.setMinX(1.0)
-            graph.viewport.setMaxX(5.0)
+            graph.viewport.setMinX(0.5)
+            graph.viewport.setMaxX(4.5)
             graph.viewport.isYAxisBoundsManual = true
             graph.viewport.setMinY(0.0)
             graph.viewport.setMaxY((students as ArrayList<Student>).size.toDouble())

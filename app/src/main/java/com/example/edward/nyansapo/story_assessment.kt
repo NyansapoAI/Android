@@ -218,7 +218,7 @@ class story_assessment : AppCompatActivity() {
 
                 val dummy_error_count = error_count + countErrorFromSentence
 
-                if (dummy_error_count > 12) { // if error less than 8 move to story level
+                if (dummy_error_count > 10) { // if error less than 8 move to story level
                     Log.d(TAG, "onPostExecute: error_count is greater than 12 :dummy_error_count:$dummy_error_count")
                     goToThankYou()
                 } else {

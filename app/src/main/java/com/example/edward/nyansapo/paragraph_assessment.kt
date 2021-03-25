@@ -120,7 +120,7 @@ class paragraph_assessment : AppCompatActivity() {
             Log.d(TAG, "changeSentence: sentence_count:$sentence_count sentence_size: ${sentences.size - 1}")
 
         } else { // move to another  level //only if we have finished reading all the paragraph containing 4 sentences
-            if (error_count > 3) {
+            if (error_count > 2) {
                 goToWord()
             } else {
                 goToStory()

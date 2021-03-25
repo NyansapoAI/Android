@@ -52,11 +52,11 @@ class SelectAssessment : AppCompatActivity(), View.OnClickListener {
         button8!!.setOnClickListener(this)
         button9!!.setOnClickListener(this)
         button10!!.setOnClickListener(this)
-        button6!!.setEnabled(false)
-        button7!!.setEnabled(false)
-        button8!!.setEnabled(false)
-        button9!!.setEnabled(false)
-        button10!!.setEnabled(false)
+        //button6!!.setEnabled(false)
+        //button7!!.setEnabled(false)
+        //button8!!.setEnabled(false)
+        //button9!!.setEnabled(false)
+        //button10!!.setEnabled(false)
     }
 
     override fun onClick(v: View) {

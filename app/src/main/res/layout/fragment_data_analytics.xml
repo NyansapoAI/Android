@@ -15,6 +15,7 @@
             layout="@layout/toolbar" />
 
         <RelativeLayout
+            android:layout_margin="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -47,11 +48,13 @@
         </RelativeLayout>
 
         <com.jjoe64.graphview.GraphView
+            android:layout_margin="10dp"
             android:id="@+id/cumulative_graph"
             android:layout_width="match_parent"
             android:layout_height="300dp" />
 
         <LinearLayout
+            android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

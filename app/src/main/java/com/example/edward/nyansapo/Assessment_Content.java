@@ -65,7 +65,7 @@ public static String[] q9 = {"What does Juma do every day?", "How did the rain b
 //Assessment 10
 public static String[] l10  = {"j", "z", "b", "h", "o", "d", "w", "r", "e", "m"};
 public static String[] w10 = {"body", "ant", "book", "house", "peg", "sand", "milk", "car", "pot shoe"};
-public static String[] p10 = {"Atieno is my sister. She is in class four. She has a blue skirt. She likes it very much.", "Our school is in town. It is a big farm. We plant maize. We also keep chicken."};
+public static String[] p10 = {"Atieno is my sister. She is in class four. She has a blue skirt. She likes it very much.", "Our school is in town. It has a big farm. We plant maize and beans. We also keep chicken."};
 public static String s10 = "There was little rain last year. Many rivers are now dry. There are no crops on the farms. All plants have dried up. People do not have enough food. The animals do not have water to drink. The farmers are waiting for the rain to fall. Maria is a farmer in our village. When it rains she will plant vegetables. She will also plant maize, beans, and sweet potatoes. She will sell the maize at the market. Maria will plant one hundred and eighty trees. Maria likes trees because they give fresh air. Trees also give shade and bring more rain.";
 public static String[] q10 = {"What are farmers waiting for?", "Why does Maria want to plant trees?"};
 

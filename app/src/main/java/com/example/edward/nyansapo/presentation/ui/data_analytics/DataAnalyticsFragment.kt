@@ -23,6 +23,7 @@ import com.jjoe64.graphview.GridLabelRenderer
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
 import es.dmoral.toasty.Toasty
+import java.lang.Double.max
 
 class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
     private val TAG = "DataAnalyticsFragment"
@@ -54,8 +55,9 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
                     DataPoint(1.toDouble(), list_letters!!.size.toDouble()),
                     DataPoint(2.toDouble(), list_words!!.size.toDouble()),
                     DataPoint(3.toDouble(), list_paragraph!!.size.toDouble()),
-                    DataPoint(4.toDouble(), list_story!!.size.toDouble()),
-                    DataPoint(5.toDouble(), (students as ArrayList<Student>).size.toDouble())))
+                    DataPoint(4.toDouble(), list_story!!.size.toDouble())
+                    //DataPoint(5.toDouble(), (students as ArrayList<Student>).size.toDouble())
+            ))
 
             //set spacing between bars
             series.spacing = 10
@@ -66,17 +68,18 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
             graph.gridLabelRenderer.horizontalAxisTitle = "Literacy Level"
             graph.gridLabelRenderer.verticalAxisTitle = "Students"
 
-            graph.viewport.isScalable = true
-            graph.viewport.isScrollable = true
-            graph.viewport.setScalableY(true)
+            //graph.viewport.isScalable = true
+            ///graph.viewport.isScrollable = true
+            //graph.viewport.setScalableY(true)
 
 
             graph.viewport.isXAxisBoundsManual = true
-            graph.viewport.setMinX(1.0)
-            graph.viewport.setMaxX(5.0)
+            graph.viewport.setMinX(0.5)
+            graph.viewport.setMaxX(4.5)
             graph.viewport.isYAxisBoundsManual = true
             graph.viewport.setMinY(0.0)
-            graph.viewport.setMaxY((students as ArrayList<Student>).size.toDouble())
+            //graph.viewport.setMaxY((students as ArrayList<Student>).size.toDouble())
+            graph.viewport.setMaxY(getMaxY()) // get Maximum Y dynamically from the data
             graph.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.HORIZONTAL
             graph.gridLabelRenderer.labelFormatter = object : DefaultLabelFormatter() {
                 override fun formatLabel(value: Double, isValueX: Boolean): String {
@@ -103,6 +106,12 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
         }
 
 
+    }
+
+    private fun getMaxY(): Double{
+        var max1 =  kotlin.math.max(list_letters!!.size.toDouble(), list_words!!.size.toDouble())
+        var max2 =  kotlin.math.max( list_paragraph!!.size.toDouble(), list_story!!.size.toDouble())
+        return kotlin.math.max(max1, max2) + 1.0
     }
 
     private fun setUpToolbar() {

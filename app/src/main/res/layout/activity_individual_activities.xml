@@ -8,12 +8,15 @@
     tools:context=".presentation.ui.individual_activities.IndividualActivitiesActivity">
 
     <TextView
+        android:layout_marginTop="10dp"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Learning Objectivies"
         android:textAppearance="@android:style/TextAppearance.Large" />
 
     <TextView
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -25,12 +28,14 @@
 &#8226; when an unknown printer took a galley" />
 
     <TextView
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Materials"
         android:textAppearance="@android:style/TextAppearance.Large" />
 
     <TextView
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -42,12 +47,14 @@
 &#8226; when an unknown printer took a galley" />
 
     <TextView
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Procedures"
         android:textAppearance="@android:style/TextAppearance.Large" />
 
     <TextView
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
