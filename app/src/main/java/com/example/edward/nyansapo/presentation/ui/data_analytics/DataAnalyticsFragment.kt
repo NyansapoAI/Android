@@ -220,11 +220,17 @@ class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
         if (specificStudentAssessments.size < 2) {
             Log.d(TAG, "findOutIfStudentImproved: no improvement since we have less than one assessment")
         } else {
-            val recent = Learning_Level.valueOf(specificStudentAssessments.get(0).learningLevel)
-            val past = Learning_Level.valueOf(specificStudentAssessments.get(1).learningLevel)
+            try {
+                val recent = Learning_Level.valueOf(specificStudentAssessments.get(0).learningLevel)
+                val past = Learning_Level.valueOf(specificStudentAssessments.get(1).learningLevel)
 
-            if (recent.ordinal > past.ordinal) {
-                binding.improvementTxtView.text = " ${++numberStudentsWhoImproved}   improved by \n one literacy level"
+                if (recent.ordinal > past.ordinal) {
+                    binding.improvementTxtView.text = " ${++numberStudentsWhoImproved}   improved by \n one literacy level"
+                }
+            } catch (e: java.lang.Exception) {
+                // handler
+            } finally {
+                // optional finally block
             }
 
         }
