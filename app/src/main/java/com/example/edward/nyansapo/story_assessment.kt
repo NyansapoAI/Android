@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.os.Bundle
@@ -90,9 +92,14 @@ class story_assessment : AppCompatActivity() {
     fun recordStudent() {
         if (!transcriptStarted) {
             drawable = story_view!!.background
+            val newDrawable = drawable!!.getConstantState().newDrawable().mutate()
+
             val lightblue = Color.parseColor("#82b6ff") //light blue
             val lightbrown = Color.parseColor("#eecab1") // light brown
-            story_view!!.setBackgroundColor(lightblue)
+
+            newDrawable.colorFilter = PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY)
+
+            story_view!!.background = newDrawable
             story_view!!.setTextColor(lightbrown)
             SpeechAsync().execute()
             transcriptStarted = true

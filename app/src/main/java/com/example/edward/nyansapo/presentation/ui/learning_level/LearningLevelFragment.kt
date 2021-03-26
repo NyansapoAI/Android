@@ -27,7 +27,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_learning_level.*
 
-class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
+class LearningLevelFragment : Fragment(R.layout.fragment_learning_level), SwipeListener {
 
 
     private val TAG = "LearningLevelFragment"
@@ -41,22 +41,26 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
         setUpToolbar()
         setUpTabLayout()
         setOnClickListeners()
-
+        setGestureListener()
 
 
 
 
         checkIfTheDatabaseIsEmpty()
         initRecyclerViewAdapter()
-        setSwipeListenerForItems()
+        //  setSwipeListenerForItems()
 
 
     }
 
+    private fun setGestureListener() {
+        binding.recyclerview.setOnTouchListener(SwipeGestureListener(this))
+    }
+
     private fun setOnClickListeners() {
-       binding.fob.setOnClickListener {
-           addstudent()
-       }
+        binding.fob.setOnClickListener {
+            addstudent()
+        }
     }
 
 
@@ -86,13 +90,27 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
 
         adapter = LearningLevelAdapter(this, firestoreRecyclerOptions, {
             onStudentClicked(it)
-        })
+        }) {
+            onStudentLongClicked(it)
+        }
 
 
         binding.recyclerview.setLayoutManager(LinearLayoutManager(MainActivity2.activityContext!!))
         binding.recyclerview.setAdapter(adapter)
         Log.d(TAG, "initRecyclerViewAdapter: adapter set up")
 
+
+    }
+
+    private fun onStudentLongClicked(it: DocumentSnapshot) {
+        MaterialAlertDialogBuilder(MainActivity2.activityContext!!).setBackground(MainActivity2.activityContext!!.getDrawable(R.drawable.button_first)).setIcon(R.drawable.ic_delete).setTitle("delete").setMessage("Are you sure you want to delete ").setNegativeButton("no") { dialog, which -> }.setPositiveButton("yes") { dialog, which -> deleteData(it) }.show()
+
+    }
+
+    private fun deleteData(it: DocumentSnapshot) {
+        it.reference.delete().addOnSuccessListener {
+            Log.d(TAG, "deleteData: deletion success")
+        }
 
     }
 
@@ -223,5 +241,27 @@ class LearningLevelFragment:Fragment(R.layout.fragment_learning_level) {
         startActivity(myIntent)
     }
 
+    override fun onSwipeLeft() {
+        Log.d(TAG, "onSwipeLeft: ")
+        Log.d(TAG, "onSwipeLeft: selectedTabPosition:${tabs.selectedTabPosition} : :tab size:${tabs.tabCount}")
 
+        val position = (tabs.selectedTabPosition + 1) % tabs.tabCount
+        tabs.getTabAt(position)!!.select()
+        Log.d(TAG, "onSwipeLeft: position:$position")
+    }
+
+    override fun onSwipeRight() {
+        Log.d(TAG, "onSwipeRight: ")
+        Log.d(TAG, "onSwipeRight: selectedTabPosition:${tabs.selectedTabPosition} : :tab size:${tabs.tabCount}")
+
+        Log.d(TAG, "onSwipeRight: ")
+        var position = (tabs.selectedTabPosition - 1) % tabs.tabCount
+        if (position < 0) {
+            position = tabs.tabCount - 1
+        }
+        tabs.getTabAt(position)!!.select()
+        Log.d(TAG, "onSwipeRight: position:$position")
+
+
+    }
 }

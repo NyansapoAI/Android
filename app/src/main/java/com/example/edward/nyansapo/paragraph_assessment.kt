@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.os.Bundle
@@ -93,15 +95,19 @@ class paragraph_assessment : AppCompatActivity() {
     }
 
     var drawable: Drawable? = null
+
+
     fun recordStudent() {
         if (!transcriptStarted) {
             drawable = paragraphButton!!.background
+            val newDrawable = drawable!!.getConstantState().newDrawable().mutate()
+            val lightblue = Color.parseColor("#8B4513")
 
-            val lightblue = Color.parseColor("#8B4513") //color of paragraph button
+            val lightbrown = Color.parseColor("#FFFF00") // bright yellow
 
 
-            val lightbrown = Color.parseColor("#FFFF00")// color of text in paragraph button
-            paragraphButton!!.setBackgroundColor(lightblue)
+            newDrawable.colorFilter = PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY)
+            paragraphButton!!.background = newDrawable
             paragraphButton!!.setTextColor(lightbrown)
             SpeechAsync().execute()
             transcriptStarted = true

@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.os.Bundle
@@ -87,22 +89,25 @@ class word_assessment : AppCompatActivity() {
     fun recordStudent() {
         if (!transcriptStarted) {
             drawable = assessment_card!!.background
-            val lightblue = Color.parseColor("#82b6ff") //light blue
-            val lightbrown = Color.parseColor("#eecab1") // light brown
-            assessment_card!!.setBackgroundColor(lightblue)
+            val newDrawable = drawable!!.getConstantState().newDrawable().mutate()
+            val lightblue = Color.parseColor("#8B4513")
+
+            val lightbrown = Color.parseColor("#FFFF00") // bright yellow
+
+
+            newDrawable.colorFilter = PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY)
+            assessment_card!!.background = newDrawable
             assessment_card!!.setTextColor(lightbrown)
             SpeechAsync().execute()
             transcriptStarted = true
         }
-
     }
 
 
 
     fun changeWord() {
+          Log.d(TAG, "changeWord: ")
         Log.d(TAG, "changeWord: error_count:$error_count")
-
-        Log.d(TAG, "changeWord: ")
 
         if (words_tried > 4) { // if 6 has been tried
             Log.d(TAG, "changeWord: words tried:$words_tried")

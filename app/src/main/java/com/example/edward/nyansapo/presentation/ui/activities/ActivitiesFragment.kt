@@ -9,15 +9,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.edward.nyansapo.Learning_Level
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.databinding.FragmentActivitiesBinding
+import com.example.edward.nyansapo.presentation.ui.learning_level.SwipeGestureListener
+import com.example.edward.nyansapo.presentation.ui.learning_level.SwipeListener
 import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.google.android.material.tabs.TabLayout
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_learning_level.*
 
 
-class ActivitiesFragment : Fragment(R.layout.fragment_activities) {
+class ActivitiesFragment : Fragment(R.layout.fragment_activities), SwipeListener {
     companion object {
-        private  const val TAG="ActivitiesFragment"
+        private const val TAG = "ActivitiesFragment"
     }
 
     lateinit var binding: FragmentActivitiesBinding
@@ -28,6 +29,7 @@ class ActivitiesFragment : Fragment(R.layout.fragment_activities) {
         Log.d(TAG, "onViewCreated: ")
         binding = FragmentActivitiesBinding.bind(view)
 
+        setGestureListener()
 
         setUpToolbar()
         setUpTabLayout()
@@ -36,6 +38,9 @@ class ActivitiesFragment : Fragment(R.layout.fragment_activities) {
 
 
 
+    }
+    private fun setGestureListener() {
+        binding.recyclerview.setOnTouchListener(SwipeGestureListener(this))
     }
 
     private fun setUpRecyclerView() {
@@ -289,6 +294,30 @@ class ActivitiesFragment : Fragment(R.layout.fragment_activities) {
     private fun initRecyclerViewAdapter(learninglevel: String) {
 
         adapter.filter.filter(learninglevel.toLowerCase())
+    }
+
+    override fun onSwipeLeft() {
+        Log.d(TAG, "onSwipeLeft: ")
+        Log.d(TAG, "onSwipeLeft: selectedTabPosition:${tabs.selectedTabPosition} : :tab size:${tabs.tabCount}")
+
+        val position = (tabs.selectedTabPosition + 1) % tabs.tabCount
+        tabs.getTabAt(position)!!.select()
+        Log.d(TAG, "onSwipeLeft: position:$position")
+    }
+
+    override fun onSwipeRight() {
+        Log.d(TAG, "onSwipeRight: ")
+        Log.d(TAG, "onSwipeRight: selectedTabPosition:${tabs.selectedTabPosition} : :tab size:${tabs.tabCount}")
+
+        Log.d(TAG, "onSwipeRight: ")
+        var position = (tabs.selectedTabPosition - 1) % tabs.tabCount
+        if (position < 0) {
+            position = tabs.tabCount - 1
+        }
+        tabs.getTabAt(position)!!.select()
+        Log.d(TAG, "onSwipeRight: position:$position")
+
+
     }
 
 }

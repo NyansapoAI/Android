@@ -17,7 +17,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.DocumentSnapshot
 import es.dmoral.toasty.Toasty
 
-class LearningLevelAdapter(fragment: LearningLevelFragment, options: FirestoreRecyclerOptions<Student?>, val onStudentClick: (documentSnapshot: DocumentSnapshot) -> Unit) : FirestoreRecyclerAdapter<Student, LearningLevelAdapter.ViewHolder>(options) {
+class LearningLevelAdapter(fragment: LearningLevelFragment, options: FirestoreRecyclerOptions<Student?>, val onStudentClick: ( DocumentSnapshot) -> Unit, val onStudentLongClicked: ( DocumentSnapshot) -> Unit) : FirestoreRecyclerAdapter<Student, LearningLevelAdapter.ViewHolder>(options) {
 
     private val TAG = "LearningLevelAdapter"
 
@@ -50,6 +50,19 @@ class LearningLevelAdapter(fragment: LearningLevelFragment, options: FirestoreRe
             studentDocumentSnapshot = snapshots.getSnapshot(position)
             onStudentClick(snapshots.getSnapshot(position))
         }
+        holder.itemView.setOnLongClickListener {
+            if (position == RecyclerView.NO_POSITION) {
+                return@setOnLongClickListener false
+            }
+            studentDocumentSnapshot = snapshots.getSnapshot(position)
+            onStudentLongClicked(snapshots.getSnapshot(position))
+
+            true
+        }
+
+
+
+
     }
 
     fun deleteFromDatabase(position: Int) {

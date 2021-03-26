@@ -29,6 +29,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".presentation.ui.pin.CustomPinActivity"
+            />
         <activity android:name=".studentSettings" />
         <activity android:name=".MainActivity" />
         <activity android:name=".QuestionStory" />

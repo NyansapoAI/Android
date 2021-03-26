@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.os.Bundle
@@ -107,11 +109,14 @@ class letter_assessment : AppCompatActivity() {
     fun recordStudent() {
         if (!transcriptStarted) {
             drawable = assessment_card!!.background
+            val newDrawable = drawable!!.getConstantState().newDrawable().mutate()
 
             val lightblue = Color.parseColor("#8B4513")
-
             val lightbrown = Color.parseColor("#7ab121") // Green
-            assessment_card!!.setBackgroundColor(lightblue)
+
+            newDrawable.colorFilter = PorterDuffColorFilter(lightblue, PorterDuff.Mode.MULTIPLY)
+
+            assessment_card!!.background = newDrawable
             assessment_card!!.setTextColor(lightbrown)
 
             SpeechAsync().execute()

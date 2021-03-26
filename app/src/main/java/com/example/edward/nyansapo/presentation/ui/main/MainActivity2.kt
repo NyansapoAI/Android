@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
@@ -20,23 +20,28 @@ import com.example.edward.nyansapo.presentation.ui.assessment.AssessmentFragment
 import com.example.edward.nyansapo.presentation.ui.data_analytics.DataAnalyticsFragment
 import com.example.edward.nyansapo.presentation.ui.home.HomePageFragment
 import com.example.edward.nyansapo.presentation.ui.learning_level.LearningLevelFragment
+import com.example.edward.nyansapo.presentation.ui.pin.CustomPinActivity
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.firebase.ui.auth.AuthUI
+import com.github.omadahealth.lollipin.lib.PinCompatActivity
+import com.github.omadahealth.lollipin.lib.managers.AppLock
+import com.github.omadahealth.lollipin.lib.managers.LockManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import es.dmoral.toasty.Toasty
 import java.io.File
 
 
-class MainActivity2 : AppCompatActivity() {
+class MainActivity2 : PinCompatActivity() {
 
-
+    private val REQUEST_CODE_ENABLE = 11
 
     companion object {
         private const val TAG = "MainActivity2"
+
         @JvmField
-        var activityContext: MainActivity2?=null
+        var activityContext: MainActivity2? = null
 
     }
 
@@ -46,6 +51,10 @@ class MainActivity2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding.root)
+        lockScreen()
+
+        setUpToolbar()
+
         activityContext = this
         setUpNavigationDrawer()
 
@@ -56,6 +65,19 @@ class MainActivity2 : AppCompatActivity() {
 
 
     }
+
+
+    private fun lockScreen() {
+        val lockManager = LockManager.getInstance()
+        lockManager.enableAppLock(this, CustomPinActivity::class.java)
+        LockManager.getInstance().appLock?.shouldLockSceen(this)
+
+    }
+
+    private fun setUpToolbar() {
+        setSupportActionBar(binding.toolbar.root)
+    }
+
 
     private fun setUpNavigationDrawer() {
         val toolbar = binding.root.findViewById<Toolbar>(R.id.toolbar)
@@ -140,17 +162,20 @@ class MainActivity2 : AppCompatActivity() {
                     }
                     R.id.action_home -> {
                         Log.d(TAG, "home clicked: ")
+
                         supportFragmentManager.beginTransaction().replace(R.id.container, HomePageFragment()).commit()
 
                     }
                     R.id.action_assess -> {
                         Log.d(TAG, "assessment clicked: ")
+
                         supportFragmentManager.beginTransaction().replace(R.id.container, AssessmentFragment()).commit()
                     }
 
 
                     R.id.action_patterns -> {
                         Log.d(TAG, "patterns clicked: ")
+
                         supportFragmentManager.beginTransaction().replace(R.id.container, DataAnalyticsFragment()).commit()
 
                     }
@@ -266,10 +291,30 @@ class MainActivity2 : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
-        menuInflater.inflate(R.menu.learning_level_menu, menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
+        val intent = Intent(this@MainActivity2, CustomPinActivity::class.java)
+        when (item!!.itemId) {
+            R.id.enablePinItem -> {
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
+                startActivityForResult(intent, REQUEST_CODE_ENABLE)
+            }
+            R.id.changePinItem -> {
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.CHANGE_PIN)
+                startActivity(intent)
+            }
+            R.id.unLockPinItem -> {
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                startActivity(intent)
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onBackPressed() {
 
@@ -281,6 +326,13 @@ class MainActivity2 : AppCompatActivity() {
             drawer.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE_ENABLE -> Toasty.info(this, "PinCode enabled", Toast.LENGTH_SHORT).show()
         }
     }
 

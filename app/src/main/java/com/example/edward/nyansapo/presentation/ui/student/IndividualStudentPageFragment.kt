@@ -18,6 +18,8 @@ import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import es.dmoral.toasty.Toasty
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_student_page) {
 
@@ -213,19 +215,35 @@ class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_stud
 
     }
 
-    private fun underLineThisWord(string: String, wholeParagraph: String, wordsToSpan: Spannable) {
+    /*   private fun underLineThisWord(string: String, wholeParagraph: String, wordsToSpan: Spannable) {
+           Log.d(TAG, "underLineThisWord: started underlining words in paragraph/story")
+
+           Log.d(TAG, "underLineThisWord: string::$string wholeParagraph: :$wholeParagraph")
+
+
+           wholeParagraph.indexOf(string, ignoreCase = true).apply {
+                   val endOfString = this + string.length
+                   wordsToSpan.setSpan(ForegroundColorSpan(Color.RED), this, endOfString, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+               }
+
+       }*/
+    private fun underLineThisWord(wordToSearch: String, wholeParagraph: String, spannable: Spannable) {
         Log.d(TAG, "underLineThisWord: started underlining words in paragraph/story")
 
-        Log.d(TAG, "underLineThisWord: string::$string wholeParagraph: :$wholeParagraph")
+        Log.d(TAG, "underLineThisWord: string::$wordToSearch wholeParagraph: :$wholeParagraph")
+        val pattern = "\\b$wordToSearch\\b"
+        val patternObject = Pattern.compile(pattern)
+        val matcher = patternObject.matcher(wholeParagraph)
 
-        try {
-            wholeParagraph.indexOf(string, ignoreCase = true).apply {
-                val endOfString = this + string.length
-                wordsToSpan.setSpan(ForegroundColorSpan(Color.RED), this, endOfString, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        while (matcher.find()) {
+            high_light_found_text(spannable, matcher)
         }
+
+    }
+
+    private fun high_light_found_text(wordsToSpan: Spannable, matcher: Matcher) {
+
+        wordsToSpan.setSpan(ForegroundColorSpan(Color.RED), matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
     }
 
