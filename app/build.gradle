@@ -142,13 +142,13 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
     implementation "android.arch.lifecycle:common-java8:$lifecycleVersion"
 
-/*
+
     // Room
     def roomVersion = "2.2.0"
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-ktx:$roomVersion"
-*/
+
     //pattern lock view
     compile 'com.andrognito.patternlockview:patternlockview:1.0.0'
 

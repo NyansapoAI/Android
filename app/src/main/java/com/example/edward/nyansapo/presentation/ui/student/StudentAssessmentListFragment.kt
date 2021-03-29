@@ -41,6 +41,8 @@ private val TAG = "StudentInfoPageFragment"
         setUpToolbar()
 
 
+
+
         checkIfDatabaseIsEmpty()
         initRecyclerViewAdapter()
         setSwipeListenerForItems()

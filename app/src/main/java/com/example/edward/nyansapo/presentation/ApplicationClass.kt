@@ -10,10 +10,11 @@ import dagger.hilt.android.HiltAndroidApp
 class ApplicationClass: Application() {
 
 
+
     override fun onCreate() {
         super.onCreate()
 
-     lockScreenSetup()
+        lockScreenSetup()
     }
 
     private fun lockScreenSetup() {

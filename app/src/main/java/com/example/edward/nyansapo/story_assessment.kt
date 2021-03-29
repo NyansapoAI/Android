@@ -139,19 +139,12 @@ class story_assessment : AppCompatActivity() {
             Log.d(TAG, "nextParagraph: current sentence:$sentence_count: :size:${sentenceList.size - 1}")
         } else {
             Log.d(TAG, "nextParagraph: current sentence:$sentence_count: :size:${sentenceList.size - 1}")
-
-            val map = mapOf("storyWordsWrong" to story_words_wrong)
-
-            showProgress(true)
-            assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
-                showProgress(false)
-                Log.d(TAG, "nextParagraph: going to answer questions screen")
-                assessment!!.storyWordsWrong = story_words_wrong
-                val myIntent = Intent(baseContext, storyQuestions::class.java)
-                myIntent.putExtra("Assessment", assessment)
-                myIntent.putExtra("question", "0")
-                startActivity(myIntent)
-            }
+            Log.d(TAG, "nextParagraph: going to answer questions screen")
+            assessment!!.storyWordsWrong = story_words_wrong
+            val myIntent = Intent(baseContext, storyQuestions::class.java)
+            myIntent.putExtra("Assessment", assessment)
+            myIntent.putExtra("question", "0")
+            startActivity(myIntent)
 
         }
     }
@@ -230,10 +223,11 @@ class story_assessment : AppCompatActivity() {
                 val dummy_error_count = error_count + countErrorFromSentence
 
                 if (dummy_error_count > 10) { // if error less than 8 move to story level
-                    Log.d(TAG, "onPostExecute: error_count is greater than 12 :dummy_error_count:$dummy_error_count")
+                    story_words_wrong += error_txt
+                    Log.d(TAG, "onPostExecute: error_count is greater than 10 :dummy_error_count:$dummy_error_count")
                     goToThankYou()
                 } else {
-                    Log.d(TAG, "onPostExecute: error_count is 12 or lesser:dummy_error_count:$dummy_error_count")
+                    Log.d(TAG, "onPostExecute: error_count is 10 or lesser:dummy_error_count:$dummy_error_count")
                     if (countErrorFromSentence > 3 || listOfTxtFromServer.size < 2) {
                         if (tries < 1) {
                             tries++ // incremnent tries
