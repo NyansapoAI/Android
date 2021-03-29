@@ -1,4 +1,4 @@
-package com.example.edward.nyansapo.presentation.ui.learning_level
+package com.example.edward.nyansapo.presentation.ui.grouping
 
 import android.content.Context
 import android.util.Log
@@ -17,7 +17,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.DocumentSnapshot
 import es.dmoral.toasty.Toasty
 
-class LearningLevelAdapter(fragment: LearningLevelFragment, options: FirestoreRecyclerOptions<Student?>, val onStudentClick: ( DocumentSnapshot) -> Unit, val onStudentLongClicked: ( DocumentSnapshot) -> Unit) : FirestoreRecyclerAdapter<Student, LearningLevelAdapter.ViewHolder>(options) {
+class GroupingAdapter(fragment: GroupingFragment, options: FirestoreRecyclerOptions<Student?>, val onStudentClick: (DocumentSnapshot) -> Unit, val onStudentLongClicked: (DocumentSnapshot) -> Unit) : FirestoreRecyclerAdapter<Student, GroupingAdapter.ViewHolder>(options) {
 
     private val TAG = "LearningLevelAdapter"
 

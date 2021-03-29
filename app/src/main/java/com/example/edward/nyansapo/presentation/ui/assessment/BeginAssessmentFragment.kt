@@ -1,14 +1,12 @@
 package com.example.edward.nyansapo.presentation.ui.assessment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.edward.nyansapo.Assessment
 import com.example.edward.nyansapo.R
-import com.example.edward.nyansapo.SelectAssessment
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.ActivityBeginAssessementBinding
 import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
@@ -51,17 +49,14 @@ class BeginAssessmentFragment : Fragment(R.layout.activity_begin_assessement) {
     private fun setOnClickListeners() {
 
         binding.beginAssessmentBtn.setOnClickListener {
-            addAssessment()
-            MainActivity2.activityContext!!.supportFragmentManager.popBackStack()
+            goToAvatarChooser()
 
         }
     }
 
-    private fun addAssessment() {
+    private fun goToAvatarChooser() {
 
-        Log.d(TAG, "addAssessment: btn clicked ")
-        val intent = Intent(MainActivity2.activityContext!!, SelectAssessment::class.java)
-        startActivity(intent)
+        MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, AvatarChooserFragment()).addToBackStack(null).commit()
     }
 
     private fun checkIfDatabaseIsEmpty() {

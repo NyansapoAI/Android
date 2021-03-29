@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.MainActivity
 
 class Interface_selecter : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +19,7 @@ class Interface_selecter : AppCompatActivity() {
     }
 */
     fun startStudentInterface(v: View?) {
-        val myIntent = Intent(baseContext, registerStudent::class.java)
+        val myIntent = Intent(baseContext, AddStudentFragment::class.java)
         startActivity(myIntent)
     }
 

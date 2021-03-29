@@ -420,7 +420,7 @@ class HomePageFragment : Fragment(R.layout.fragment_home_page) {
             Log.d(TAG, "setOnClickListeners: ")
 
 
-            MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, CreateNewFragment()).addToBackStack(null).commit()
+            MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, CreateFragment()).addToBackStack(null).commit()
 
 
         }

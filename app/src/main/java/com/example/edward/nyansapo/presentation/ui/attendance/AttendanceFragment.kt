@@ -20,7 +20,7 @@ import com.example.edward.nyansapo.databinding.ItemAttendanceBinding
 import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
-import com.example.edward.nyansapo.registerStudent
+import com.example.edward.nyansapo.AddStudentFragment
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.DocumentSnapshot
@@ -268,7 +268,7 @@ class AttendanceFragment : Fragment(R.layout.activity_attendance) {
     }
 
     private fun goToAddStudent() {
-        val myIntent = Intent(MainActivity2.activityContext!!, registerStudent::class.java)
+        val myIntent = Intent(MainActivity2.activityContext!!, AddStudentFragment::class.java)
         startActivity(myIntent)
 
     }

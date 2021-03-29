@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.databinding.FragmentIndividualActivitiesBinding
 
-class IndividualActivitiesFragment: Fragment(R.layout.fragment_individual_activities) {
+class ActivitiesDetailFragment: Fragment(R.layout.fragment_individual_activities) {
 
 
     private val TAG = "IndividualActivitiesFra"

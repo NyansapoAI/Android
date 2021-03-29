@@ -73,7 +73,7 @@
         <activity android:name=".word_assessment" />
         <activity android:name=".letter_assessment" />
         <activity android:name=".thankYou" />
-        <activity android:name=".registerStudent" />
+        <activity android:name=".AddStudentFragment" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

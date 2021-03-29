@@ -19,7 +19,7 @@ import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
-import com.example.edward.nyansapo.registerStudent
+import com.example.edward.nyansapo.AddStudentFragment
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
@@ -76,7 +76,7 @@ class AssessmentFragment : Fragment(R.layout.fragment_assessment) {
     }
 
     private fun addStudent() {
-        val intent = Intent(MainActivity2.activityContext!!, registerStudent::class.java)
+        val intent = Intent(MainActivity2.activityContext!!, AddStudentFragment::class.java)
         startActivity(intent)
     }
 

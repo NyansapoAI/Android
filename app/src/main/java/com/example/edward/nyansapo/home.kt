@@ -15,13 +15,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_home.*
 import java.io.File
 import java.util.*
@@ -50,7 +46,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add_student -> {
-                val myIntent = Intent(baseContext, registerStudent::class.java)
+                val myIntent = Intent(baseContext, AddStudentFragment::class.java)
                 startActivity(myIntent)
                 //Toast.makeText(this, "Add Selected", Toast.LENGTH_LONG).show();
                 true
@@ -220,7 +216,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
     }
 
     fun addstudent(v: View?) {
-        val myIntent = Intent(baseContext, registerStudent::class.java)
+        val myIntent = Intent(baseContext, AddStudentFragment::class.java)
         startActivity(myIntent)
     }
 
@@ -261,7 +257,7 @@ class home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
 
 
     override fun onYesClicked() {
-        val myIntent = Intent(baseContext, registerStudent::class.java)
+        val myIntent = Intent(baseContext, AddStudentFragment::class.java)
         startActivity(myIntent)
     }
 

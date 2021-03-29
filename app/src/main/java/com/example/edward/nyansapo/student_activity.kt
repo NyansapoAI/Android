@@ -27,7 +27,7 @@ class student_activity : AppCompatActivity() {
     }
 
     fun newStudent(v: View?) {
-        val myIntent = Intent(baseContext, registerStudent::class.java)
+        val myIntent = Intent(baseContext, AddStudentFragment::class.java)
         startActivity(myIntent)
     }
 

@@ -22,12 +22,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
+import com.example.edward.nyansapo.presentation.utils.GlobalData
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_pre_assessment.*
 import java.util.concurrent.ExecutionException
 
 class PreAssessment : AppCompatActivity(), View.OnClickListener {
@@ -66,7 +68,8 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pre_assessment)
         initProgressBar()
-
+        //setting choosen avatar
+        imageView3.setImageResource(GlobalData.avatar)
 
         studentId=intent.getStringExtra("studentId")
         val bundle = intent.extras
@@ -114,6 +117,7 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
 
     }
 
+
     fun arrowBlink() {
         arrow_img!!.startAnimation(arrow_animation_blink)
     }
@@ -145,20 +149,20 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
         val myIntent = Intent(baseContext, paragraph::class.java)
         val assessment = Assessment() // create new assessment object
         assessment.assessmentKey = ASSESSMENT_KEY // assign proper key
+        myIntent.putExtra("Assessment", assessment) //sent next activity
+        startActivity(myIntent)
 
-        showProgress(true)
+/*        showProgress(true)
         FirebaseUtils.addAssessmentForStudent(programId, groupId, campId, studentId, assessment) {
 
             it.get().addOnSuccessListener {
                 showProgress(false)
                 assessmentDocumentSnapshot = it
 
-                myIntent.putExtra("Assessment", assessment) //sent next activity
-                startActivity(myIntent)
 
             }
 
-        }
+        }*/
 
 
     }
@@ -212,23 +216,23 @@ class PreAssessment : AppCompatActivity(), View.OnClickListener {
                 val myIntent = Intent(baseContext, paragraph::class.java)
                 val assessment = Assessment() // create new assessment object
                 assessment.assessmentKey = ASSESSMENT_KEY // assign proper key
+                myIntent.putExtra("Assessment", assessment) //sent next activity
+                //Toast.makeText(this, assessment.toString() +"  "+ assessment.getSTUDENT_ID(), Toast.LENGTH_SHORT).show();
+                startActivity(myIntent)
 
 
-                showProgress(true)
+       /*         showProgress(true)
                 FirebaseUtils.addAssessmentForStudent(programId, groupId, campId, studentId, assessment) {
 
                     it.get().addOnSuccessListener {
                         showProgress(false)
                         assessmentDocumentSnapshot = it
 
-                        myIntent.putExtra("Assessment", assessment) //sent next activity
-                        //Toast.makeText(this, assessment.toString() +"  "+ assessment.getSTUDENT_ID(), Toast.LENGTH_SHORT).show();
-                        startActivity(myIntent)
 
                     }
 
                 }
-
+*/
 
             }
             else -> throw IllegalStateException("Unexpected value")

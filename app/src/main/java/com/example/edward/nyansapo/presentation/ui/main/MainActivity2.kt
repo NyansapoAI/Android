@@ -17,9 +17,9 @@ import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.ActivityMain2Binding
 import com.example.edward.nyansapo.presentation.ui.activities.ActivitiesFragment
 import com.example.edward.nyansapo.presentation.ui.assessment.AssessmentFragment
-import com.example.edward.nyansapo.presentation.ui.data_analytics.DataAnalyticsFragment
+import com.example.edward.nyansapo.presentation.ui.patterns.PatternsFragment
 import com.example.edward.nyansapo.presentation.ui.home.HomePageFragment
-import com.example.edward.nyansapo.presentation.ui.learning_level.LearningLevelFragment
+import com.example.edward.nyansapo.presentation.ui.grouping.GroupingFragment
 import com.example.edward.nyansapo.presentation.ui.pin.CustomPinActivity
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
@@ -51,7 +51,7 @@ class MainActivity2 : PinCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding.root)
-        lockScreen()
+     //   lockScreen()
 
         setUpToolbar()
 
@@ -70,7 +70,7 @@ class MainActivity2 : PinCompatActivity() {
     private fun lockScreen() {
         val lockManager = LockManager.getInstance()
         lockManager.enableAppLock(this, CustomPinActivity::class.java)
-        LockManager.getInstance().appLock?.shouldLockSceen(this)
+       // LockManager.getInstance().appLock?.shouldLockSceen(this)
 
     }
 
@@ -157,7 +157,7 @@ class MainActivity2 : PinCompatActivity() {
                     R.id.action_grouping -> {
                         Log.d(TAG, "grouping clicked: ")
 
-                        supportFragmentManager.beginTransaction().replace(R.id.container, LearningLevelFragment()).commit()
+                        supportFragmentManager.beginTransaction().replace(R.id.container, GroupingFragment()).commit()
 
                     }
                     R.id.action_home -> {
@@ -176,7 +176,7 @@ class MainActivity2 : PinCompatActivity() {
                     R.id.action_patterns -> {
                         Log.d(TAG, "patterns clicked: ")
 
-                        supportFragmentManager.beginTransaction().replace(R.id.container, DataAnalyticsFragment()).commit()
+                        supportFragmentManager.beginTransaction().replace(R.id.container, PatternsFragment()).commit()
 
                     }
                 }

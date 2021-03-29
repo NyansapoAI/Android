@@ -24,7 +24,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_home.*
 import java.util.*
 
-class StudentInfoPageFragment : Fragment(R.layout.activity_student_info_page) {
+class StudentAssessmentListFragment : Fragment(R.layout.activity_student_info_page) {
 
 private val TAG = "StudentInfoPageFragment"
 
@@ -188,7 +188,7 @@ private val TAG = "StudentInfoPageFragment"
     fun onAssmentClicked(assessment: Assessment) {
         Log.d(TAG, "onAssmentClicked: $assessment")
 
-        MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, IndividualStudentPageFragment()).addToBackStack(null).commit()
+        MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, AssessmentResultsFragment()).addToBackStack(null).commit()
 
         /*  val intent = Intent(MainActivity2.activityContext!!, assessment_detail::class.java)
           intent.putExtra("assessment", assessment)

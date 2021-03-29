@@ -14,6 +14,7 @@ import android.view.*
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.edward.nyansapo.presentation.utils.GlobalData
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
@@ -21,6 +22,8 @@ import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer
+import kotlinx.android.synthetic.main.activity_pre_assessment.*
+import kotlinx.android.synthetic.main.activity_word_assessment.*
 import java.util.concurrent.ExecutionException
 
 class word_assessment : AppCompatActivity() {
@@ -54,6 +57,8 @@ class word_assessment : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_word_assessment)
         initProgressBar()
+        //setting choosen avatar
+        imageView4.setImageResource(GlobalData.avatar)
         Toast.makeText(this, "Click on the Record Button to read or click on change to change the prompt", Toast.LENGTH_LONG).show()
 
         // will replace later
@@ -240,25 +245,34 @@ class word_assessment : AppCompatActivity() {
 
     fun goToLetter() {
         val myIntent = Intent(baseContext, letter_assessment::class.java)
-        val map = mapOf("wordsWrong" to words_wrong, "wordsCorrect" to words_correct)
+        assessment!!.wordsWrong = words_wrong
+        assessment!!.wordsCorrect = words_correct
+        myIntent.putExtra("Assessment", assessment)
+        startActivity(myIntent)
+        finish()
+/*        val map = mapOf("wordsWrong" to words_wrong, "wordsCorrect" to words_correct)
         showProgress(true)
         assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
 
 
 
-            assessment!!.wordsWrong = words_wrong
-            assessment!!.wordsCorrect = words_correct
-            myIntent.putExtra("Assessment", assessment)
-            startActivity(myIntent)
-            finish()
-        }
+
+        }*/
 
     }
 
     fun goToThankYou() {
-        showProgress(true)
+        val myIntent = Intent(baseContext, thankYou::class.java)
+        assessment!!.wordsWrong = words_wrong
+        assessment!!.wordsCorrect = words_correct
+        assessment!!.learningLevel = "WORD"
+        myIntent.putExtra("Assessment", assessment)
+        startActivity(myIntent)
+        finish()
 
+
+        /*showProgress(true)
         val map = mapOf("wordsWrong" to words_wrong, "wordsCorrect" to words_correct, "learningLevel" to "WORD")
 
         assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
@@ -267,17 +281,11 @@ class word_assessment : AppCompatActivity() {
             val map2 = mapOf("learningLevel" to "WORD")
             studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
                 showProgress(false)
-                val myIntent = Intent(baseContext, thankYou::class.java)
-                assessment!!.wordsWrong = words_wrong
-                assessment!!.wordsCorrect = words_correct
-                assessment!!.learningLevel = "WORD"
-                myIntent.putExtra("Assessment", assessment)
-                startActivity(myIntent)
-                finish()
+
 
             }
 
-        }
+        }*/
 
     }
 

@@ -21,7 +21,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import es.dmoral.toasty.Toasty
 import java.util.*
 
-class CreateNewFragment : Fragment(R.layout.fragment_create_new_page) {
+class CreateFragment : Fragment(R.layout.fragment_create_new_page) {
 
 
     private val TAG = "CreateNewFragment"

@@ -15,13 +15,14 @@ import android.view.*
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.edward.nyansapo.presentation.utils.GlobalData
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
-import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer
+import kotlinx.android.synthetic.main.activity_story_assessment.*
 import java.util.concurrent.ExecutionException
 
 class story_assessment : AppCompatActivity() {
@@ -53,6 +54,9 @@ class story_assessment : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_story_assessment)
         initProgressBar()
+        //setting choosen avatar
+        imageView5.setImageResource(GlobalData.avatar)
+
         assessment = intent.getParcelableExtra("Assessment")
 
         ASSESSMENT_KEY = assessment!!.assessmentKey
@@ -287,30 +291,32 @@ class story_assessment : AppCompatActivity() {
 
 
     fun goToThankYou() { // take to thank you page and grade as paragraph student_activity
-        val temp = assessment!!.storyWordsWrong
-
-        val map = mapOf("learningLevel" to "PARAGRAPH", "storyWordsWrong" to temp + story_words_wrong)
-
-        showProgress(true)
-       assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
-
-
-            //updating student learning level
-            val map2 = mapOf("learningLevel" to "PARAGRAPH")
-           studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
-                showProgress(false)
-                val myIntent = Intent(baseContext, thankYou::class.java)
-               assessment!!.learningLevel = "PARAGRAPH"
-               assessment!!.storyWordsWrong = temp + story_words_wrong
-                //assessment.setSTORY_WORDS_WRONG(story_words_wrong);
-                myIntent.putExtra("Assessment", assessment)
-                startActivity(myIntent)
-               finish()
-
-            }
+        val myIntent = Intent(baseContext, thankYou::class.java)
+        assessment!!.learningLevel = "PARAGRAPH"
+        assessment!!.storyWordsWrong = story_words_wrong
+        //assessment.setSTORY_WORDS_WRONG(story_words_wrong);
+        myIntent.putExtra("Assessment", assessment)
+        startActivity(myIntent)
+        finish()
 
 
-        }
+        /*
+            val map = mapOf("learningLevel" to "PARAGRAPH", "storyWordsWrong" to story_words_wrong)
+
+          showProgress(true)
+            assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
+
+
+                //updating student learning level
+                val map2 = mapOf("learningLevel" to "PARAGRAPH")
+                studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
+                    showProgress(false)
+
+
+                }
+
+
+            }*/
 
 
      }

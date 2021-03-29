@@ -1,4 +1,4 @@
-package com.example.edward.nyansapo.presentation.ui.data_analytics
+package com.example.edward.nyansapo.presentation.ui.patterns
 
 import android.content.Context
 import android.os.Bundle
@@ -23,9 +23,8 @@ import com.jjoe64.graphview.GridLabelRenderer
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
 import es.dmoral.toasty.Toasty
-import java.lang.Double.max
 
-class DataAnalyticsFragment: Fragment(R.layout.fragment_data_analytics) {
+class PatternsFragment: Fragment(R.layout.fragment_data_analytics) {
     private val TAG = "DataAnalyticsFragment"
 
 

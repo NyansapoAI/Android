@@ -1,4 +1,4 @@
-package com.example.edward.nyansapo.presentation.ui.learning_level
+package com.example.edward.nyansapo.presentation.ui.grouping
 
 import android.content.Context
 import android.content.Intent
@@ -14,10 +14,10 @@ import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.Student
 import com.example.edward.nyansapo.databinding.FragmentLearningLevelBinding
 import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
-import com.example.edward.nyansapo.presentation.ui.student.StudentInfoPageFragment
+import com.example.edward.nyansapo.presentation.ui.student.StudentAssessmentListFragment
 import com.example.edward.nyansapo.presentation.utils.Constants
 import com.example.edward.nyansapo.presentation.utils.FirebaseUtils
-import com.example.edward.nyansapo.registerStudent
+import com.example.edward.nyansapo.AddStudentFragment
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -27,11 +27,11 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_learning_level.*
 
-class LearningLevelFragment : Fragment(R.layout.fragment_learning_level), SwipeListener {
+class GroupingFragment : Fragment(R.layout.fragment_learning_level), SwipeListener {
 
 
     private val TAG = "LearningLevelFragment"
-    lateinit var adapter: LearningLevelAdapter
+    lateinit var adapter: GroupingAdapter
 
 
     lateinit var binding: FragmentLearningLevelBinding
@@ -88,7 +88,7 @@ class LearningLevelFragment : Fragment(R.layout.fragment_learning_level), SwipeL
                 .setLifecycleOwner(viewLifecycleOwner).build()
 
 
-        adapter = LearningLevelAdapter(this, firestoreRecyclerOptions, {
+        adapter = GroupingAdapter(this, firestoreRecyclerOptions, {
             onStudentClicked(it)
         }) {
             onStudentLongClicked(it)
@@ -147,7 +147,7 @@ class LearningLevelFragment : Fragment(R.layout.fragment_learning_level), SwipeL
 
     private fun onStudentClicked(it: DocumentSnapshot) {
         Log.d(TAG, "onStudentClicked: student Has been clicked")
-        MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, StudentInfoPageFragment()).addToBackStack(null).commit()
+        MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, StudentAssessmentListFragment()).addToBackStack(null).commit()
     }
 
 
@@ -237,7 +237,7 @@ class LearningLevelFragment : Fragment(R.layout.fragment_learning_level), SwipeL
 
     fun addstudent() {
 
-        val myIntent = Intent(MainActivity2.activityContext!!, registerStudent::class.java)
+        val myIntent = Intent(MainActivity2.activityContext!!, AddStudentFragment::class.java)
         startActivity(myIntent)
     }
 

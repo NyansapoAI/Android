@@ -15,14 +15,14 @@ import android.view.*
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
-import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
-import com.google.firebase.firestore.SetOptions
+import com.example.edward.nyansapo.presentation.utils.GlobalData
 import com.microsoft.cognitiveservices.speech.ResultReason
 import com.microsoft.cognitiveservices.speech.SpeechConfig
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer
 import kotlinx.android.synthetic.main.activity_index.*
+import kotlinx.android.synthetic.main.activity_letter_assessment.*
+import kotlinx.android.synthetic.main.activity_pre_assessment.*
 import java.util.concurrent.ExecutionException
 
 class letter_assessment : AppCompatActivity() {
@@ -55,6 +55,9 @@ class letter_assessment : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_letter_assessment)
         initProgressBar()
+
+        //setting choosen avatar
+        imageView4.setImageResource(GlobalData.avatar)
         Toast.makeText(this, "Click on the Record Button to read or click on change to change the prompt", Toast.LENGTH_LONG).show()
         val intent = intent
         //Toast.makeText(this,instructor_id, Toast.LENGTH_LONG ).show();
@@ -214,27 +217,13 @@ class letter_assessment : AppCompatActivity() {
 
     private fun goToThankYou() {
 
-
-        val map = mapOf("letterCorrect" to letters_correct, "lettersWrong" to letters_wrong, "learningLevel" to "LETTER")
-        showProgress(true)
-        assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
-            //saving current learning level of student
-            val map2 = mapOf("learningLevel" to "LETTER")
-            studentDocumentSnapshot!!.reference.set(map2, SetOptions.merge()).addOnSuccessListener {
-                showProgress(false)
-
-
-                val myIntent = Intent(baseContext, thankYou::class.java)
+        val myIntent = Intent(baseContext, thankYou::class.java)
                 assessment!!.letterCorrect = letters_correct
                 assessment!!.lettersWrong = letters_wrong
                 assessment!!.learningLevel = "LETTER"
                 myIntent.putExtra("Assessment", assessment)
                 startActivity(myIntent)
                 finish()
-            }
-
-        }
-
 
     }
 

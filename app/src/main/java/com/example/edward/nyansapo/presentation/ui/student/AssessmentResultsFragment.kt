@@ -21,7 +21,7 @@ import es.dmoral.toasty.Toasty
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class IndividualStudentPageFragment : Fragment(R.layout.activity_individual_student_page) {
+class AssessmentResultsFragment : Fragment(R.layout.activity_individual_student_page) {
 
     private val TAG = "IndividualStudentPageFr"
 

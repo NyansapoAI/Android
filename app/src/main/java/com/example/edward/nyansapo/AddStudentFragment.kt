@@ -23,7 +23,7 @@ import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_register_student.*
 
-class registerStudent : AppCompatActivity() {
+class AddStudentFragment : AppCompatActivity() {
 
              private  val TAG="registerStudent"
 

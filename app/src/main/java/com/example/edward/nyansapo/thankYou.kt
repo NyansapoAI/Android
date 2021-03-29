@@ -15,9 +15,12 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
+import com.example.edward.nyansapo.presentation.utils.COLLECTION_ASSESSMENTS
+import com.example.edward.nyansapo.presentation.utils.GlobalData
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.example.edward.nyansapo.presentation.utils.studentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
+import kotlinx.android.synthetic.main.activity_thank_you.*
 
 class thankYou : AppCompatActivity() {
 
@@ -29,6 +32,9 @@ class thankYou : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_thank_you)
         initProgressBar()
+        //setting choosen avatar
+        deleteImageview.setImageResource(GlobalData.avatar)
+
         done_button = findViewById(R.id.done_button)
 
         val intent = intent
@@ -37,7 +43,7 @@ class thankYou : AppCompatActivity() {
         done_button!!.setOnClickListener { doneBtnClicked() }
 
         storeAssessment()
-     }
+    }
 
     fun doneBtnClicked() {
         val myIntent = Intent(baseContext, MainActivity2::class.java)
@@ -58,11 +64,15 @@ class thankYou : AppCompatActivity() {
 
             Log.d(TAG, "updateStudentLearningLevel: finished updating student learning level")
 
-            assessmentDocumentSnapshot!!.reference.set(assessment!!).addOnSuccessListener {
+
+            studentDocumentSnapshot!!.reference.collection(COLLECTION_ASSESSMENTS).add(assessment!!).addOnSuccessListener {
                 showProgress(false)
 
                 Log.d(TAG, "postAssessment: finished updating assessment")
+
             }
+
+
          }
 
     }

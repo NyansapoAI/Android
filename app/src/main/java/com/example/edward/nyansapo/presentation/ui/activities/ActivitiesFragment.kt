@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.edward.nyansapo.Learning_Level
 import com.example.edward.nyansapo.R
 import com.example.edward.nyansapo.databinding.FragmentActivitiesBinding
-import com.example.edward.nyansapo.presentation.ui.learning_level.SwipeGestureListener
-import com.example.edward.nyansapo.presentation.ui.learning_level.SwipeListener
+import com.example.edward.nyansapo.presentation.ui.grouping.SwipeGestureListener
+import com.example.edward.nyansapo.presentation.ui.grouping.SwipeListener
 import com.example.edward.nyansapo.presentation.ui.main.MainActivity2
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_learning_level.*
@@ -212,7 +212,7 @@ class ActivitiesFragment : Fragment(R.layout.fragment_activities), SwipeListener
     private fun onActivityClicked(it: Activity) {
         Log.d(TAG, "onActivityClicked: it:$it")
         val bundle = bundleOf("activity" to it)
-        val fragment = IndividualActivitiesFragment()
+        val fragment = ActivitiesDetailFragment()
         fragment.arguments = bundle
         MainActivity2.activityContext!!.supportFragmentManager.beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit()
 

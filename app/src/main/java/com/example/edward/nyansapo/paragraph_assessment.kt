@@ -15,9 +15,13 @@ import android.view.*
 import android.view.ViewGroup.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.edward.nyansapo.presentation.utils.GlobalData
 import com.example.edward.nyansapo.presentation.utils.assessmentDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.microsoft.cognitiveservices.speech.*
+import kotlinx.android.synthetic.main.activity_paragraph_assessment.*
+import kotlinx.android.synthetic.main.activity_pre_assessment.*
+import kotlinx.android.synthetic.main.activity_pre_assessment.imageView3
 import java.util.concurrent.ExecutionException
 
 class paragraph_assessment : AppCompatActivity() {
@@ -53,6 +57,8 @@ class paragraph_assessment : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paragraph_assessment)
         initProgressBar()
+        //setting choosen avatar
+        imageView4.setImageResource(GlobalData.avatar)
         val intent = intent
 
         //Toast.makeText(this, "Click on the Record Button to read or click on change to change the prompt", Toast.LENGTH_LONG).show();
@@ -273,36 +279,38 @@ class paragraph_assessment : AppCompatActivity() {
     }
 
 
-    fun goToStory() {
-        val map = mapOf("paragraphWordsWrong" to paragraph_words_wrong)
+    fun goToStory() { assessment!!.paragraphWordsWrong = paragraph_words_wrong // set words wrong
+        val myIntent = Intent(baseContext, story_assessment::class.java)
+        myIntent.putExtra("Assessment", assessment)
+        startActivity(myIntent)
+        finish()
+
+       /* val map = mapOf("paragraphWordsWrong" to paragraph_words_wrong)
         showProgress(true)
         assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
 
 
-            assessment!!.paragraphWordsWrong = paragraph_words_wrong // set words wrong
-            val myIntent = Intent(baseContext, story_assessment::class.java)
-            myIntent.putExtra("Assessment", assessment)
-            startActivity(myIntent)
-            finish()
-
-        }
+        }*/
 
     }
 
     fun goToWord() {
-        val map = mapOf("paragraphWordsWrong" to paragraph_words_wrong)
+
+        assessment!!.paragraphWordsWrong = paragraph_words_wrong
+        val myIntent = Intent(baseContext, word_assessment::class.java)
+        myIntent.putExtra("Assessment", assessment)
+        startActivity(myIntent)
+        finish()
+
+ /*       val map = mapOf("paragraphWordsWrong" to paragraph_words_wrong)
 
         showProgress(true)
         assessmentDocumentSnapshot!!.reference.set(map, SetOptions.merge()).addOnSuccessListener {
             showProgress(false)
-            assessment!!.paragraphWordsWrong = paragraph_words_wrong
-            val myIntent = Intent(baseContext, word_assessment::class.java)
-            myIntent.putExtra("Assessment", assessment)
-            startActivity(myIntent)
-            finish()
 
-        }
+
+        }*/
     }
 
     fun getPara(key: String?): Array<String> {
