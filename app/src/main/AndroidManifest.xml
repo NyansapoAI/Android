@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.edward.nyansapo">
+    package="com.edward.nyansapo">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -9,6 +9,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".presentation.ApplicationClass"
         android:hardwareAccelerated="true"
         android:icon="@drawable/small_logo"
         android:label="@string/app_name"
@@ -16,12 +17,8 @@
         android:roundIcon="@drawable/small_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".presentation.ui.pattern.PatternActivity"
-            android:theme="@style/AppTheme.FullScreen" />
-        <activity android:name=".presentation.ui.pattern.SetPatternActivity" />
+
         <activity android:name=".presentation.ui.main.MainActivity2" />
-        <activity android:name=".presentation.ui.assessment.BeginAssessMentChooserActivity" />
         <activity android:name=".presentation.ui.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -77,7 +74,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.edward.nyansapo.fileprovider"
+            android:authorities="com.edward.nyansapo.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

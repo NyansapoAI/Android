@@ -18,7 +18,7 @@ android {
 
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.edward.nyansapo"
+        applicationId "com.edward.nyansapo"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 2
@@ -53,6 +53,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
 
     //support for kotlin
 
@@ -159,6 +160,10 @@ dependencies {
     }
     //persistant searchview
     compile 'com.github.arimorty:floatingsearchview:2.1.1'
+
+    //mp4parser
+    //append audio for story assessment
+    compile 'org.mp4parser:isoparser:1.9.27'
 
 }
 

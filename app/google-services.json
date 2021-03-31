@@ -8,20 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:933626401522:android:a2c3ff685ccee5e967f66b",
+        "mobilesdk_app_id": "1:933626401522:android:1fb35675a008e4f767f66b",
         "android_client_info": {
-          "package_name": "com.example.edward.nyansapo"
+          "package_name": "com.edward.nyansapo"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "933626401522-evj5dkatfevfs5j8ioj565smo3rcf47h.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.edward.nyansapo",
-            "certificate_hash": "720ef619726aea1871536b11d4bcb4f011613cff"
-          }
-        },
         {
           "client_id": "933626401522-mbal6ufgfgrbgaq3cgf5a0223k6qfu6l.apps.googleusercontent.com",
           "client_type": 3
@@ -29,7 +21,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDbazsvH1VvpB0KlEvBq48tnN8m-glcr54"
+          "current_key": "AIzaSyAji43PQZwwLipJIzvx2S6ejzf2ttqkO9I"
         }
       ],
       "services": {
@@ -66,7 +58,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDbazsvH1VvpB0KlEvBq48tnN8m-glcr54"
+          "current_key": "AIzaSyAji43PQZwwLipJIzvx2S6ejzf2ttqkO9I"
         }
       ],
       "services": {
@@ -103,7 +95,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDbazsvH1VvpB0KlEvBq48tnN8m-glcr54"
+          "current_key": "AIzaSyAji43PQZwwLipJIzvx2S6ejzf2ttqkO9I"
         }
       ],
       "services": {
@@ -140,7 +132,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDbazsvH1VvpB0KlEvBq48tnN8m-glcr54"
+          "current_key": "AIzaSyAji43PQZwwLipJIzvx2S6ejzf2ttqkO9I"
         }
       ],
       "services": {
@@ -193,7 +185,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDbazsvH1VvpB0KlEvBq48tnN8m-glcr54"
+          "current_key": "AIzaSyAji43PQZwwLipJIzvx2S6ejzf2ttqkO9I"
         }
       ],
       "services": {
@@ -230,7 +222,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDbazsvH1VvpB0KlEvBq48tnN8m-glcr54"
+          "current_key": "AIzaSyAji43PQZwwLipJIzvx2S6ejzf2ttqkO9I"
         }
       ],
       "services": {
